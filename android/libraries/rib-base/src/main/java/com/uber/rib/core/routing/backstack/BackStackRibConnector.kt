@@ -1,11 +1,11 @@
-package com.badoo.common.rib.routing.backstack
+package com.uber.rib.core.routing.backstack
 
 import android.os.Bundle
 import android.os.Parcelable
-import com.badoo.common.rib.routing.RibConnector
-import com.badoo.common.rib.routing.action.RoutingAction
-import com.badoo.common.rib.routing.backstack.BackStackRibConnector.DetachStrategy.DESTROY
-import com.badoo.common.rib.routing.backstack.BackStackRibConnector.DetachStrategy.DETACH_VIEW
+import com.uber.rib.core.routing.RibConnector
+import com.uber.rib.core.routing.action.RoutingAction
+import com.uber.rib.core.routing.backstack.BackStackRibConnector.DetachStrategy.DESTROY
+import com.uber.rib.core.routing.backstack.BackStackRibConnector.DetachStrategy.DETACH_VIEW
 import io.reactivex.Observable
 
 internal class BackStackRibConnector<C : Parcelable>(

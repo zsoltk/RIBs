@@ -28,7 +28,7 @@ public abstract class ViewRouter<V extends RibAndroidView, I extends Interactor>
 
   public ViewRouter(V view, I interactor) {
     //noinspection KotlinInternalInJava
-    super(interactor, RibRefWatcher.getInstance());
+    super(null, interactor, RibRefWatcher.getInstance());
     this.view = view;
   }
 

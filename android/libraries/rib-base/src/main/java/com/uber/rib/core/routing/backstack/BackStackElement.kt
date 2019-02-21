@@ -1,9 +1,9 @@
-package com.badoo.common.rib.routing.backstack
+package com.uber.rib.core.routing.backstack
 
 import android.os.Bundle
 import android.os.Parcelable
-import com.badoo.common.rib.BaseViewRouter
-import com.badoo.common.rib.routing.action.RoutingAction
+import com.uber.rib.core.Router
+import com.uber.rib.core.routing.action.RoutingAction
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
@@ -13,5 +13,5 @@ class BackStackElement<C : Parcelable>(
     var bundles: List<Bundle> = emptyList()
 ): Parcelable {
     @IgnoredOnParcel var routingAction: RoutingAction<*>? = null
-    @IgnoredOnParcel var ribs: List<BaseViewRouter<*>>? = null
+    @IgnoredOnParcel var ribs: List<Router<*>>? = null
 }

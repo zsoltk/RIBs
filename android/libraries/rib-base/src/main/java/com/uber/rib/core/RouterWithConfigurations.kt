@@ -1,39 +1,36 @@
-package com.badoo.common.rib
+package com.uber.rib.core
 
 import android.os.Bundle
 import android.os.Parcelable
-import com.badoo.common.rib.routing.RibConnector
-import com.badoo.common.rib.routing.action.RoutingAction
-import com.badoo.common.rib.routing.backstack.BackStackManager
-import com.badoo.common.rib.routing.backstack.BackStackManager.Wish.NewRoot
-import com.badoo.common.rib.routing.backstack.BackStackManager.Wish.Pop
-import com.badoo.common.rib.routing.backstack.BackStackManager.Wish.Push
-import com.badoo.common.rib.routing.backstack.BackStackManager.Wish.Replace
-import com.badoo.common.rib.routing.backstack.BackStackManager.Wish.ShrinkToBundles
-import com.badoo.common.rib.routing.backstack.BackStackManager.Wish.TearDown
 import com.badoo.mvicore.android.AndroidTimeCapsule
 import com.badoo.mvicore.binder.Binder
-import com.uber.rib.core.RibAndroidView
+import com.uber.rib.core.routing.RibConnector
+import com.uber.rib.core.routing.action.RoutingAction
+import com.uber.rib.core.routing.backstack.BackStackManager
+import com.uber.rib.core.routing.backstack.BackStackManager.Wish.NewRoot
+import com.uber.rib.core.routing.backstack.BackStackManager.Wish.Pop
+import com.uber.rib.core.routing.backstack.BackStackManager.Wish.Push
+import com.uber.rib.core.routing.backstack.BackStackManager.Wish.Replace
+import com.uber.rib.core.routing.backstack.BackStackManager.Wish.ShrinkToBundles
+import com.uber.rib.core.routing.backstack.BackStackManager.Wish.TearDown
 
 @Suppress("FINITE_BOUNDS_VIOLATION_IN_JAVA")
-abstract class BaseViewRouterWithConfigurations<C : Parcelable, V : RibAndroidView, I : BaseInteractor<V, *>>(
+abstract class RouterWithConfigurations<C : Parcelable, V : RibView, I : Interactor<V, *>>(
     private val viewFactory: ViewFactory<V>?,
     interactor: I,
     private val initialConfiguration: C
-) : BaseViewRouter<V>(
+) : Router<V>(
     viewFactory,
     interactor
 ) {
-
     private val binder = Binder()
-    private lateinit var timeCapsule: AndroidTimeCapsule // = AndroidTimeCapsule(null)
+    private lateinit var timeCapsule: AndroidTimeCapsule
     private lateinit var backStackManager: BackStackManager<C>
     protected val configuration: C?
         get() = backStackManager.state.current
-    private var currentRoutingAction: RoutingAction<V>? = null
 
-    override fun dispatchAttach(savedInstanceState: Bundle?, tag: String) {
-        super.dispatchAttach(savedInstanceState, tag)
+    override fun dispatchAttach(savedInstanceState: Bundle?) {
+        super.dispatchAttach(savedInstanceState)
         timeCapsule = AndroidTimeCapsule(savedInstanceState)
         initConfigurationManager()
     }
@@ -94,5 +91,4 @@ abstract class BaseViewRouterWithConfigurations<C : Parcelable, V : RibAndroidVi
             popBackStack() -> true
             else -> super.handleBackPress()
         }
-
 }

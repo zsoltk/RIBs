@@ -4,5 +4,5 @@ import android.view.ViewGroup
 
 interface RibAndroidView : RibView {
 
-    val androidView: ViewGroup
+//    val androidView: ViewGroup
 }

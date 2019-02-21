@@ -2,7 +2,7 @@ package com.badoo.common.rib.directory
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.badoo.common.rib.ViewFactory
+import com.uber.rib.core.ViewFactory
 import kotlin.reflect.KClass
 
 open class ViewCustomisationDirectory : MutableDirectory {
