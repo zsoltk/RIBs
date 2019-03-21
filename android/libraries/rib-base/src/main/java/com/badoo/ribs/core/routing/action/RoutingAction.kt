@@ -5,6 +5,7 @@ import com.badoo.ribs.core.Node
 
 interface RoutingAction<V : RibView> {
 
+    // FIXME what if you have a mix (composite) - this should be paired with the ribs being created
     val allowAttachView: Boolean
         get() = true
 

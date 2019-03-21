@@ -71,9 +71,9 @@ open class Node<V : RibView>(
         }
 
         // FIXME this does not check if the child was attached originally to current view or not, as per routingAction!!.allowAttachView in connector
-        children.forEach {
-            attachChildView(it)
-        }
+//        children.forEach {
+//            attachChildView(it)
+//        }
 
         router.onAttachView()
     }
@@ -118,9 +118,9 @@ open class Node<V : RibView>(
         router.onDetachView()
 
         // FIXME this does not check if the child was attached to current view or not, as per routingAction!!.allowAttachView in connector
-        children.forEach {
-            detachChildView(it)
-        }
+//        children.forEach {
+//            detachChildView(it)
+//        }
 
         view?.let {
             parentViewGroup.removeView(it.androidView)
