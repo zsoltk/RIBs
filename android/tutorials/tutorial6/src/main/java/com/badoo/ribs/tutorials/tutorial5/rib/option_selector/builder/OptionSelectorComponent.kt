@@ -3,15 +3,12 @@ package com.badoo.ribs.tutorials.tutorial5.rib.option_selector.builder
 import com.badoo.ribs.core.Node
 import com.badoo.ribs.tutorials.tutorial5.rib.option_selector.OptionSelector
 import com.badoo.ribs.tutorials.tutorial5.rib.option_selector.OptionSelectorView
+import dagger.BindsInstance
 
 @OptionSelectorScope
 @dagger.Component(
     modules = [OptionSelectorModule::class],
-    dependencies = [
-        OptionSelector.Dependency::class,
-        OptionSelector.Customisation::class,
-        OptionSelectorBuilder.BuildParams::class
-    ]
+    dependencies = [OptionSelector.Dependency::class]
 )
 internal interface OptionSelectorComponent {
 
@@ -19,8 +16,8 @@ internal interface OptionSelectorComponent {
     interface Factory {
         fun create(
             dependency: OptionSelector.Dependency,
-            customisation: OptionSelector.Customisation,
-            buildParams: OptionSelectorBuilder.BuildParams
+            @BindsInstance customisation: OptionSelector.Customisation,
+            @BindsInstance buildParams: OptionSelectorBuilder.BuildParams
         ): OptionSelectorComponent
     }
 

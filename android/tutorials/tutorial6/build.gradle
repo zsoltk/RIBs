@@ -51,8 +51,10 @@ dependencies {
     implementation deps.external.rxandroid2
 
     testImplementation deps.external.roboelectricBase
-    testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0'
-    testImplementation 'junit:junit:4.12'
+    testImplementation deps.test.junit
+    testImplementation deps.test.mockitoKotlin
+    testImplementation deps.test.assertj
+    testImplementation project(":libraries:rib-base-test")
 
     debugImplementation project(":libraries:rib-base-test-activity")
     androidTestImplementation project(":libraries:rib-base-test")
