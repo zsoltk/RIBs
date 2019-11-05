@@ -7,13 +7,15 @@ Understanding how to dynamically switch between child RIBs
 
 ## Starting out
 
+![](https://i.imgur.com/TIfGFtw.png)
+
 Launch the **tutorial5** app, and you can see that there's a new button in the layout: **MORE OPTIONS**. 
 
 If you look at the project structure, you can also find a new RIB in this module: `OptionSelector`. 
 
-All it does is it renders a screen with text options. We will use that to update he button text in our `HelloWorld` rib, and also use it for the actual greeting shown in the Snackbar.
+All it does is it renders a screen with text options and a confirm button. We will use that to update the button text in our `HelloWorld` rib, and also use it for the actual greeting shown in the Snackbar.
 
-[TODO images]
+![](https://i.imgur.com/hz7ZXlQ.png)
 
 
 ## Hiererachy of multi-child RIBs
@@ -87,7 +89,7 @@ class GreetingsContainerInteractor
 
 Pressing the **MORE OPTIONS** button the app should display the new screen:
 
-[TODO]
+![](https://i.imgur.com/s0Udusa.png)
 
 Try it!
  
@@ -200,7 +202,11 @@ internal val moreOptionsOutputConsumer: Consumer<Output> = Consumer {
 
 At this point we should be able to go to options selection screen, chose an item from the radio group, and pressing the confirm button we should land back at the Hello world! screen with the label of the hello button reflecting our choice.
 
+![](https://i.imgur.com/j9ZDpDN.png)
+
 Press hello! 
+
+![](https://i.imgur.com/8HXzhog.png)
 
 
 ## Reflecting on what we just did: composing
