@@ -36,14 +36,11 @@ GreetingsContainer
 The idea how they will work together:
 
 1. On `HelloWorld` screen, User presses **MORE OPTIONS**. Since it is beyond the responsibility of `HelloWorld` RIB, it reports it as `Output`
-2. `GreetingsContainer` catches the output, and switches its routing from `HelloWorld` to `OptionsSelector`. Since we display the container on the whole screen, this in effect results in a "new screen" effect.
+2. `GreetingsContainer` catches the output, and switches its routing from `HelloWorld` to `OptionsSelector`. Since we display the container on the whole screen, this results in a "new screen" effect.
 3. `OptionsSelector` offers UI interaction to select something from a radio group. What should happen when a certain options is selected is beyond its responsibilities, so similarly as with `HelloWorld`, it reports it as `Output`.
 4. `GreetingsContainer` catches the output, switches back its routing to `HelloWorld` again.
 5. The text of the main button in `HelloWorld` should be updated to reflect the newly selected option. This can be done by via an `Input` command to `HelloWorld` which allows setting of the text from outside of the RIB.
-6. Pressing the button should also result in the selected text being shown in the Snackbar. This can be done by storing the selected text as part of the state of `GreetingsContainer`.
  
- Because this is a bit too much for one go, we will break it up to parts. In this tutorial, we'll cover reacting points `1-2`, and switching back to `HelloWorld`.
-
 
 ## Test your knowledge
 
@@ -69,7 +66,7 @@ For help with the above tasks, you can refer to:
 
 Now that our new Button can signal the correct `Output`, and now that our container's Router can build the other RIB we need, the only thing we need is to connect the dots.
 
-Business logic triggers Routing:
+Business logic triggers routing:
 1. in `GreetingsContainerInteractor` we consume the `Output` of `HelloWorld`
 2. in the `when` branch for the new `Output` (where we added a `TODO()`) we want to tell `GreetingsContainerRouter` to switch to the Configuration representing `OptionSelector` RIB.
 
@@ -88,11 +85,11 @@ class GreetingsContainerInteractor
 }
 ```
 
-Really, that's it. Try it!
-
 Pressing the **MORE OPTIONS** button the app should display the new screen:
 
 [TODO]
+
+Try it!
  
 Right now the only way of getting back to `HelloWorld` is to press back on the device. We'll address that soon.
 
@@ -169,7 +166,7 @@ back stack 2 = [*Configuration.HelloWorld]
 And again, because last element in the back stack is on screen, this means that `MoreOptions` gets detached, and `HelloWorld` gets attached back to the screen again.
 
 
-## Final touch: use the result from options screen
+## Almost there: use the result from options screen
 
 Of course there's no point of opening the second screen if we cannot interact with it and our only option is to press back.
 
