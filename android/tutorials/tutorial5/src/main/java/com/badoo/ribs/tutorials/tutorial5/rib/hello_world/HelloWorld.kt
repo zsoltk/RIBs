@@ -1,9 +1,6 @@
 package com.badoo.ribs.tutorials.tutorial5.rib.hello_world
 
 import com.badoo.ribs.core.Rib
-import com.badoo.ribs.core.view.ViewFactory
-import com.badoo.ribs.customisation.inflateOnDemand
-import com.badoo.ribs.tutorials.tutorial5.R
 import com.badoo.ribs.tutorials.tutorial5.util.Lexem
 import com.badoo.ribs.tutorials.tutorial5.util.User
 import io.reactivex.ObservableSource

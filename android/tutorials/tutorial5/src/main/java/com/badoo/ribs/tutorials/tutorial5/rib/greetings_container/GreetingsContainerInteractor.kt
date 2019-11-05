@@ -10,7 +10,6 @@ import com.badoo.ribs.tutorials.tutorial5.rib.hello_world.HelloWorld.Input.Updat
 import com.badoo.ribs.tutorials.tutorial5.rib.hello_world.HelloWorld.Output.HelloThere
 import com.badoo.ribs.tutorials.tutorial5.rib.hello_world.HelloWorld.Output.MoreOptionsRequested
 import com.badoo.ribs.tutorials.tutorial5.rib.option_selector.OptionSelector.Output
-import com.badoo.ribs.tutorials.tutorial5.util.Lexem
 import com.jakewharton.rxrelay2.PublishRelay
 import com.jakewharton.rxrelay2.Relay
 import io.reactivex.functions.Consumer
@@ -18,8 +17,7 @@ import io.reactivex.functions.Consumer
 class GreetingsContainerInteractor(
     savedInstanceState: Bundle?,
     router: Router<Configuration, Nothing, Configuration, Nothing, Nothing>,
-    output: Consumer<GreetingsContainer.Output>,
-    private val options: List<Lexem>
+    output: Consumer<GreetingsContainer.Output>
 ) : Interactor<Configuration, Configuration, Nothing, Nothing>(
     savedInstanceState = savedInstanceState,
     router = router,

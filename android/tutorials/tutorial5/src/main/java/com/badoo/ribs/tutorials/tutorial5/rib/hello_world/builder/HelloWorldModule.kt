@@ -27,6 +27,7 @@ internal object HelloWorldModule {
     @HelloWorldScope
     @Provides
     @JvmStatic
+    @SuppressWarnings("LongParameterList", "LongMethod")
     internal fun interactor(
         savedInstanceState: Bundle?,
         user: User,

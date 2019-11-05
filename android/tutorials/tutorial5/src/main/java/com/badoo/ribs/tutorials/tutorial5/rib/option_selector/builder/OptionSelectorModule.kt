@@ -2,7 +2,6 @@ package com.badoo.ribs.tutorials.tutorial5.rib.option_selector.builder
 
 import android.os.Bundle
 import com.badoo.ribs.core.Node
-import com.badoo.ribs.core.view.ViewFactory
 import com.badoo.ribs.tutorials.tutorial5.rib.option_selector.OptionSelector
 import com.badoo.ribs.tutorials.tutorial5.rib.option_selector.OptionSelector.Output
 import com.badoo.ribs.tutorials.tutorial5.rib.option_selector.OptionSelectorInteractor

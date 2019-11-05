@@ -43,8 +43,7 @@ internal object GreetingsContainerModule {
         GreetingsContainerInteractor(
             savedInstanceState = savedInstanceState,
             router = router,
-            output = output,
-            options = lexemes()
+            output = output
         )
 
     @GreetingsContainerScope
