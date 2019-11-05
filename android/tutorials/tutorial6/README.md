@@ -105,3 +105,36 @@ By default, back pressing is propagated to the deepest (active) levels of the RI
 1. `Interactor` has a chance to override `handleBackPress()` to do something based on business logic
 2. `Router` will be asked if it has back stack to pop. If yes, pop is triggered and nothing else is done.
 3. If `Router` had no back stack, the whole thing starts bubbling up the RIB tree to higher levels until someone can handle it. The last fallback is that the hosting `Activity` finishes.
+
+
+
+
+## Back stack and lifecycle
+
+#### Rule 1: whatever goes to back stack, remains alive without view
+
+In a scenario where back stack is: ```[A, B, C, *D]```, RIBs related to configurations `A`, `B`, `C` are detached from the view, but are still kept alive.
+
+#### Rule 2: whatever comes back from back stack, gets view reattached
+#### Rule 3: whatever pops from back stack, gets destroyed
+
+1. the `MoreOptions` configuration gets popped from the `GreetingsContainerRouter`'s back stack
+2. the new last element in the back stack is the `HelloWorld` configuration
+3. it gets resolved and as a result, the `HelloWorld` RIB (which was kept alive) gets its view attached back to the screen
+
+And when 
+
+
+
+
+
+
+
+## Trash
+An explanation of what's happening under the hood:
+1. `GreetingsContainerInteractor` catches `ShowMoreOptions`
+2. the new `MoreOptions` configuration gets pushed to the `GreetingsContainerRouter`'s back stack 
+3. it will be automatically resolved to the `attach` routing action we defined
+4. as a result, the `OptionSelector` RIB will be built and attached to `GreetingsContainer`
+5. the `HelloWorld` RIB will be detached from the screen, so it's no longer visible (worth noting, that it will remain alive and attached to the container, just without its view)
+
