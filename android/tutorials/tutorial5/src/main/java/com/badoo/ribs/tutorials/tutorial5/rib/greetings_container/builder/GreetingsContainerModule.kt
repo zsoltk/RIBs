@@ -54,7 +54,10 @@ internal object GreetingsContainerModule {
         listOf(
             Lexem.Text("Hello"),
             Lexem.Text("Grüss gott"),
-            Lexem.Text("Bonjour")
+            Lexem.Text("Bonjour"),
+            Lexem.Text("Hola"),
+            Lexem.Text("Szép jó napot"),
+            Lexem.Text("Góðan dag")
         )
 
     @GreetingsContainerScope
