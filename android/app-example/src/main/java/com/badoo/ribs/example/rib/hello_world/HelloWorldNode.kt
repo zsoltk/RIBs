@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
 import com.badoo.ribs.core.Node
+import com.badoo.ribs.example.util.CanReportViewScreen
 import io.reactivex.Single
 
 class HelloWorldNode(
@@ -17,7 +18,10 @@ class HelloWorldNode(
     viewFactory = viewFactory,
     router = router,
     interactor = interactor
-), HelloWorld.Workflow {
+), HelloWorld.Workflow, CanReportViewScreen {
+
+    override val screenName: String
+        get() = "SCREEN_NAME_HELLO_WORLD"
 
     override fun somethingSomethingDarkSide(): Single<HelloWorld.Workflow> =
         executeWorkflow {

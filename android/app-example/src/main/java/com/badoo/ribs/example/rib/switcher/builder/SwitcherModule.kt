@@ -17,6 +17,7 @@ import com.badoo.ribs.example.rib.switcher.SwitcherInteractor
 import com.badoo.ribs.example.rib.switcher.SwitcherNode
 import com.badoo.ribs.example.rib.switcher.SwitcherRouter
 import com.badoo.ribs.example.rib.switcher.SwitcherView
+import com.badoo.ribs.example.rib.switcher.analytics.ScreenTracker
 import com.badoo.ribs.example.rib.switcher.dialog.DialogToTestOverlay
 import com.badoo.ribs.example.util.CoffeeMachine
 import dagger.Provides
@@ -89,7 +90,8 @@ internal object SwitcherModule {
         savedInstanceState = savedInstanceState,
         viewFactory = customisation.viewFactory(viewDependency),
         router = router,
-        interactor = interactor
+        interactor = interactor,
+        screenTracker = ScreenTracker()
     )
 
     @SwitcherScope

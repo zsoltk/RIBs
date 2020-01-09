@@ -18,4 +18,6 @@ interface LoremIpsum : Rib {
     class Customisation(
         val viewFactory: LoremIpsumView.Factory = LoremIpsumViewImpl.Factory()
     ) : RibCustomisation
+
+    interface Workflow
 }

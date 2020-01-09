@@ -21,11 +21,9 @@ class LoremIpsumBuilder(
             dependency.loremIpsumOutput()
         )
 
-        return Node(
+        return LoremIpsumNode(
             savedInstanceState = savedInstanceState,
-            identifier = object : LoremIpsum {},
             viewFactory = customisation.viewFactory(null),
-            router = null,
             interactor = interactor
         )
     }

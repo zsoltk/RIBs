@@ -17,6 +17,7 @@ package com.badoo.ribs.core
 
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import android.util.SparseArray
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
@@ -36,6 +37,14 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import java.util.concurrent.CopyOnWriteArrayList
 
+interface TreeChangeListener {
+    fun onTreeChange()
+}
+
+interface ViewTreeChangeListener {
+    fun onViewTreeChange()
+}
+
 /**
  * Responsible for handling the addition and removal of child nodes.
  **/
@@ -48,7 +57,11 @@ open class Node<V : RibView>(
     private val interactor: Interactor<V>,
     private val viewPlugins: Set<ViewPlugin> = emptySet(),
     private val ribRefWatcher: RibRefWatcher = RibRefWatcher.getInstance()
-) : LifecycleOwner {
+) : LifecycleOwner, TreeChangeListener, ViewTreeChangeListener {
+
+    protected val treeChangeListeners: MutableList<TreeChangeListener> = mutableListOf()
+    protected val viewTreeChangeListeners: MutableList<ViewTreeChangeListener> = mutableListOf()
+    private var treeChangePropagation: Boolean = true
 
     enum class AttachMode {
         /**
@@ -92,6 +105,9 @@ open class Node<V : RibView>(
 
     val tag: String = this::class.java.name
     val children = CopyOnWriteArrayList<Node<*>>()
+    val childrenAttachedToView: List<Node<*>>
+        get() = children.filter { it.isAttachedToView }
+
     private val childrenAttachesRelay: PublishRelay<Node<*>> = PublishRelay.create()
     val childrenAttaches: Observable<Node<*>> = childrenAttachesRelay.hide()
 
@@ -115,17 +131,36 @@ open class Node<V : RibView>(
         router?.init(this)
     }
 
+    final override fun onTreeChange() {
+        if (treeChangePropagation) {
+            Log.d("FindNodeTask", "onTreeChange body in $this")
+            treeChangeListeners.forEach { it.onTreeChange() }
+        }
+    }
+
+    final override fun onViewTreeChange() {
+        if (treeChangePropagation) {
+            Log.d("FindNodeTask", "onViewTreeChange body in $this")
+            viewTreeChangeListeners.forEach { it.onViewTreeChange() }
+        }
+    }
+
+    // FIXME add / remove instead of exposing
+
     @CallSuper
     open fun onAttach() {
+        Log.d("FindNodeTask", "onAttach of $this")
         savedViewState = savedInstanceState?.getSparseParcelableArray<Parcelable>(KEY_VIEW_STATE) ?: SparseArray()
 
         lifecycleManager.onCreateRib()
         router?.onAttach()
         interactor.onAttach(lifecycleManager.ribLifecycle.lifecycle)
+        onTreeChange()
     }
 
     fun attachToView(parentViewGroup: ViewGroup) {
         detachFromView()
+        Log.d("FindNodeTask", "attachToView of $this")
         this.parentViewGroup = parentViewGroup
         isAttachedToView = true
 
@@ -137,8 +172,14 @@ open class Node<V : RibView>(
         view?.let {
             interactor.onViewCreated(lifecycleManager.viewLifecycle!!.lifecycle, it)
         }
-        router?.onAttachView()
+        Log.d("FindNodeTask", "BEFORE router.onAttachView() of $this")
+        suspendTreeChangePropagation {
+            router?.onAttachView()
+        }
+        Log.d("FindNodeTask", "AFTER router.onAttachView() of $this")
         viewPlugins.forEach { it.onAttachtoView(parentViewGroup) }
+        Log.d("FindNodeTask", "onViewTreeChange triggered by attachToView of $this")
+        onViewTreeChange()
     }
 
     private fun createView(parentViewGroup: ViewGroup) {
@@ -165,10 +206,19 @@ open class Node<V : RibView>(
             view = null
             isAttachedToView = false
             this.parentViewGroup = null
+            Log.d("FindNodeTask", "onViewTreeChange triggered by detachFromView of $this")
+            onViewTreeChange()
         }
     }
 
+    private fun suspendTreeChangePropagation(block: () -> Unit) {
+        treeChangePropagation = false
+        block()
+        treeChangePropagation = true
+    }
+
     open fun onDetach() {
+        Log.d("FindNodeTask", "onDetach of $this")
         if (isAttachedToView) {
             RIBs.errorHandler.handleNonFatalError(
                 "View was not detached before node detach!",
@@ -179,12 +229,15 @@ open class Node<V : RibView>(
 
         lifecycleManager.onDestroyRib()
         interactor.onDetach()
-        router?.onDetach()
+        suspendTreeChangePropagation {
+            router?.onDetach()
+        }
 
         for (child in children) {
             detachChildNode(child)
         }
 
+        onTreeChange()
         detachSignal.accept(Unit)
     }
 
@@ -196,6 +249,8 @@ open class Node<V : RibView>(
     @MainThread
     internal fun attachChildNode(child: Node<*>) {
         children.add(child)
+        child.treeChangeListeners.add(this)
+        child.viewTreeChangeListeners.add(this)
         ribRefWatcher.logBreadcrumb(
             "ATTACHED", child.javaClass.simpleName, this.javaClass.simpleName
         )
@@ -204,6 +259,11 @@ open class Node<V : RibView>(
         child.onAttach()
         childrenAttachesRelay.accept(child)
     }
+
+//    fun onChildViewAttached() {
+//        onViewTreeChange()
+//    }
+
 
     // FIXME internal + protected?
     fun attachChildView(child: Node<*>) {
@@ -214,14 +274,20 @@ open class Node<V : RibView>(
                 else -> view!!.getParentViewForChild(child) ?: parentViewGroup!!
             }
 
+            Log.d("FindNodeTask", "BEGIN attaching child view: $child")
             child.attachToView(target)
+            Log.d("FindNodeTask", "FINISHED attaching child view: $child")
+//            onChildViewAttached()
         }
     }
 
     // FIXME internal + protected?
     fun detachChildView(child: Node<*>) {
         parentViewGroup?.let {
+            Log.d("FindNodeTask", "BEGIN detaching view: $child")
             child.detachFromView()
+            Log.d("FindNodeTask", "FINISHED detaching view: $child")
+//            onViewTreeChange()
         }
     }
 
@@ -234,6 +300,8 @@ open class Node<V : RibView>(
      */
     @MainThread
     internal fun detachChildNode(childNode: Node<*>) {
+        childNode.treeChangeListeners.remove(this)
+        childNode.viewTreeChangeListeners.remove(this)
         children.remove(childNode)
 
         ribRefWatcher.watchDeletedObject(childNode)

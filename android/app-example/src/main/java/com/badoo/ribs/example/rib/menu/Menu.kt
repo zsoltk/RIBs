@@ -32,4 +32,8 @@ interface Menu : Rib {
     class Customisation(
         val viewFactory: MenuView.Factory = MenuViewImpl.Factory()
     ) : RibCustomisation
+
+    interface Workflow {
+
+    }
 }

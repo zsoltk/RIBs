@@ -25,11 +25,9 @@ class MenuBuilder(
             feature
         )
 
-        return Node(
+        return MenuNode(
             savedInstanceState = savedInstanceState,
-            identifier = object : Menu {},
             viewFactory = customisation.viewFactory(null),
-            router = null,
             interactor = interactor
         )
     }
