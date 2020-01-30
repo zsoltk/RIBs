@@ -127,15 +127,9 @@ internal fun <T> SharedElementTransitionInfo<T>.transition(): Transition {
     val unaccountedWDiff = (exitingView.scaleX - 1) * exitingView.width
     val unaccountedHDiff = (exitingView.scaleY - 1) * exitingView.height
 
-    val location1 = IntArray(2)
-    val location2 = IntArray(2)
-    abandoned?.getLocationInWindow(location1)
-    exitingView.getLocationInWindow(location2)
-
     (abandoned ?: exitingView).getLocationInWindow(location)
-    val exitingAbsX = location[0] // - unaccountedWDiff / 2
-    val exitingAbsY = location[1] // - unaccountedHDiff / 2
-    val exitingLayoutParams = ((abandoned ?: exitingView).layoutParams as ViewGroup.MarginLayoutParams)
+    val exitingAbsX = location[0]
+    val exitingAbsY = location[1]
 
     val initialRotation = exitingView.rotation
     val initialRotationX = exitingView.rotationX
@@ -147,8 +141,8 @@ internal fun <T> SharedElementTransitionInfo<T>.transition(): Transition {
     val targetScaleY = enteringView.scaleY * enteringView.measuredHeight / exitingView.height
 //    val wDiff = (enteringView.measuredWidth - exitingView.scaleX * exitingView.width)
 //    val hDiff = (enteringView.measuredHeight - exitingView.scaleY * exitingView.height)
-    val wDiff = enteringView.measuredWidth - (abandoned ?: exitingView).measuredWidth
-    val hDiff = enteringView.measuredHeight - (abandoned ?: exitingView).measuredHeight
+    val wDiff = enteringView.measuredWidth - exitingView.measuredWidth
+    val hDiff = enteringView.measuredHeight - exitingView.measuredHeight
 //    val wDiff = enteringView.measuredWidth - (exitingView.width + unaccountedWDiff / 2)
 //    val hDiff = enteringView.measuredHeight - (exitingView.height + unaccountedHDiff / 2)
 //    val wDiff = enteringView.measuredWidth - exitingView.width * exitingView.scaleX
