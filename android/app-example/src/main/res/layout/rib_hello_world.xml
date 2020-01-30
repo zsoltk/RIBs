@@ -12,7 +12,7 @@
         android:id="@+id/sharedElementSquare"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="0dp"
+        android:layout_marginBottom="9dp"
         android:transitionName="bla"
         android:background="@color/colorAccent"
         app:layout_constraintBottom_toTopOf="@id/hello_title"

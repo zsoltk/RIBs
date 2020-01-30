@@ -127,6 +127,7 @@ internal fun <T> SharedElementTransitionInfo<T>.transition(): Transition {
     val unaccountedWDiff = (exitingView.scaleX - 1) * exitingView.width
     val unaccountedHDiff = (exitingView.scaleY - 1) * exitingView.height
 
+    val exitingLayoutParams = ((abandoned ?: exitingView).layoutParams as ViewGroup.MarginLayoutParams)
     (abandoned ?: exitingView).getLocationInWindow(location)
     val exitingAbsX = location[0]
     val exitingAbsY = location[1]
@@ -202,8 +203,8 @@ internal fun <T> SharedElementTransitionInfo<T>.transition(): Transition {
 
         addUpdateListener { animation ->
             val progress = animation.animatedValue as Float
-            exitingView.translationX = exitingAbsX + unaccountedWDiff / 2 + progress.x() * (targetXDiff - unaccountedWDiff / 2)  //- exitingLayoutParams.leftMargin
-            exitingView.translationY = exitingAbsY + unaccountedHDiff / 2 + progress.y() * (targetYDiff - unaccountedHDiff / 2) //- exitingLayoutParams.topMargin
+            exitingView.translationX = exitingAbsX + unaccountedWDiff / 2 + progress.x() * (targetXDiff - unaccountedWDiff / 2) - exitingLayoutParams.leftMargin
+            exitingView.translationY = exitingAbsY + unaccountedHDiff / 2 + progress.y() * (targetYDiff - unaccountedHDiff / 2) - exitingLayoutParams.topMargin
             exitingView.scaleX = initialScaleX + progress.scaleX() * (targetScaleX - initialScaleX)
             exitingView.scaleY = initialScaleY + progress.scaleY() * (targetScaleY - initialScaleY)
             params.rotation?.let { exitingView.rotation = initialRotation + it.rotation(progress) }

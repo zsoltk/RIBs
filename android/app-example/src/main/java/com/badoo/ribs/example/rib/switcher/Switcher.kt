@@ -43,14 +43,14 @@ interface Switcher : Rib {
 //                )
 //                ,
                 TabSwitcher(
-                    duration = 4000,
+                    duration = 2000,
                     tabsOrder = listOf(Hello, Foo, DialogsExample)
                 )
                 ,
                 SharedElements(
                     params = listOf(
                         Params(
-                            duration = 4000,
+                            duration = 2000,
                             exitingElementMatcher = { it.findViewById(R.id.sharedElementSquare) },
                             enteringElementMatcher = { it.findViewById(R.id.sharedElementSquare) },
                             translateXInterpolator = LinearInterpolator(),
@@ -62,7 +62,7 @@ interface Switcher : Rib {
                 )
                 ,
                 CrossFader(
-                    duration = 4000
+                    duration = 2000
                 )
             )
     ) : RibCustomisation
