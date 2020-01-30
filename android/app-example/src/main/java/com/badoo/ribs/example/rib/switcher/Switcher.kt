@@ -1,14 +1,12 @@
 package com.badoo.ribs.example.rib.switcher
 
-import android.os.Parcel
-import android.os.Parcelable
+import android.view.animation.LinearInterpolator
 import android.view.animation.OvershootInterpolator
 import com.badoo.ribs.android.CanProvideActivityStarter
 import com.badoo.ribs.android.CanProvidePermissionRequester
 import com.badoo.ribs.core.Rib
 import com.badoo.ribs.core.routing.transition.handler.CrossFader
 import com.badoo.ribs.core.routing.transition.handler.SharedElements
-import com.badoo.ribs.core.routing.transition.handler.Slider
 import com.badoo.ribs.core.routing.transition.handler.TabSwitcher
 import com.badoo.ribs.core.routing.transition.handler.TransitionHandler
 import com.badoo.ribs.core.routing.transition.handler.TransitionHandler.Companion.multiple
@@ -45,25 +43,26 @@ interface Switcher : Rib {
 //                )
 //                ,
                 TabSwitcher(
-                    duration = 2000,
+                    duration = 4000,
                     tabsOrder = listOf(Hello, Foo, DialogsExample)
                 )
                 ,
                 SharedElements(
                     params = listOf(
                         Params(
-                            duration = 2000,
-                            exitingElement = { it.findViewById(R.id.sharedElementSquare) },
-                            enteringElement = { it.findViewById(R.id.sharedElementSquare) },
-                            translateXInterpolator = OvershootInterpolator(),
-                            translateYInterpolator = OvershootInterpolator(14f),
-                            rotation = RotationParams(0.75f * 360)
+                            duration = 4000,
+                            exitingElementMatcher = { it.findViewById(R.id.sharedElementSquare) },
+                            enteringElementMatcher = { it.findViewById(R.id.sharedElementSquare) },
+                            translateXInterpolator = LinearInterpolator(),
+                            translateYInterpolator = LinearInterpolator()
+//                            ,
+//                            rotation = RotationParams(0.75f * 360)
                         )
                     )
                 )
                 ,
                 CrossFader(
-                    duration = 2000
+                    duration = 4000
                 )
             )
     ) : RibCustomisation

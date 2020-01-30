@@ -19,8 +19,8 @@ import com.badoo.ribs.core.routing.transition.sharedelement.SharedElementTransit
 interface SharedElementTransition {
     data class Params(
         val duration: Long = defaultDuration,
-        val exitingElement: (View) -> View?,
-        val enteringElement: (View) -> View?,
+        val exitingElementMatcher: (View) -> View?,
+        val enteringElementMatcher: (View) -> View?,
         val translateXInterpolator: Interpolator = LinearInterpolator(),
         val translateYInterpolator: Interpolator = LinearInterpolator(),
         val scaleXInterpolator: Interpolator = LinearInterpolator(),
@@ -41,6 +41,7 @@ internal data class SharedElementTransitionInfo<T>(
     val exitingView: View,
     val enteringElement: TransitionElement<out T>,
     val enteringView: View,
+    val abandoned: View?,
     val params: SharedElementTransition.Params
 )
 
@@ -56,28 +57,41 @@ fun <T> List<TransitionElement<out T>>.sharedElementTransition(
         var exitingView: View? = null
         var enteringView: View? = null
 
-        val exitElementForId = exit.find {
-            exitingView = transitionParam.exitingElement.invoke(it.view)
+        val exitingElement = exit.find {
+            exitingView = transitionParam.exitingElementMatcher.invoke(it.view)
             exitingView != null
         }
 
-        if (exitElementForId != null) {
-            val enteringElementForId = enter.find {
-                enteringView = transitionParam.enteringElement.invoke(it.view)
-                enteringView != null
-            }
+        val enteringElement = enter.find {
+            enteringView = transitionParam.enteringElementMatcher.invoke(it.view)
+            enteringView != null
+        }
 
-            if (enteringElementForId != null) {
-                transitions.add(
-                    SharedElementTransitionInfo(
-                        exitingElement = exitElementForId,
-                        exitingView = exitingView!!, // guaranteed by find clause
-                        enteringElement = enteringElementForId,
-                        enteringView = enteringView!!, // guaranteed by find clause
-                        params = transitionParam
-                    )
-                )
+        var previous: View? = null
+        if (enteringElement != null && exitingElement != null && exitingView!!.visibility == View.INVISIBLE) {
+            val rootView = enteringElement.view.rootView as ViewGroup
+            // Only look for direct children, no need to findViewById and traverse the whole screen
+            loop@ for (i in 0 until rootView.childCount) {
+                val currentChild = rootView.getChildAt(i)
+                if (currentChild.id == enteringView!!.id) {
+                    exitingView!!.visibility = View.VISIBLE
+                    previous = currentChild
+                    break@loop
+                }
             }
+        }
+
+        if (exitingElement != null && enteringElement != null) {
+            transitions.add(
+                SharedElementTransitionInfo(
+                    exitingElement = exitingElement,
+                    exitingView = exitingView!!, // guaranteed by find clause
+                    enteringElement = enteringElement,
+                    enteringView = enteringView!!, // guaranteed by find clause
+                    abandoned = previous,
+                    params = transitionParam
+                )
+            )
         }
     }
 
@@ -100,15 +114,51 @@ internal fun <T> SharedElementTransitionInfo<T>.transition(): Transition {
     enteringView.getLocationInWindow(location)
     val enteringAbsX = location[0]
     val enteringAbsY = location[1]
-    exitingView.getLocationInWindow(location)
-    val exitingAbsX = location[0]
-    val exitingAbsY = location[1]
-    val exitingLayoutParams = (exitingView.layoutParams as ViewGroup.MarginLayoutParams)
 
-    val targetScaleX = 1.0f * enteringView.measuredWidth / exitingView.width
-    val targetScaleY = 1.0f * enteringView.measuredHeight / exitingView.height
-    val wDiff = (enteringView.measuredWidth - exitingView.width)
-    val hDiff = (enteringView.measuredHeight - exitingView.height)
+    abandoned?.let {
+        exitingView.rotation = it.rotation % 360
+        exitingView.rotationX = it.rotationX % 360
+        exitingView.rotationY = it.rotationY % 360
+        exitingView.scaleX = it.scaleX * it.width / exitingView.width
+        exitingView.scaleY = it.scaleY * it.height / exitingView.height
+    }
+
+    // TODO should be scaleXY delta only, not full value in case it already had some, just increased
+    val unaccountedWDiff = (exitingView.scaleX - 1) * exitingView.width
+    val unaccountedHDiff = (exitingView.scaleY - 1) * exitingView.height
+
+    val location1 = IntArray(2)
+    val location2 = IntArray(2)
+    abandoned?.getLocationInWindow(location1)
+    exitingView.getLocationInWindow(location2)
+
+    (abandoned ?: exitingView).getLocationInWindow(location)
+    val exitingAbsX = location[0] // - unaccountedWDiff / 2
+    val exitingAbsY = location[1] // - unaccountedHDiff / 2
+    val exitingLayoutParams = ((abandoned ?: exitingView).layoutParams as ViewGroup.MarginLayoutParams)
+
+    val initialRotation = exitingView.rotation
+    val initialRotationX = exitingView.rotationX
+    val initialRotationY = exitingView.rotationY
+    val initialScaleX = exitingView.scaleX
+    val initialScaleY = exitingView.scaleY
+
+    val targetScaleX = enteringView.scaleX * enteringView.measuredWidth / exitingView.width
+    val targetScaleY = enteringView.scaleY * enteringView.measuredHeight / exitingView.height
+//    val wDiff = (enteringView.measuredWidth - exitingView.scaleX * exitingView.width)
+//    val hDiff = (enteringView.measuredHeight - exitingView.scaleY * exitingView.height)
+    val wDiff = enteringView.measuredWidth - (abandoned ?: exitingView).measuredWidth
+    val hDiff = enteringView.measuredHeight - (abandoned ?: exitingView).measuredHeight
+//    val wDiff = enteringView.measuredWidth - (exitingView.width + unaccountedWDiff / 2)
+//    val hDiff = enteringView.measuredHeight - (exitingView.height + unaccountedHDiff / 2)
+//    val wDiff = enteringView.measuredWidth - exitingView.width * exitingView.scaleX
+//    val hDiff = enteringView.measuredHeight - exitingView.height * exitingView.scaleY
+//    val wDiff = enteringView.measuredWidth - exitingView.width * exitingView.scaleX
+//    val hDiff = enteringView.measuredHeight - exitingView.height * exitingView.scaleY
+
+//    val initialPosX = exitingAbsX - unaccountedWDiff / 2
+//    val initialPosY = exitingAbsY - unaccountedHDiff / 2
+
     val targetXDiff = enteringAbsX - exitingAbsX + wDiff / 2f
     val targetYDiff = enteringAbsY - exitingAbsY + hDiff / 2f
 
@@ -116,7 +166,8 @@ internal fun <T> SharedElementTransitionInfo<T>.transition(): Transition {
     fun Float.y(): Float = params.translateYInterpolator.getInterpolation(this)
     fun Float.scaleX(): Float = params.scaleXInterpolator.getInterpolation(this)
     fun Float.scaleY(): Float = params.scaleYInterpolator.getInterpolation(this)
-    fun RotationParams.rotation(progress: Float): Float = degrees * interpolator.getInterpolation(progress)
+    // TODO consider initialRotationX & Y too:
+    fun RotationParams.rotation(progress: Float): Float = (degrees - initialRotation) * interpolator.getInterpolation(progress)
 
     val valueAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
         duration = params.duration
@@ -135,6 +186,9 @@ internal fun <T> SharedElementTransitionInfo<T>.transition(): Transition {
                 originalParent.removeView(exitingView)
                 rootView.addView(exitingView)
                 enteringView.visibility = View.INVISIBLE
+                abandoned?.let {
+                    rootView.removeView(abandoned)
+                }
             }
 
             override fun onAnimationEnd(animation: Animator?, isReverse: Boolean) {
@@ -154,13 +208,13 @@ internal fun <T> SharedElementTransitionInfo<T>.transition(): Transition {
 
         addUpdateListener { animation ->
             val progress = animation.animatedValue as Float
-            exitingView.translationX = exitingAbsX + progress.x() * targetXDiff - exitingLayoutParams.leftMargin
-            exitingView.translationY = exitingAbsY + progress.y() * targetYDiff - exitingLayoutParams.topMargin
-            exitingView.scaleX = 1 + progress.scaleX() * (targetScaleX - 1)
-            exitingView.scaleY = 1 + progress.scaleY() * (targetScaleY - 1)
-            params.rotation?.let { exitingView.rotation = it.rotation(progress) }
-            params.rotationX?.let { exitingView.rotationX = it.rotation(progress) }
-            params.rotationY?.let { exitingView.rotationY = it.rotation(progress) }
+            exitingView.translationX = exitingAbsX + progress.x() * targetXDiff //- exitingLayoutParams.leftMargin
+            exitingView.translationY = exitingAbsY + progress.y() * targetYDiff //- exitingLayoutParams.topMargin
+            exitingView.scaleX = initialScaleX + progress.scaleX() * (targetScaleX - initialScaleX)
+            exitingView.scaleY = initialScaleY + progress.scaleY() * (targetScaleY - initialScaleY)
+            params.rotation?.let { exitingView.rotation = initialRotation + it.rotation(progress) }
+            params.rotationX?.let { exitingView.rotationX = initialRotationX + it.rotation(progress) }
+            params.rotationY?.let { exitingView.rotationY = initialRotationY + it.rotation(progress) }
         }
     }
 
