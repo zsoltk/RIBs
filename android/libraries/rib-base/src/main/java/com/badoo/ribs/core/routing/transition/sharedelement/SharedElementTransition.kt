@@ -140,19 +140,8 @@ internal fun <T> SharedElementTransitionInfo<T>.transition(): Transition {
 
     val targetScaleX = enteringView.scaleX * enteringView.measuredWidth / exitingView.width
     val targetScaleY = enteringView.scaleY * enteringView.measuredHeight / exitingView.height
-//    val wDiff = (enteringView.measuredWidth - exitingView.scaleX * exitingView.width)
-//    val hDiff = (enteringView.measuredHeight - exitingView.scaleY * exitingView.height)
     val wDiff = enteringView.measuredWidth - exitingView.measuredWidth
     val hDiff = enteringView.measuredHeight - exitingView.measuredHeight
-//    val wDiff = enteringView.measuredWidth - (exitingView.width + unaccountedWDiff / 2)
-//    val hDiff = enteringView.measuredHeight - (exitingView.height + unaccountedHDiff / 2)
-//    val wDiff = enteringView.measuredWidth - exitingView.width * exitingView.scaleX
-//    val hDiff = enteringView.measuredHeight - exitingView.height * exitingView.scaleY
-//    val wDiff = enteringView.measuredWidth - exitingView.width * exitingView.scaleX
-//    val hDiff = enteringView.measuredHeight - exitingView.height * exitingView.scaleY
-
-//    val initialPosX = exitingAbsX - unaccountedWDiff / 2
-//    val initialPosY = exitingAbsY - unaccountedHDiff / 2
 
     val targetXDiff = enteringAbsX - exitingAbsX + wDiff / 2f
     val targetYDiff = enteringAbsY - exitingAbsY + hDiff / 2f
