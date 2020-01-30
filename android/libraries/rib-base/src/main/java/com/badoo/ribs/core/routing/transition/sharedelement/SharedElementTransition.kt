@@ -202,8 +202,8 @@ internal fun <T> SharedElementTransitionInfo<T>.transition(): Transition {
 
         addUpdateListener { animation ->
             val progress = animation.animatedValue as Float
-            exitingView.translationX = exitingAbsX + progress.x() * targetXDiff //- exitingLayoutParams.leftMargin
-            exitingView.translationY = exitingAbsY + progress.y() * targetYDiff //- exitingLayoutParams.topMargin
+            exitingView.translationX = exitingAbsX + unaccountedWDiff / 2 + progress.x() * (targetXDiff - unaccountedWDiff / 2)  //- exitingLayoutParams.leftMargin
+            exitingView.translationY = exitingAbsY + unaccountedHDiff / 2 + progress.y() * (targetYDiff - unaccountedHDiff / 2) //- exitingLayoutParams.topMargin
             exitingView.scaleX = initialScaleX + progress.scaleX() * (targetScaleX - initialScaleX)
             exitingView.scaleY = initialScaleY + progress.scaleY() * (targetScaleY - initialScaleY)
             params.rotation?.let { exitingView.rotation = initialRotation + it.rotation(progress) }
