@@ -53,7 +53,7 @@ interface Switcher : Rib {
                             duration = 2000,
                             exitingElementMatcher = { it.findViewById(R.id.sharedElementSquare) },
                             enteringElementMatcher = { it.findViewById(R.id.sharedElementSquare) },
-                            translateXInterpolator = LinearInterpolator(),
+                            translateXInterpolator = LinearInterpolator(), // OvershootInterpolator breaks it
                             translateYInterpolator = LinearInterpolator()
 //                            ,
 //                            rotation = RotationParams(0.75f * 360)
