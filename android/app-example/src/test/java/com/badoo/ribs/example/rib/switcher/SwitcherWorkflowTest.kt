@@ -45,8 +45,7 @@ class SwitcherWorkflowTest {
 
         workflow = SwitcherNode(
             viewFactory = mock(),
-            router = router,
-            interactor = interactor,
+            plugins = listOf(interactor, router),
             savedInstanceState = null
         ).also { it.onAttach() }
     }

@@ -31,7 +31,7 @@ import java.util.UUID
 abstract class Interactor<V : RibView>(
     savedInstanceState: Bundle?,
     private val disposables: Disposable?
-) : Identifiable {
+) : Plugin<V>, Identifiable {
 
     private val savedInstanceState = savedInstanceState?.getBundle(BUNDLE_KEY)
 
@@ -41,15 +41,15 @@ abstract class Interactor<V : RibView>(
     override val id: String
         get() = tag
 
-    internal open fun onAttach(ribLifecycle: Lifecycle) {
-        onAttach(ribLifecycle, savedInstanceState)
+    override fun onAttach(nodeLifecycle: Lifecycle) {
+        onAttach(nodeLifecycle, savedInstanceState)
     }
 
-    protected open fun onAttach(ribLifecycle: Lifecycle, savedInstanceState: Bundle?) {
+    protected open fun onAttach(nodeLifecycle: Lifecycle, savedInstanceState: Bundle?) {
         // TODO remove this method
     }
 
-    internal fun onDetach() {
+    override fun onDetach() {
         disposables?.dispose()
     }
 
@@ -57,19 +57,11 @@ abstract class Interactor<V : RibView>(
         onViewCreated(view, viewLifecycle)
     }
 
-    protected open fun onViewCreated(view: V, viewLifecycle: Lifecycle) {
+    override fun onViewCreated(view: V, viewLifecycle: Lifecycle) {
     }
 
-    /**
-     * Handle an activity back press.
-     *
-     * @return TRUE if the interactor handled the back press and no further action is necessary.
-     */
-    open fun handleBackPress(): Boolean =
-        false
-
     @CallSuper
-    open fun onSaveInstanceState(outState: Bundle) {
+    override fun onSaveInstanceState(outState: Bundle) {
         val bundle = Bundle()
         bundle.putString(KEY_TAG, tag)
         outState.putBundle(BUNDLE_KEY, bundle)

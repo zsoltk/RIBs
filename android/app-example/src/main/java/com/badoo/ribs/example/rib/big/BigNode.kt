@@ -13,6 +13,5 @@ class BigNode(
     savedInstanceState = savedInstanceState,
     identifier = object : Big {},
     viewFactory = viewFactory,
-    router = router,
-    interactor = interactor
+    plugins = listOf(interactor, router)
 ), Big.Workflow

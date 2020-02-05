@@ -30,8 +30,7 @@ class InteractorTestHelper<View : RibView>(
             savedInstanceState = null,
             identifier = TestIdentifier,
             viewFactory = viewFactory,
-            router = this.router,
-            interactor = interactor
+            plugins = listOf(this.router, interactor)
         )
     }
 

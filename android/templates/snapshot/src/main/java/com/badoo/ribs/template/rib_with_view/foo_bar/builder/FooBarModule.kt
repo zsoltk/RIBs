@@ -66,8 +66,7 @@ internal object FooBarModule {
     ) : FooBarNode = FooBarNode(
         savedInstanceState = savedInstanceState,
         viewFactory = customisation.viewFactory(null),
-        router = router,
-        interactor = interactor,
+        plugins = listOf(interactor, router),
         input = input,
         output = output,
         feature = feature

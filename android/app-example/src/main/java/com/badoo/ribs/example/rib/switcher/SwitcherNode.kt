@@ -18,8 +18,7 @@ class SwitcherNode(
     savedInstanceState = savedInstanceState,
     identifier = object : Switcher {},
     viewFactory = viewFactory,
-    router = router,
-    interactor = interactor
+    plugins = listOf(interactor, router)
 ), Switcher.Workflow {
     
     override fun attachHelloWorld(): Single<HelloWorld.Workflow> =

@@ -50,7 +50,6 @@ internal object GreetingsContainerModule {
         savedInstanceState = savedInstanceState,
         identifier = object : GreetingsContainer {},
         viewFactory = null,
-        router = router,
-        interactor = interactor
+        plugins = listOf(interactor, router)
     )
 }

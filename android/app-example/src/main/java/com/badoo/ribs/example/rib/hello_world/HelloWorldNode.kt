@@ -15,8 +15,7 @@ class HelloWorldNode(
     savedInstanceState = savedInstanceState,
     identifier = object : HelloWorld {},
     viewFactory = viewFactory,
-    router = router,
-    interactor = interactor
+    plugins = listOf(interactor, router)
 ), HelloWorld.Workflow {
 
     override fun somethingSomethingDarkSide(): Single<HelloWorld.Workflow> =

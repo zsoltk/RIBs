@@ -15,7 +15,6 @@ import com.badoo.ribs.core.helper.TestNode2
 import com.badoo.ribs.core.helper.TestPublicRibInterface
 import com.badoo.ribs.core.helper.TestRouter
 import com.badoo.ribs.core.helper.TestView
-import com.badoo.ribs.core.view.ViewPlugin
 import com.badoo.ribs.util.RIBs
 import com.jakewharton.rxrelay2.PublishRelay
 import com.nhaarman.mockitokotlin2.any
@@ -60,7 +59,7 @@ class NodeTest {
     private lateinit var child2: TestNode
     private lateinit var child3: TestNode
     private lateinit var allChildren: List<Node<*>>
-    private lateinit var viewPlugins: Set<ViewPlugin>
+    private lateinit var plugins: Set<Plugin>
 
     @Before
     fun setUp() {
@@ -73,7 +72,7 @@ class NodeTest {
         viewFactory = mock { on { invoke(parentViewGroup) } doReturn view }
         router = mock()
         interactor = mock()
-        viewPlugins = setOf(mock(), mock())
+        plugins = listOf(mock(), mock())
 
         node = createNodeWithView()
 
@@ -85,9 +84,8 @@ class NodeTest {
             savedInstanceState = null,
             identifier = object : TestPublicRibInterface {},
             viewFactory = viewFactory,
-            router = router,
-            interactor = interactor,
-            viewPlugins = viewPlugins
+            plugins = listOf(interactor, router),
+            plugins = plugins
         )
     }
 
@@ -96,9 +94,8 @@ class NodeTest {
             savedInstanceState = null,
             identifier = object : TestPublicRibInterface {},
             viewFactory = null,
-            router = router,
-            interactor = interactor,
-            viewPlugins = viewPlugins
+            plugins = listOf(interactor, router),
+            plugins = plugins
         )
     }
 
@@ -283,7 +280,7 @@ class NodeTest {
 
         node.handleBackPress()
 
-        verify(interactor).handleBackPress()
+        verify(interactor).handleBackPressAfterDownstream()
     }
 
     @Test
@@ -295,7 +292,7 @@ class NodeTest {
 
         node.handleBackPress()
 
-        verify(interactor, never()).handleBackPress()
+        verify(interactor, never()).handleBackPressAfterDownstream()
     }
 
     @Test
@@ -304,7 +301,7 @@ class NodeTest {
         child1.handleBackPress = false
         child2.handleBackPress = false
         child3.handleBackPress = false
-        whenever(interactor.handleBackPress()).thenReturn(false)
+        whenever(interactor.handleBackPressAfterDownstream()).thenReturn(false)
 
         node.handleBackPress()
 
@@ -317,7 +314,7 @@ class NodeTest {
         child1.handleBackPress = false
         child2.handleBackPress = true
         child3.handleBackPress = false
-        whenever(interactor.handleBackPress()).thenReturn(false)
+        whenever(interactor.handleBackPressAfterDownstream()).thenReturn(false)
 
         node.handleBackPress()
 
@@ -326,7 +323,7 @@ class NodeTest {
 
     @Test
     fun `Router back stack popping is not invoked if Interactor handled back press`() {
-        whenever(interactor.handleBackPress()).thenReturn(true)
+        whenever(interactor.handleBackPressAfterDownstream()).thenReturn(true)
 
         node.handleBackPress()
 
@@ -360,7 +357,7 @@ class NodeTest {
     @Test
     fun `attachToView() notifies all ViewPlugins`() {
         node.attachToView(parentViewGroup)
-        viewPlugins.forEach {
+        plugins.forEach {
             verify(it).onAttachtoView(parentViewGroup)
         }
     }
@@ -369,7 +366,7 @@ class NodeTest {
     fun `detachFromView() notifies all ViewPlugins`() {
         node.attachToView(parentViewGroup)
         node.detachFromView()
-        viewPlugins.forEach {
+        plugins.forEach {
             verify(it).onDetachFromView(parentViewGroup)
         }
     }
@@ -608,8 +605,7 @@ class NodeTest {
             savedInstanceState = savedInstanceState,
             identifier = object : TestPublicRibInterface {},
             viewFactory = viewFactory,
-            router = router,
-            interactor = interactor
+            plugins = listOf(interactor, router)
         )
         node.onAttach()
         assertEquals(savedViewState, node.savedViewState)
@@ -712,8 +708,7 @@ class NodeTest {
             savedInstanceState = null,
             identifier = object : TestPublicRibInterface {},
             viewFactory = null,
-            router = router,
-            interactor = interactor
+            plugins = listOf(interactor, router)
         )
 
         node.attachToView(parentViewGroup)
@@ -726,8 +721,7 @@ class NodeTest {
             savedInstanceState = null,
             identifier = object : TestPublicRibInterface {},
             viewFactory = null,
-            router = router,
-            interactor = interactor
+            plugins = listOf(interactor, router)
         )
 
         node.attachToView(parentViewGroup)

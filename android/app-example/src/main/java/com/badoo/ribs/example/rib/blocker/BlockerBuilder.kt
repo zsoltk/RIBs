@@ -25,8 +25,7 @@ class BlockerBuilder(
             savedInstanceState = savedInstanceState,
             identifier = object : Blocker {},
             viewFactory = customisation.viewFactory(null),
-            router = null,
-            interactor = interactor
+            plugins = listOf(interactor)
         )
     }
 }

@@ -89,8 +89,7 @@ internal object DialogExampleModule {
         savedInstanceState = savedInstanceState,
         identifier = object : DialogExample {},
         viewFactory = customisation.viewFactory(null),
-        router = router,
-        interactor = interactor
+        plugins = listOf(interactor, router)
     )
 
     @DialogExampleScope

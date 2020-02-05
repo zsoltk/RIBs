@@ -3,20 +3,18 @@ package com.badoo.ribs.example.rib.foo_bar
 import android.os.Bundle
 import android.view.ViewGroup
 import com.badoo.ribs.core.Node
-import com.badoo.ribs.core.view.ViewPlugin
+import com.badoo.ribs.core.Plugin
 
 class FooBarNode(
     viewFactory: ((ViewGroup) -> FooBarView?)?,
     interactor: FooBarInteractor,
     savedInstanceState: Bundle?,
-    viewPlugins: Set<ViewPlugin>
+    plugins: List<Plugin<FooBarView>>
 ) : Node<FooBarView>(
     savedInstanceState = savedInstanceState,
     identifier = object : FooBar {},
     viewFactory = viewFactory,
-    router = null,
-    interactor = interactor,
-    viewPlugins = viewPlugins
+    plugins = listOf(interactor) + plugins
 ), FooBar.Workflow {
 
 }

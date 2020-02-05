@@ -2,6 +2,8 @@ package com.badoo.ribs.core
 
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
 import com.badoo.mvicore.android.AndroidTimeCapsule
 import com.badoo.mvicore.binder.Binder
 import com.badoo.ribs.core.routing.configuration.ConfigurationCommand.MultiConfigurationCommand.SaveInstanceState
@@ -28,7 +30,7 @@ abstract class Router<C : Parcelable, Permanent : C, Content : C, Overlay : C, V
     savedInstanceState: Bundle?,
     private val initialConfiguration: Content,
     private val permanentParts: List<Permanent> = emptyList()
-) : ConfigurationResolver<C, V> {
+) : Plugin<V>, ConfigurationResolver<C, V> {
     companion object {
         internal const val BUNDLE_KEY = "Router"
     }
@@ -41,7 +43,7 @@ abstract class Router<C : Parcelable, Permanent : C, Content : C, Overlay : C, V
     lateinit var node: Node<V>
         private set
 
-    internal fun init(node: Node<V>) {
+    override fun init(node: Node<V>) {
         this.node = node
         initFeatures(node)
     }
@@ -60,30 +62,30 @@ abstract class Router<C : Parcelable, Permanent : C, Content : C, Overlay : C, V
         )
     }
 
-    fun onSaveInstanceState(outState: Bundle) {
+    override fun onSaveInstanceState(outState: Bundle) {
         configurationFeature.accept(SaveInstanceState())
         val bundle = Bundle()
         timeCapsule.saveState(bundle)
         outState.putBundle(BUNDLE_KEY, bundle)
     }
 
-    fun onLowMemory() {
+    override fun onLowMemory() {
         // TODO add back support for this
     }
 
-    fun onAttach() {
+    override fun onAttach(lifecycle: Lifecycle) {
         binder.bind(backStackFeature.toCommands() to configurationFeature)
     }
 
-    fun onAttachView() {
+    override fun onAttachToView(parentViewGroup: ViewGroup) {
         configurationFeature.accept(WakeUp())
     }
 
-    fun onDetachView() {
+    override fun onDetachFromView(parentViewGroup: ViewGroup) {
         configurationFeature.accept(Sleep())
     }
 
-    fun onDetach() {
+    override fun onDetach() {
         binder.dispose()
     }
 
@@ -145,4 +147,10 @@ abstract class Router<C : Parcelable, Permanent : C, Content : C, Overlay : C, V
         } else {
             false
         }
+
+    override fun handleBackPressBeforeDownstream(): Boolean =
+        popOverlay()
+
+    override fun handleBackPressAfterDownstream(): Boolean =
+        popBackStack()
 }

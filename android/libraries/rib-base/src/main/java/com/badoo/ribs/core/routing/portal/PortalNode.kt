@@ -13,8 +13,7 @@ class PortalNode internal constructor(
     savedInstanceState = savedInstanceState,
     identifier = object : Portal {},
     viewFactory = null,
-    router = router,
-    interactor = interactor
+    plugins = listOf(interactor, router)
 ), Portal.Workflow {
 
     override fun showDefault(): Single<Node<*>> =

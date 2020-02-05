@@ -12,8 +12,7 @@ class PortalOverlayTestNode(
     savedInstanceState = savedInstanceState,
     identifier = object : PortalOverlayTest {},
     viewFactory = viewFactory,
-    router = null,
-    interactor = interactor
+    plugins = listOf(interactor)
 ) {
 
 }

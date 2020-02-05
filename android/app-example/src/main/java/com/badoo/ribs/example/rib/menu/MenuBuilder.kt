@@ -29,8 +29,7 @@ class MenuBuilder(
             savedInstanceState = savedInstanceState,
             identifier = object : Menu {},
             viewFactory = customisation.viewFactory(null),
-            router = null,
-            interactor = interactor
+            plugins = listOf(interactor)
         )
     }
 }

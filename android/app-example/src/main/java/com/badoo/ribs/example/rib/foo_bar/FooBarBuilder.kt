@@ -21,7 +21,7 @@ class FooBarBuilder(
             savedInstanceState,
             dependency.permissionRequester()
         )
-        val viewPlugins = setOf(ParentLongClickListener())
+        val viewPlugins = listOf(ParentLongClickListener())
 
         return FooBarNode(
             customisation.viewFactory(null),

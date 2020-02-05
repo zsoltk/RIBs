@@ -25,8 +25,7 @@ class LoremIpsumBuilder(
             savedInstanceState = savedInstanceState,
             identifier = object : LoremIpsum {},
             viewFactory = customisation.viewFactory(null),
-            router = null,
-            interactor = interactor
+            plugins = listOf(interactor)
         )
     }
 }

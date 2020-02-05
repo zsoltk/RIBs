@@ -13,8 +13,7 @@ class SmallNode(
     savedInstanceState = savedInstanceState,
     identifier = object : Small {},
     viewFactory = viewFactory,
-    router = router,
-    interactor = interactor
+    plugins = listOf(interactor, router)
 ), Small.Workflow {
 
 }
