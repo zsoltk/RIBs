@@ -17,6 +17,9 @@ import com.badoo.ribs.example.rib.menu.Menu
 import com.badoo.ribs.example.rib.menu.Menu.Input.SelectMenuItem
 import com.badoo.ribs.example.rib.menu.Menu.MenuItem
 import com.badoo.ribs.example.rib.menu.MenuBuilder
+import com.badoo.ribs.example.rib.simple1.Simple1Builder
+import com.badoo.ribs.example.rib.simple2.Simple2Builder
+import com.badoo.ribs.example.rib.simple3.Simple3Builder
 import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration
 import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration.Content
 import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration.Overlay
@@ -66,7 +69,7 @@ class SwitcherRouter(
                 execute { menuUpdater.accept(SelectMenuItem(MenuItem.HelloWorld)) }
             )
             is Content.Foo -> composite(
-                attach { fooBarBuilder.build(it) },
+                attach { Simple3Builder().build(it) },
                 execute { menuUpdater.accept(SelectMenuItem(MenuItem.FooBar)) }
             )
             is Content.DialogsExample -> composite(

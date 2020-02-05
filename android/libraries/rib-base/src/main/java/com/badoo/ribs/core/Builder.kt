@@ -26,5 +26,3 @@ package com.badoo.ribs.core
 abstract class Builder<D> {
     abstract val dependency: D
 }
-
-
