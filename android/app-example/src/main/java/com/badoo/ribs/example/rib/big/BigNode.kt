@@ -12,6 +12,5 @@ class BigNode(
 ) : Node<BigView>(
     buildParams = buildParams,
     viewFactory = viewFactory,
-    router = router,
-    interactor = interactor
+    plugins = listOf(interactor, router)
 ), Big

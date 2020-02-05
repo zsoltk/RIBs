@@ -31,19 +31,19 @@ import io.reactivex.disposables.Disposable
 abstract class Interactor<V : RibView>(
     buildParams: BuildParams<*>,
     private val disposables: Disposable?
-) : Identifiable by buildParams.identifier {
+) : Plugin<V>, Identifiable by buildParams.identifier {
 
     private val savedInstanceState = buildParams.savedInstanceState?.getBundle(BUNDLE_KEY)
 
-    internal open fun onAttach(ribLifecycle: Lifecycle) {
-        onAttach(ribLifecycle, savedInstanceState)
+    override fun onAttach(nodeLifecycle: Lifecycle) {
+        onAttach(nodeLifecycle, savedInstanceState)
     }
 
-    protected open fun onAttach(ribLifecycle: Lifecycle, savedInstanceState: Bundle?) {
+    protected open fun onAttach(nodeLifecycle: Lifecycle, savedInstanceState: Bundle?) {
         // TODO remove this method
     }
 
-    internal fun onDetach() {
+    override fun onDetach() {
         disposables?.dispose()
     }
 
@@ -51,19 +51,11 @@ abstract class Interactor<V : RibView>(
         onViewCreated(view, viewLifecycle)
     }
 
-    protected open fun onViewCreated(view: V, viewLifecycle: Lifecycle) {
+    override fun onViewCreated(view: V, viewLifecycle: Lifecycle) {
     }
 
-    /**
-     * Handle an activity back press.
-     *
-     * @return TRUE if the interactor handled the back press and no further action is necessary.
-     */
-    open fun handleBackPress(): Boolean =
-        false
-
     @CallSuper // FIXME cleanup / remove
-    open fun onSaveInstanceState(outState: Bundle) {
+    override fun onSaveInstanceState(outState: Bundle) {
         val bundle = Bundle()
         outState.putBundle(BUNDLE_KEY, bundle)
     }

@@ -15,8 +15,7 @@ class FooBarNode internal constructor(
 ) : Node<FooBarView>(
     buildParams = buildParams,
     viewFactory = viewFactory,
-    router = router,
-    interactor = interactor
+    plugins = listOf(interactor, router)
 ), FooBar.Workflow {
 
     /**

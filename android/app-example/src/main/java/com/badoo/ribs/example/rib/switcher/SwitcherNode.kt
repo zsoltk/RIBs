@@ -18,8 +18,7 @@ class SwitcherNode(
 ) : Node<SwitcherView>(
     buildParams = buildParams,
     viewFactory = viewFactory,
-    router = router,
-    interactor = interactor
+    plugins = listOf(interactor, router)
 ), Switcher {
     
     override fun attachHelloWorld(): Single<HelloWorld> =

@@ -11,8 +11,7 @@ class PortalOverlayTestNode(
 ) : Node<PortalOverlayTestView>(
     buildParams = buildParams,
     viewFactory = viewFactory,
-    router = null,
-    interactor = interactor
+    plugins = listOf(interactor)
 ), PortalOverlayTest {
 
 }

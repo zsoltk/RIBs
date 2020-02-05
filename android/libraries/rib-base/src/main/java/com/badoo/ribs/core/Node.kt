@@ -32,7 +32,6 @@ import com.badoo.ribs.core.exception.RootNodeAttachedAsChildException
 import com.badoo.ribs.core.routing.configuration.ConfigurationResolver
 import com.badoo.ribs.core.routing.portal.AncestryInfo
 import com.badoo.ribs.core.view.RibView
-import com.badoo.ribs.core.view.ViewPlugin
 import com.badoo.ribs.util.RIBs
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.PublishRelay
@@ -48,9 +47,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 open class Node<V : RibView>(
     buildParams: BuildParams<*>,
     private val viewFactory: ((ViewGroup) -> V?)?,
-    private val router: Router<*, *, *, *, V>?,
-    private val interactor: Interactor<V>,
-    private val viewPlugins: Set<ViewPlugin> = emptySet()
+    private val plugins: List<Plugin<V>> = emptyList()
 //    ,
 //    private val ribRefWatcher: RibRefWatcher = RibRefWatcher.getInstance()
 ) : Rib, LifecycleOwner {
@@ -79,7 +76,8 @@ open class Node<V : RibView>(
     internal open val attachMode: AttachMode =
         buildContext.attachMode
 
-    val resolver: ConfigurationResolver<out Parcelable>? = router
+    val resolver: ConfigurationResolver<*, V>? = plugins.filterIsInstance<ConfigurationResolver<*, V>>().firstOrNull()
+//    val resolver: ConfigurationResolver<out Parcelable>? = router
     private val savedInstanceState = buildParams.savedInstanceState?.getBundle(BUNDLE_KEY)
     internal val externalLifecycleRegistry = LifecycleRegistry(this)
     internal val ribLifecycleRegistry = LifecycleRegistry(this)
@@ -112,14 +110,13 @@ open class Node<V : RibView>(
         children.toList()
 
     init {
-        router?.init(this)
+        plugins.forEach { it.init(this) }
     }
 
     @CallSuper
     open fun onAttach() {
         lifecycleManager.onCreateRib()
-        router?.onAttach()
-        interactor.onAttach(lifecycleManager.ribLifecycle.lifecycle)
+        plugins.forEach { it.onAttach(lifecycleManager.ribLifecycle.lifecycle) }
     }
 
     fun attachToView(parentViewGroup: ViewGroup) {
@@ -134,11 +131,10 @@ open class Node<V : RibView>(
         }
 
         lifecycleManager.onCreateView()
-        view?.let {
-            interactor.onViewCreated(lifecycleManager.viewLifecycle!!.lifecycle, it)
+        view?.let { view ->
+            plugins.forEach { it.onViewCreated(view, lifecycleManager.viewLifecycle!!.lifecycle) }
         }
-        router?.onAttachView()
-        viewPlugins.forEach { it.onAttachtoView(parentViewGroup) }
+        plugins.forEach { it.onAttachToView(parentViewGroup) }
     }
 
     private fun createView(parentViewGroup: ViewGroup): V? {
@@ -165,15 +161,11 @@ open class Node<V : RibView>(
 
     fun detachFromView() {
         if (isAttachedToView) {
-            router?.onDetachView()
+            plugins.forEach { it.onDetachFromView(parentViewGroup!!) }
             lifecycleManager.onDestroyView()
 
             if (!isViewless) {
                 parentViewGroup!!.removeView(view!!.androidView)
-            }
-
-            viewPlugins.forEach {
-                it.onDetachFromView(parentViewGroup!!)
             }
 
             view = null
@@ -193,8 +185,7 @@ open class Node<V : RibView>(
         }
 
         lifecycleManager.onDestroyRib()
-        interactor.onDetach()
-        router?.onDetach()
+        plugins.forEach { it.onDetach() }
 
         for (child in children) {
             detachChildNode(child)
@@ -220,6 +211,7 @@ open class Node<V : RibView>(
         lifecycleManager.onAttachChild(child)
         child.onAttach()
         childrenAttachesRelay.accept(child)
+        plugins.forEach { it.onAttachChildNode(child) }
     }
 
     private fun verifyNotRoot(child: Node<*>) {
@@ -237,6 +229,7 @@ open class Node<V : RibView>(
         if (isAttachedToView) {
             val target = targetViewGroupForChild(child)
             child.attachToView(target)
+            plugins.forEach { it.onAttachChildView(child) }
         }
     }
 
@@ -250,7 +243,8 @@ open class Node<V : RibView>(
 
     // FIXME internal + protected?
     fun detachChildView(child: Node<*>) {
-            child.detachFromView()
+        child.detachFromView()
+        plugins.forEach { it.onDetachChildView(child) }
     }
 
     /**
@@ -261,15 +255,16 @@ open class Node<V : RibView>(
      * @param childNode the [Node] to be detached.
      */
     @MainThread
-    internal fun detachChildNode(childNode: Node<*>) {
-        children.remove(childNode)
+    internal fun detachChildNode(child: Node<*>) {
+        plugins.forEach { it.onDetachChildNode(child) }
+        children.remove(child)
 
-//        ribRefWatcher.watchDeletedObject(childNode)
+//        ribRefWatcher.watchDeletedObject(child)
 //        ribRefWatcher.logBreadcrumb(
-//            "DETACHED", childNode.javaClass.simpleName, this.javaClass.simpleName
+//            "DETACHED", child.javaClass.simpleName, this.javaClass.simpleName
 //        )
 
-        childNode.onDetach()
+        child.onDetach()
     }
 
     internal fun markPendingViewDetach(isPendingViewDetach: Boolean) {
@@ -320,10 +315,9 @@ open class Node<V : RibView>(
     @CallSuper
     open fun handleBackPress(): Boolean {
 //        ribRefWatcher.logBreadcrumb("BACKPRESS", null, null)
-        return router?.popOverlay() == true
+        return plugins.any { it.handleBackPressBeforeDownstream() }
             || delegateHandleBackPressToActiveChildren()
-            || interactor.handleBackPress()
-            || router?.popBackStack() == true
+            || plugins.any { it.handleBackPressAfterDownstream() }
     }
 
     private fun delegateHandleBackPressToActiveChildren(): Boolean =
@@ -339,8 +333,7 @@ open class Node<V : RibView>(
 
     open fun onSaveInstanceState(outState: Bundle) {
         outState.putSerializable(Identifier.KEY_UUID, identifier.uuid)
-        router?.onSaveInstanceState(outState)
-        interactor.onSaveInstanceState(outState)
+        plugins.forEach { it.onSaveInstanceState(outState) }
         saveViewState()
 
         val bundle = Bundle()
@@ -349,7 +342,7 @@ open class Node<V : RibView>(
     }
 
     fun onLowMemory() {
-        router?.onLowMemory()
+        plugins.forEach { it.onLowMemory() }
     }
 
     override fun getLifecycle(): Lifecycle =

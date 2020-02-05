@@ -14,8 +14,7 @@ class PortalNode internal constructor(
 ) : Node<Nothing>(
     buildParams = buildParams,
     viewFactory = null,
-    router = router,
-    interactor = interactor
+    plugins = listOf(interactor, router)
 ), Portal {
 
     override fun showDefault(): Single<Rib> =

@@ -2,6 +2,8 @@ package com.badoo.ribs.core
 
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
 import com.badoo.mvicore.android.AndroidTimeCapsule
 import com.badoo.mvicore.binder.Binder
 import com.badoo.ribs.core.builder.BuildParams
@@ -31,7 +33,7 @@ abstract class Router<C : Parcelable, Permanent : C, Content : C, Overlay : C, V
     private val initialConfiguration: Content,
     private val permanentParts: List<Permanent> = emptyList(),
     private val transitionHandler: TransitionHandler<C>? = null
-) : ConfigurationResolver<C> {
+) : Plugin<V>, ConfigurationResolver<C> {
     companion object {
         internal const val BUNDLE_KEY = "Router"
     }
@@ -44,7 +46,7 @@ abstract class Router<C : Parcelable, Permanent : C, Content : C, Overlay : C, V
     lateinit var node: Node<V>
         private set
 
-    internal fun init(node: Node<V>) {
+    override fun init(node: Node<V>) {
         this.node = node
         initFeatures(node)
     }
@@ -64,30 +66,30 @@ abstract class Router<C : Parcelable, Permanent : C, Content : C, Overlay : C, V
         )
     }
 
-    fun onSaveInstanceState(outState: Bundle) {
+    override fun onSaveInstanceState(outState: Bundle) {
         configurationFeature.accept(SaveInstanceState())
         val bundle = Bundle()
         timeCapsule.saveState(bundle)
         outState.putBundle(BUNDLE_KEY, bundle)
     }
 
-    fun onLowMemory() {
+    override fun onLowMemory() {
         // TODO add back support for this
     }
 
-    internal fun onAttach() {
+    override fun onAttach(lifecycle: Lifecycle) {
         binder.bind(backStackFeature.toCommands() to configurationFeature)
     }
 
-    internal fun onAttachView() {
+    override fun onAttachView(parentViewGroup: ViewGroup) {
         configurationFeature.accept(WakeUp())
     }
 
-    internal fun onDetachView() {
+    override fun onDetachView(parentViewGroup: ViewGroup) {
         configurationFeature.accept(Sleep())
     }
 
-    internal fun onDetach() {
+    override fun onDetach() {
         binder.dispose()
         backStackFeature.dispose()
         configurationFeature.dispose()
@@ -147,4 +149,10 @@ abstract class Router<C : Parcelable, Permanent : C, Content : C, Overlay : C, V
         } else {
             false
         }
+
+    override fun handleBackPressBeforeDownstream(): Boolean =
+        popOverlay()
+
+    override fun handleBackPressAfterDownstream(): Boolean =
+        popBackStack()
 }

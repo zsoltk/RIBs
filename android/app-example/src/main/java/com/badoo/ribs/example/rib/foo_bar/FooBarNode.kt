@@ -3,19 +3,17 @@ package com.badoo.ribs.example.rib.foo_bar
 import android.view.ViewGroup
 import com.badoo.ribs.core.Node
 import com.badoo.ribs.core.builder.BuildParams
-import com.badoo.ribs.core.view.ViewPlugin
+import com.badoo.ribs.core.Plugin
 
 class FooBarNode(
     viewFactory: ((ViewGroup) -> FooBarView?)?,
     interactor: FooBarInteractor,
     buildParams: BuildParams<*>,
-    viewPlugins: Set<ViewPlugin>
+    plugins: List<Plugin<FooBarView>>
 ) : Node<FooBarView>(
     buildParams = buildParams,
     viewFactory = viewFactory,
-    router = null,
-    interactor = interactor,
-    viewPlugins = viewPlugins
+    plugins = listOf(interactor) + plugins
 ), FooBar {
 
 }

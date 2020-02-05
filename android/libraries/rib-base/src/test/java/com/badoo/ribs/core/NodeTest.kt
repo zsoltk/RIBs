@@ -52,7 +52,7 @@ class NodeTest {
     private lateinit var child3: TestNode
     private lateinit var root1: TestNode
     private lateinit var allChildren: List<Node<*>>
-    private lateinit var viewPlugins: Set<ViewPlugin>
+    private lateinit var plugins: Set<Plugin>
     private lateinit var childAncestry: AncestryInfo
 
     @Before
@@ -66,7 +66,7 @@ class NodeTest {
         viewFactory = mock { on { invoke(parentViewGroup) } doReturn view }
         router = mock()
         interactor = mock()
-        viewPlugins = setOf(mock(), mock())
+        plugins = listOf(mock(), mock())
         node = createNode(viewFactory = viewFactory)
         childAncestry = AncestryInfo.Child(node, AnyConfiguration)
 
@@ -88,6 +88,26 @@ class NodeTest {
         interactor = interactor,
         viewPlugins = viewPlugins
     )
+
+    private fun createNodeWithView(): Node<TestView> {
+        return Node(
+            savedInstanceState = null,
+            identifier = object : TestPublicRibInterface {},
+            viewFactory = viewFactory,
+            plugins = listOf(interactor, router),
+            plugins = plugins
+        )
+    }
+
+    private fun createNodeWithoutView(): Node<TestView> {
+        return Node(
+            savedInstanceState = null,
+            identifier = object : TestPublicRibInterface {},
+            viewFactory = null,
+            plugins = listOf(interactor, router),
+            plugins = plugins
+        )
+    }
 
     @After
     fun tearDown() {
@@ -284,7 +304,7 @@ class NodeTest {
 
         node.handleBackPress()
 
-        verify(interactor).handleBackPress()
+        verify(interactor).handleBackPressAfterDownstream()
     }
 
     @Test
@@ -296,7 +316,7 @@ class NodeTest {
 
         node.handleBackPress()
 
-        verify(interactor, never()).handleBackPress()
+        verify(interactor, never()).handleBackPressAfterDownstream()
     }
 
     @Test
@@ -305,7 +325,7 @@ class NodeTest {
         child1.handleBackPress = false
         child2.handleBackPress = false
         child3.handleBackPress = false
-        whenever(interactor.handleBackPress()).thenReturn(false)
+        whenever(interactor.handleBackPressAfterDownstream()).thenReturn(false)
 
         node.handleBackPress()
         verify(router).popBackStack()
@@ -317,7 +337,7 @@ class NodeTest {
         child1.handleBackPress = false
         child2.handleBackPress = true
         child3.handleBackPress = false
-        whenever(interactor.handleBackPress()).thenReturn(false)
+        whenever(interactor.handleBackPressAfterDownstream()).thenReturn(false)
 
         node.handleBackPress()
 
@@ -326,7 +346,7 @@ class NodeTest {
 
     @Test
     fun `Router back stack popping is not invoked if Interactor handled back press`() {
-        whenever(interactor.handleBackPress()).thenReturn(true)
+        whenever(interactor.handleBackPressAfterDownstream()).thenReturn(true)
 
         node.handleBackPress()
 
@@ -360,7 +380,7 @@ class NodeTest {
     @Test
     fun `attachToView() notifies all ViewPlugins`() {
         node.attachToView(parentViewGroup)
-        viewPlugins.forEach {
+        plugins.forEach {
             verify(it).onAttachtoView(parentViewGroup)
         }
     }
@@ -369,7 +389,7 @@ class NodeTest {
     fun `detachFromView() notifies all ViewPlugins`() {
         node.attachToView(parentViewGroup)
         node.detachFromView()
-        viewPlugins.forEach {
+        plugins.forEach {
             verify(it).onDetachFromView(parentViewGroup)
         }
     }

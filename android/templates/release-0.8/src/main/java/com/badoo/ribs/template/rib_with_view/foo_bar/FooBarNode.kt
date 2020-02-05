@@ -20,8 +20,7 @@ class FooBarNode internal constructor(
     savedInstanceState = savedInstanceState,
     identifier = object : FooBar {},
     viewFactory = viewFactory,
-    router = router,
-    interactor = interactor
+    plugins = listOf(interactor, router)
 ), FooBar.Workflow {
 
     /**
