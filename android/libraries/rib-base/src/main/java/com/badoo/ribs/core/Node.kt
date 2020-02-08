@@ -120,7 +120,7 @@ open class Node<V : RibView>(
         plugins.forEach { it.onAttach(lifecycleManager.ribLifecycle.lifecycle) }
     }
 
-    fun attachToView(parentViewGroup: ViewGroup) {
+    open fun attachToView(parentViewGroup: ViewGroup) {
         detachFromView()
         this.parentViewGroup = parentViewGroup
         isAttachedToView = true
@@ -144,7 +144,7 @@ open class Node<V : RibView>(
         }
     }
 
-    fun detachFromView() {
+    open fun detachFromView() {
         if (isAttachedToView) {
             plugins.forEach { it.onDetachFromView(parentViewGroup!!) }
             lifecycleManager.onDestroyView()
