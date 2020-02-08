@@ -21,21 +21,24 @@ class SwitcherNode(
     plugins = listOf(interactor, router)
 ), Switcher.Workflow {
 
-    // can be plugin with reference to Node in init
-    val debugView = SwitcherDebugView(this)
+    override val debugView =
+        SwitcherDebugView(this)
 
-    // this should attach to parent's debug view
-    override fun attachToView(parentViewGroup: ViewGroup) {
-        super.attachToView(parentViewGroup)
-        debugView.onCreateView(parentViewGroup)
-        parentViewGroup.addView(debugView.view)
-    }
-
-    override fun detachFromView() {
-        parentViewGroup?.removeView(debugView.view)
-        debugView.onDestroyView()
-        super.detachFromView()
-    }
+//    // can be plugin with reference to Node in init
+//    val debugView = SwitcherDebugView(this)
+//
+//    // this should attach to parent's debug view
+//    override fun attachToView(parentViewGroup: ViewGroup) {
+//        super.attachToView(parentViewGroup)
+//        debugView.onCreateView(parentViewGroup)
+//        parentViewGroup.addView(debugView.view)
+//    }
+//
+//    override fun detachFromView() {
+//        parentViewGroup?.removeView(debugView.view)
+//        debugView.onDestroyView()
+//        super.detachFromView()
+//    }
 
     override fun attachHelloWorld(): Single<HelloWorld.Workflow> =
         attachWorkflow {

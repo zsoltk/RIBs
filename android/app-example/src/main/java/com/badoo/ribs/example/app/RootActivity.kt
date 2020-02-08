@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import com.badoo.ribs.android.ActivityStarter
 import com.badoo.ribs.android.PermissionRequester
 import com.badoo.ribs.android.RibActivity
+import com.badoo.ribs.core.Plugin
 import com.badoo.ribs.core.routing.action.AttachRibRoutingAction.Companion.attach
 import com.badoo.ribs.core.routing.action.RoutingAction
 import com.badoo.ribs.core.routing.portal.Portal
@@ -17,6 +18,7 @@ import com.badoo.ribs.example.R
 import com.badoo.ribs.example.rib.hello_world.HelloWorld
 import com.badoo.ribs.example.rib.switcher.Switcher
 import com.badoo.ribs.example.rib.switcher.SwitcherNode
+import com.badoo.ribs.example.rib.switcher.SwitcherView
 import com.badoo.ribs.example.rib.switcher.builder.SwitcherBuilder
 import com.badoo.ribs.example.util.CoffeeMachine
 import com.badoo.ribs.example.util.StupidCoffeeMachine
@@ -36,6 +38,7 @@ class RootActivity : RibActivity() {
         get() = findViewById(R.id.root)
 
     private lateinit var workflowRoot: Portal.Workflow
+    private lateinit var debugView: Plugin<SwitcherView>
 
     override fun createRib(savedInstanceState: Bundle?): PortalNode =
         PortalBuilder(
@@ -58,7 +61,10 @@ class RootActivity : RibActivity() {
                             override fun coffeeMachine(): CoffeeMachine = StupidCoffeeMachine()
                             override fun portal(): Portal.OtherSide = portal
                         }
-                    ).build(savedInstanceState)
+                    ).build(savedInstanceState).apply {
+                        this@RootActivity.debugView = this.debugView
+                        // TODO attach to drawer, etc.
+                    }
                 }
             }
         ).build(savedInstanceState).also {

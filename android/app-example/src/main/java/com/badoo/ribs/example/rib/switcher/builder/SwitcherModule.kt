@@ -13,6 +13,7 @@ import com.badoo.ribs.example.rib.hello_world.HelloWorldBuilder
 import com.badoo.ribs.example.rib.menu.Menu
 import com.badoo.ribs.example.rib.menu.MenuBuilder
 import com.badoo.ribs.example.rib.switcher.Switcher
+import com.badoo.ribs.example.rib.switcher.SwitcherDebugView
 import com.badoo.ribs.example.rib.switcher.SwitcherInteractor
 import com.badoo.ribs.example.rib.switcher.SwitcherNode
 import com.badoo.ribs.example.rib.switcher.SwitcherRouter

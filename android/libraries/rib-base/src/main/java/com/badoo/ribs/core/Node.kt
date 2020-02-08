@@ -73,6 +73,9 @@ open class Node<V : RibView>(
         internal const val KEY_VIEW_STATE = "view.state"
     }
 
+    // TODO set debuggable flag from hosting environment, default false
+    open val debugView: DebugView<V>? = null // TODO rather empty frame instead of null
+
     /**
      * FIXME the proper solution is to set this in constructor (pack it with savedInstanceState)
      * If left like this, it's not guaranteed to be set correctly, and can lead to problems
