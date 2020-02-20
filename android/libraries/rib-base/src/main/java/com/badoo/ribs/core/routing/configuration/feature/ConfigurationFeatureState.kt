@@ -52,6 +52,9 @@ internal data class WorkingState<C : Parcelable>(
                 )
             }.toMap()
         )
+
+    val hasOngoingTransition: Boolean
+        get() = ongoingTransitions.isNotEmpty()
 }
 
 internal fun <C : Parcelable> WorkingState<C>.withDefaults(

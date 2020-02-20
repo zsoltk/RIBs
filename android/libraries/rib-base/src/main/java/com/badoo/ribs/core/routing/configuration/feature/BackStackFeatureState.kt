@@ -5,20 +5,21 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 internal data class BackStackFeatureState<C : Parcelable>(
-    val backStack: List<BackStackElement<C>> = emptyList()
+    val currentBackStack: List<BackStackElement<C>> = emptyList(),
+    val previousBackStack: List<BackStackElement<C>> = emptyList()
 ) : Parcelable {
 
     val current: BackStackElement<C>?
-        get() = backStack.lastOrNull()
+        get() = currentBackStack.lastOrNull()
 
     val currentOverlay: C?
         get() = current?.overlays?.lastOrNull()
 
     val canPopOverlay: Boolean
-        get() = backStack.lastOrNull()?.overlays?.isNotEmpty() == true
+        get() = currentBackStack.lastOrNull()?.overlays?.isNotEmpty() == true
 
     val canPopContent: Boolean
-        get() = backStack.size > 1
+        get() = currentBackStack.size > 1
 
     val canPop: Boolean
         get() = canPopContent || canPopOverlay

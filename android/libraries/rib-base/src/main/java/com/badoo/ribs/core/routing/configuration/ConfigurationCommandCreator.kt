@@ -23,12 +23,10 @@ import java.lang.Math.min
  */
 internal fun <C : Parcelable> BackStackFeature<C>.toCommands(): Observable<Transaction<C>> =
     Observable.wrap(this)
-        .startWith(initialState) // Bootstrapper can overwrite it by the time we receive the first state emission here
-        .buffer(2, 1)
-        .map { (previous, current) ->
+        .map { state ->
             Transaction.ListOfCommands(
-                descriptor = TransitionDescriptor(from = previous, to = current),
-                commands = diff(previous.backStack, current.backStack)
+                descriptor = TransitionDescriptor(from = state.previousBackStack, to = state.currentBackStack),
+                commands = diff(state.previousBackStack, state.currentBackStack)
             )
         }
 

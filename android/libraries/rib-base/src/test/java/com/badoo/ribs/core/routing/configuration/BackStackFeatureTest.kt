@@ -55,7 +55,7 @@ class BackStackFeatureTest {
 
     @Test
     fun `Initial back stack contains only one element`() {
-        assertThat(backStackManager.state.backStack, hasSize(1))
+        assertThat(backStackManager.state.currentBackStack, hasSize(1))
     }
 
     @Test
@@ -66,7 +66,7 @@ class BackStackFeatureTest {
     @Test
     fun `After state restoration back stack matches the one in the time capsule`() {
         setupBackStackManager(timeCapsuleWithContent)
-        assertEquals(backstackInTimeCapsule, backStackManager.state.backStack)
+        assertEquals(backstackInTimeCapsule, backStackManager.state.currentBackStack)
     }
 
     @Test
@@ -78,7 +78,7 @@ class BackStackFeatureTest {
     @Test
     fun `Wish_Push once results in the back stack size growing by one`() {
         backStackManager.accept(Push(C4))
-        assertEquals(2, backStackManager.state.backStack.size)
+        assertEquals(2, backStackManager.state.currentBackStack.size)
     }
 
     @Test
@@ -97,7 +97,7 @@ class BackStackFeatureTest {
             initialConfiguration,
             C2
         )
-        assertEquals(expected, backStackManager.state.backStack.map { it.configuration })
+        assertEquals(expected, backStackManager.state.currentBackStack.map { it.configuration })
     }
 
     @Test
@@ -113,25 +113,25 @@ class BackStackFeatureTest {
             C4,
             C5
         )
-        assertEquals(expected, backStackManager.state.backStack.map { it.configuration })
+        assertEquals(expected, backStackManager.state.currentBackStack.map { it.configuration })
     }
 
     @Test
     fun `Wish_PushOverlay does not grow the back stack size`() {
         backStackManager.accept(PushOverlay(O1))
-        assertEquals(1, backStackManager.state.backStack.size)
+        assertEquals(1, backStackManager.state.currentBackStack.size)
     }
 
     @Test
     fun `Wish_PushOverlay adds a new element to the overlay list of the last back stack element`() {
         backStackManager.accept(PushOverlay(O1))
-        assertEquals(1, backStackManager.state.backStack.last().overlays.size)
+        assertEquals(1, backStackManager.state.currentBackStack.last().overlays.size)
     }
 
     @Test
     fun `Wish_PushOverlay adds the expected configuration to the overlay list of the last back stack element`() {
         backStackManager.accept(PushOverlay(O1))
-        assertEquals(O1, backStackManager.state.backStack.last().overlays.last())
+        assertEquals(O1, backStackManager.state.currentBackStack.last().overlays.last())
     }
 
     @Test
@@ -139,14 +139,14 @@ class BackStackFeatureTest {
         backStackManager.accept(PushOverlay(O1))
         backStackManager.accept(PushOverlay(O1))
         backStackManager.accept(PushOverlay(O1))
-        assertEquals(listOf(O1), backStackManager.state.backStack.last().overlays)
+        assertEquals(listOf(O1), backStackManager.state.currentBackStack.last().overlays)
     }
 
     @Test
     fun `Wish_PushOverlay multiple times with different elements adds all new ones to the overlay list of the last back stack element`() {
         backStackManager.accept(PushOverlay(O1))
         backStackManager.accept(PushOverlay(O2))
-        assertEquals(2, backStackManager.state.backStack.last().overlays.size)
+        assertEquals(2, backStackManager.state.currentBackStack.last().overlays.size)
     }
 
     @Test
@@ -157,7 +157,7 @@ class BackStackFeatureTest {
             O1,
             O2
         )
-        assertEquals(expected, backStackManager.state.backStack.last().overlays)
+        assertEquals(expected, backStackManager.state.currentBackStack.last().overlays)
     }
 
     @Test
@@ -166,7 +166,7 @@ class BackStackFeatureTest {
         backStackManager.accept(Push(C2)) // should increase to 2
         backStackManager.accept(Push(C3)) // should increase to 3
         backStackManager.accept(Replace(C4)) // should keep 3
-        assertEquals(3, backStackManager.state.backStack.size)
+        assertEquals(3, backStackManager.state.currentBackStack.size)
     }
 
     @Test
@@ -197,7 +197,7 @@ class BackStackFeatureTest {
             C2,
             C5
         )
-        assertEquals(expected, backStackManager.state.backStack.map { it.configuration })
+        assertEquals(expected, backStackManager.state.currentBackStack.map { it.configuration })
     }
 
     @Test
@@ -205,7 +205,7 @@ class BackStackFeatureTest {
         backStackManager.accept(Push(C2))
         backStackManager.accept(Push(C3))
         backStackManager.accept(NewRoot(C4))
-        assertEquals(1, backStackManager.state.backStack.size)
+        assertEquals(1, backStackManager.state.currentBackStack.size)
     }
 
     @Test
@@ -225,7 +225,7 @@ class BackStackFeatureTest {
         val expected = listOf(
             C5
         )
-        assertEquals(expected, backStackManager.state.backStack.map { it.configuration })
+        assertEquals(expected, backStackManager.state.currentBackStack.map { it.configuration })
     }
 
     @Test
@@ -251,7 +251,7 @@ class BackStackFeatureTest {
         backStackManager.accept(Push(C3)) // should increase size to: 3
         backStackManager.accept(Push(C4)) // should increase size to: 4
         backStackManager.accept(Pop())
-        assertEquals(3, backStackManager.state.backStack.size)
+        assertEquals(3, backStackManager.state.currentBackStack.size)
     }
 
     @Test
@@ -266,7 +266,7 @@ class BackStackFeatureTest {
             C2,
             C3
         )
-        assertEquals(expected, backStackManager.state.backStack.map { it.configuration })
+        assertEquals(expected, backStackManager.state.currentBackStack.map { it.configuration })
     }
 
     @Test
@@ -279,7 +279,7 @@ class BackStackFeatureTest {
         backStackManager.accept(PushOverlay(O2)) // should keep size at: 4 + 2 overlays
         backStackManager.accept(Pop()) // should keep size at: 4 + 1 overlay
 
-        assertEquals(4, backStackManager.state.backStack.size)
+        assertEquals(4, backStackManager.state.currentBackStack.size)
     }
 
     @Test
@@ -299,7 +299,7 @@ class BackStackFeatureTest {
             C4
         )
 
-        assertEquals(expected, backStackManager.state.backStack.map { it.configuration })
+        assertEquals(expected, backStackManager.state.currentBackStack.map { it.configuration })
     }
 
     @Test
@@ -309,7 +309,7 @@ class BackStackFeatureTest {
         backStackManager.accept(PushOverlay(O3))
         backStackManager.accept(Pop())
 
-        assertEquals(2, backStackManager.state.backStack.last().overlays.size)
+        assertEquals(2, backStackManager.state.currentBackStack.last().overlays.size)
     }
 
     @Test
@@ -324,6 +324,6 @@ class BackStackFeatureTest {
             O2
         )
 
-        assertEquals(expectedOverlays, backStackManager.state.backStack.last().overlays)
+        assertEquals(expectedOverlays, backStackManager.state.currentBackStack.last().overlays)
     }
 }

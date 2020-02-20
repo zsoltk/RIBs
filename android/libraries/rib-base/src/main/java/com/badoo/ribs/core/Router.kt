@@ -21,6 +21,7 @@ import com.badoo.ribs.core.routing.configuration.feature.BackStackFeature.Operat
 import com.badoo.ribs.core.routing.configuration.feature.BackStackFeature.Operation.Push
 import com.badoo.ribs.core.routing.configuration.feature.BackStackFeature.Operation.PushOverlay
 import com.badoo.ribs.core.routing.configuration.feature.BackStackFeature.Operation.Replace
+import com.badoo.ribs.core.routing.configuration.feature.BackStackFeature.Operation.Revert
 import com.badoo.ribs.core.routing.configuration.feature.ConfigurationFeature
 import com.badoo.ribs.core.routing.configuration.toCommands
 import com.badoo.ribs.core.routing.transition.handler.TransitionHandler
@@ -144,6 +145,14 @@ abstract class Router<C : Parcelable, Permanent : C, Content : C, Overlay : C, V
     internal fun getNodes(configurationKey: ConfigurationKey) =
         (configurationFeature.state.pool[configurationKey] as? ConfigurationContext.Resolved<C>)?.nodes?.map { it.node }
 
+    fun cancelTransition(): Boolean =
+        if (configurationFeature.hasOngoingTransition) {
+            backStackFeature.accept(Revert())
+            true
+        } else {
+            false
+        }
+
     fun popBackStack(): Boolean =
         if (backStackFeature.state.canPop) {
             backStackFeature.accept(Pop())
@@ -153,7 +162,7 @@ abstract class Router<C : Parcelable, Permanent : C, Content : C, Overlay : C, V
         }
 
     fun popOverlay(): Boolean =
-        if (backStackFeature.state.canPopOverlay) {
+        if (backStackFeature.canPopOverlay) {
             backStackFeature.accept(Pop())
             true
         } else {

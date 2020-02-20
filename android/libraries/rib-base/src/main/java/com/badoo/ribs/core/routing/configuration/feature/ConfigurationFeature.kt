@@ -69,6 +69,9 @@ internal class ConfigurationFeature<C : Parcelable>(
         timeCapsule.register(timeCapsuleKey) { state.toSavedState() }
     }
 
+    val hasOngoingTransition: Boolean
+        get() = state.hasOngoingTransition
+
     sealed class Effect<C : Parcelable> {
         data class Global<C : Parcelable>(
             val command: MultiConfigurationCommand<C>,

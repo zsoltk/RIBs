@@ -317,7 +317,8 @@ open class Node<V : RibView>(
     @CallSuper
     open fun handleBackPress(): Boolean {
 //        ribRefWatcher.logBreadcrumb("BACKPRESS", null, null)
-        return router?.popOverlay() == true
+        return router?.cancelTransition() == true
+            || router?.popOverlay() == true
             || delegateHandleBackPressToActiveChildren()
             || interactor.handleBackPress()
             || router?.popBackStack() == true

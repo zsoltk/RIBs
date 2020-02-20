@@ -25,7 +25,7 @@ internal class ConfigurationKeyResolver<C : Parcelable>(
         key: ConfigurationKey,
         defaultElements: Map<ConfigurationKey, ConfigurationContext<C>>
     ): ConfigurationContext.Resolved<C> {
-        val item = state.pool[key] ?: defaultElements[key] ?: error("Key $key was not found in pool: $state.pool")
+        val item = state.pool[key] ?: defaultElements[key] ?: error("Key $key was not found in pool: ${state.pool}")
 
         return resolveAndAddIfNeeded(item)
     }
