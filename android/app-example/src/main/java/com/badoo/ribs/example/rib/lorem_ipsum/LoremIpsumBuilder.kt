@@ -18,7 +18,7 @@ class LoremIpsumBuilder(
         return Node(
             buildParams = buildParams,
             viewFactory = customisation.viewFactory(null),
-            plugins = listOf(interactor)
+            pluginFactories = listOf(interactor)
         )
     }
 }

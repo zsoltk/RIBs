@@ -81,11 +81,11 @@ abstract class Router<C : Parcelable, Permanent : C, Content : C, Overlay : C, V
         binder.bind(backStackFeature.toCommands() to configurationFeature)
     }
 
-    override fun onAttachView(parentViewGroup: ViewGroup) {
+    override fun onAttachToView(parentViewGroup: ViewGroup) {
         configurationFeature.accept(WakeUp())
     }
 
-    override fun onDetachView(parentViewGroup: ViewGroup) {
+    override fun onDetachFromView(parentViewGroup: ViewGroup) {
         configurationFeature.accept(Sleep())
     }
 

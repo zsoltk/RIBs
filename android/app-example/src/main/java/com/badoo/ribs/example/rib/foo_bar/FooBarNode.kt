@@ -13,7 +13,7 @@ class FooBarNode(
 ) : Node<FooBarView>(
     buildParams = buildParams,
     viewFactory = viewFactory,
-    plugins = listOf(interactor) + plugins
+    pluginFactories = listOf(interactor) + plugins
 ), FooBar {
 
 }

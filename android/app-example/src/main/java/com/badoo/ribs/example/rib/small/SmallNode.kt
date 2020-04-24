@@ -12,7 +12,7 @@ class SmallNode(
 ) : Node<SmallView>(
     buildParams = buildParams,
     viewFactory = viewFactory,
-    plugins = listOf(interactor, router)
+    pluginFactories = listOf(interactor, router)
 ), Small {
 
 }

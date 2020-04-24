@@ -1,6 +1,9 @@
 @file:Suppress("LongParameterList", "LongMethod")
 package com.badoo.ribs.example.rib.switcher.builder
 
+import android.os.Bundle
+import com.badoo.ribs.core.Node
+import com.badoo.ribs.core.Plugin
 import com.badoo.ribs.core.builder.BuildParams
 import com.badoo.ribs.dialog.DialogLauncher
 import com.badoo.ribs.example.rib.blocker.Blocker
@@ -91,8 +94,15 @@ internal object SwitcherModule {
         buildParams = buildParams,
         viewFactory = customisation.viewFactory(viewDependency),
         router = router,
-        interactor = interactor
+        plugins = plugins(interactor, router)
     )
+
+    private fun plugins(
+        interactor: SwitcherInteractor,
+        router: SwitcherRouter
+    ): (Node<SwitcherView>) -> List<Plugin<SwitcherView>> = {
+        listOf(interactor, router)
+    }
 
     @SwitcherScope
     @Provides

@@ -40,6 +40,8 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import java.util.concurrent.CopyOnWriteArrayList
 
+typealias PluginFactory<V> = (Node<V>) -> Plugin<V>
+
 /**
  * Responsible for handling the addition and removal of child nodes.
  **/
@@ -47,10 +49,9 @@ import java.util.concurrent.CopyOnWriteArrayList
 open class Node<V : RibView>(
     buildParams: BuildParams<*>,
     private val viewFactory: ((ViewGroup) -> V?)?,
-    private val plugins: List<Plugin<V>> = emptyList()
-//    ,
-//    private val ribRefWatcher: RibRefWatcher = RibRefWatcher.getInstance()
+    pluginFactories: (Node<V>) -> List<Plugin<V>> = { emptyList() }
 ) : Rib, LifecycleOwner {
+    private val plugins: List<Plugin<V>> = pluginFactories.invoke(this)
 
     companion object {
         internal const val BUNDLE_KEY = "Node"
@@ -76,7 +77,7 @@ open class Node<V : RibView>(
     internal open val attachMode: AttachMode =
         buildContext.attachMode
 
-    val resolver: ConfigurationResolver<*, V>? = plugins.filterIsInstance<ConfigurationResolver<*, V>>().firstOrNull()
+    val resolver: ConfigurationResolver<*>? = plugins.filterIsInstance<ConfigurationResolver<*>>().firstOrNull()
 //    val resolver: ConfigurationResolver<out Parcelable>? = router
     private val savedInstanceState = buildParams.savedInstanceState?.getBundle(BUNDLE_KEY)
     internal val externalLifecycleRegistry = LifecycleRegistry(this)
@@ -110,7 +111,7 @@ open class Node<V : RibView>(
         children.toList()
 
     init {
-        plugins.forEach { it.init(this) }
+        pluginFactories.forEach { it.init(this) }
     }
 
     @CallSuper
