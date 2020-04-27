@@ -115,7 +115,10 @@ internal sealed class ConfigurationContext<C : Parcelable> {
                             anchor = routingAction.anchor() ?: parentNode,
                             creatorConfiguration = configuration
                         ),
-                        savedInstanceState = it
+                        savedInstanceState = it,
+                        customisations = parentNode.buildContext.customisations.getSubDirectoryOrSelf(
+                            parentNode::class
+                        )
                     )
                 }
             )
