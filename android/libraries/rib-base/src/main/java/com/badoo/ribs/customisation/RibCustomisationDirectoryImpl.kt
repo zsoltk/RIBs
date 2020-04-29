@@ -1,6 +1,6 @@
 package com.badoo.ribs.customisation
 
-import com.badoo.ribs.core.Rib
+import com.badoo.ribs.core.Node
 import kotlin.reflect.KClass
 
 open class RibCustomisationDirectoryImpl(
@@ -33,15 +33,15 @@ open class RibCustomisationDirectoryImpl(
     override fun <T : RibCustomisation> getRecursively(key: KClass<T>): T? =
        get(key) ?: parent?.get(key)
 
-    override fun <T : Rib> putSubDirectory(key: KClass<T>, value: RibCustomisationDirectory) {
+    override fun <T : Node<*>> putSubDirectory(key: KClass<T>, value: RibCustomisationDirectory) {
         map[key] = value
     }
 
-    override fun <T : Rib> getSubDirectory(key: KClass<T>): RibCustomisationDirectory?=
+    override fun <T : Node<*>> getSubDirectory(key: KClass<T>): RibCustomisationDirectory?=
         map[key] as? RibCustomisationDirectory
 
 
-    operator fun KClass<*>.invoke(block: RibCustomisationDirectoryImpl.() -> Unit) {
+    operator fun KClass<out Node<*>>.invoke(block: RibCustomisationDirectoryImpl.() -> Unit) {
         if (map.containsKey(this)) {
             // TODO warning for accidental override?
         }

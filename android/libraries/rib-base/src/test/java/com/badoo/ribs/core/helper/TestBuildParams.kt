@@ -1,6 +1,7 @@
 package com.badoo.ribs.core.helper
 
 import android.os.Bundle
+import com.badoo.ribs.customisation.RibCustomisationDirectoryImpl
 import com.badoo.ribs.core.AttachMode
 import com.badoo.ribs.core.builder.BuildParams
 import com.badoo.ribs.core.builder.BuildContext
@@ -16,7 +17,8 @@ fun testBuildParams(
     buildContext = BuildContext(
         ancestryInfo = AncestryInfo.Root,
         attachMode = AttachMode.PARENT,
-        savedInstanceState = savedInstanceState
+        savedInstanceState = savedInstanceState,
+        customisations = RibCustomisationDirectoryImpl()
     ),
     identifier = Rib.Identifier(
         uuid = UUID.randomUUID()

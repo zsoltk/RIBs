@@ -26,7 +26,8 @@ class ConfigurationContextTest {
         private const val NB_EXPECTED_NODES = 3
     }
 
-    private val nodes: List<Node<*>> = listOf(mock(), mock())
+    private val parentNode = createMockNode()
+    private val nodes = List<Node<*>>(NB_EXPECTED_NODES) { createMockNode() }
 
     // Default
     private val defaultRoutingAction = mock<RoutingAction> {
@@ -38,7 +39,7 @@ class ConfigurationContextTest {
     }
 
     // With Anchor
-    private val mockAnchor: Node<*> = mock()
+    private val mockAnchor: Node<*> = createMockNode()
     private val routingActionWithAnchor = mock<RoutingAction> {
         on { nbNodesToBuild } doReturn NB_EXPECTED_NODES
         on { buildNodes(any()) } doReturn nodes
@@ -47,6 +48,11 @@ class ConfigurationContextTest {
     private val resolverWithAnchor = mock<(Parcelable) -> RoutingAction> {
         on { invoke(any()) } doReturn routingActionWithAnchor
     }
+
+    private fun createMockNode() =
+        mock<Node<*>> {
+            on { this.buildContext } doReturn BuildContext.root(null)
+        }
 
     @Test
     fun `Unresolved sleep() keeps INACTIVE`() {
@@ -72,14 +78,14 @@ class ConfigurationContextTest {
     @Test
     fun `Unresolved resolve() keeps INACTIVE`() {
         val unresolved = Unresolved<Parcelable>(INACTIVE, mock())
-        val resolved = unresolved.resolve(defaultResolver, mock())
+        val resolved = unresolved.resolve(defaultResolver, parentNode)
         assertEquals(INACTIVE, resolved.activationState)
     }
 
     @Test
     fun `Unresolved resolve() keeps SLEEPING`() {
         val unresolved = Unresolved<Parcelable>(SLEEPING, mock())
-        val resolved = unresolved.resolve(defaultResolver, mock())
+        val resolved = unresolved.resolve(defaultResolver, parentNode)
         assertEquals(SLEEPING, resolved.activationState)
     }
 
@@ -87,7 +93,7 @@ class ConfigurationContextTest {
     fun `Unresolved resolve() keeps configuration`() {
         val configuration = mock<Parcelable>()
         val unresolved = Unresolved(mock(), configuration)
-        val resolved = unresolved.resolve(defaultResolver, mock())
+        val resolved = unresolved.resolve(defaultResolver, parentNode)
         assertEquals(configuration, resolved.configuration)
     }
 
@@ -95,20 +101,19 @@ class ConfigurationContextTest {
     fun `Unresolved resolve() keeps bundles`() {
         val bundles = List(NB_EXPECTED_NODES) { mock<Bundle>() }
         val unresolved = Unresolved<Parcelable>(mock(), mock(), bundles)
-        val resolved = unresolved.resolve(defaultResolver, mock())
+        val resolved = unresolved.resolve(defaultResolver, parentNode)
         assertEquals(bundles, resolved.bundles)
     }
 
     @Test
     fun `Unresolved resolve() resolves expected RoutingAction`() {
         val unresolved = Unresolved<Parcelable>(mock(), mock())
-        val resolved = unresolved.resolve(defaultResolver, mock())
+        val resolved = unresolved.resolve(defaultResolver, parentNode)
         assertEquals(defaultRoutingAction, resolved.routingAction)
     }
 
     @Test
     fun `Unresolved resolve() calls RoutingAction with parent as default anchor `() {
-        val parentNode = mock<Node<*>>()
         verifyBuildNodesCalledCorrectly(
             defaultResolver,
             defaultRoutingAction,
@@ -121,7 +126,6 @@ class ConfigurationContextTest {
 
     @Test
     fun `Unresolved resolve() calls RoutingAction with expected anchor`() {
-        val parentNode = mock<Node<*>>()
         verifyBuildNodesCalledCorrectly(
             resolverWithAnchor,
             routingActionWithAnchor,
@@ -134,7 +138,6 @@ class ConfigurationContextTest {
 
     @Test
     fun `Unresolved resolve() calls RoutingAction with proper Bundles if there's any`() {
-        val parentNode = mock<Node<*>>()
         verifyBuildNodesCalledCorrectly(
             defaultResolver,
             defaultRoutingAction,
@@ -181,7 +184,7 @@ class ConfigurationContextTest {
     @Test
     fun `Unresolved resolve() stores built Nodes returned by RoutingAction buildNodes()`() {
         val unresolved = Unresolved<Parcelable>(mock(), mock())
-        val resolved = unresolved.resolve(defaultResolver, mock())
+        val resolved = unresolved.resolve(defaultResolver, createMockNode())
         assertEquals(nodes, resolved.nodes)
     }
 

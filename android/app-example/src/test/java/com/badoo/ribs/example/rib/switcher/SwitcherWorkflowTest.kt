@@ -1,10 +1,10 @@
 package com.badoo.ribs.example.rib.switcher
 
 import com.badoo.ribs.core.Node
-import com.badoo.ribs.core.routing.configuration.feature.operation.push
 import com.badoo.ribs.core.builder.BuildParams
+import com.badoo.ribs.core.routing.configuration.feature.operation.push
 import com.badoo.ribs.example.rib.blocker.BlockerView
-import com.badoo.ribs.example.rib.dialog_example.DialogExampleView
+import com.badoo.ribs.example.rib.dialog_example.DialogExampleNode
 import com.badoo.ribs.example.rib.foo_bar.FooBarNode
 import com.badoo.ribs.example.rib.hello_world.HelloWorld
 import com.badoo.ribs.example.rib.hello_world.HelloWorldNode
@@ -30,7 +30,7 @@ class SwitcherWorkflowTest {
     fun setup() {
         val helloWorldNode = HelloWorldNode(mock(), mock(), mock(), BuildParams.Empty())
         val fooBarNode = FooBarNode(mock(), mock(), BuildParams.Empty(), emptySet())
-        val node1 = Node<DialogExampleView>(BuildParams.Empty(), mock(), mock(), mock(), mock())
+        val node1 = DialogExampleNode(BuildParams.Empty(), mock(), mock(), mock())
         val node2 = Node<BlockerView>(BuildParams.Empty(), mock(), mock(), mock(), mock())
         val node3 = MenuNode(BuildParams.Empty(), mock(), mock())
 

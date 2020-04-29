@@ -17,7 +17,6 @@ import com.badoo.ribs.core.routing.portal.PortalRouter
 import com.badoo.ribs.core.routing.transition.handler.CrossFader
 import com.badoo.ribs.core.routing.transition.handler.Slider
 import com.badoo.ribs.core.routing.transition.handler.TransitionHandler
-import com.badoo.ribs.customisation.RibCustomisationDirectory
 import com.badoo.ribs.dialog.DialogLauncher
 import com.badoo.ribs.example.R
 import com.badoo.ribs.example.rib.hello_world.HelloWorld
@@ -59,9 +58,6 @@ class RootActivity : RibActivity() {
                 private fun buildSwitcherNode(portal: Portal.OtherSide, buildContext: BuildContext): SwitcherNode {
                     return SwitcherBuilder(
                         object : Switcher.Dependency {
-                            override fun ribCustomisation(): RibCustomisationDirectory =
-                                AppRibCustomisations
-
                             override fun activityStarter(): ActivityStarter = activityStarter
                             override fun permissionRequester(): PermissionRequester =
                                 permissionRequester
@@ -73,7 +69,7 @@ class RootActivity : RibActivity() {
                     ).build(buildContext)
                 }
             }
-        ).build(root(savedInstanceState)).also {
+        ).build(root(savedInstanceState, AppRibCustomisations)).also {
             workflowRoot = it
         }
 
