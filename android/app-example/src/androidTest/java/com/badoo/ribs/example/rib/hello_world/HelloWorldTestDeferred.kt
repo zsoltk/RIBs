@@ -13,7 +13,6 @@ import com.badoo.ribs.core.Router
 import com.badoo.ribs.core.builder.BuildContext.Companion.root
 import com.badoo.ribs.core.routing.portal.Portal
 import com.badoo.ribs.example.R
-import com.badoo.ribs.example.app.AppRibCustomisations
 import io.reactivex.Observable.empty
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer

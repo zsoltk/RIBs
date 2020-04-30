@@ -120,5 +120,5 @@ class RecyclerViewTestActivity : RibActivity() {
                         FrameLayout.LayoutParams.WRAP_CONTENT
                     )
             }
-        ).build(BuildContext.root(savedInstanceState))
+        ).build(root(savedInstanceState))
 }
