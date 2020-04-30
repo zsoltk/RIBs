@@ -36,13 +36,13 @@ class SwitcherWorkflowTest {
         val fooBarNodeBuilder = { buildContext: BuildContext ->
             FooBarNode(mock(), mock(), buildContext.toBuildParams(), emptySet())
         }
-        val node1Builder = { buildContext: BuildContext ->
-            DialogExampleNode(BuildParams.Empty(), mock(), mock(), mock())
+        val dialogExampleBuilder = { buildContext: BuildContext ->
+            DialogExampleNode(buildContext.toBuildParams(), mock(), mock(), mock())
         }
-        val node2Builder = { buildContext: BuildContext ->
+        val blockerBuilder = { buildContext: BuildContext ->
             Node<BlockerView>(buildContext.toBuildParams(), mock(), mock(), mock(), mock())
         }
-        val node3Builder = { buildContext: BuildContext ->
+        val menuBuilder = { buildContext: BuildContext ->
             MenuNode(buildContext.toBuildParams(), mock(), mock())
         }
 
@@ -51,9 +51,9 @@ class SwitcherWorkflowTest {
             buildParams = BuildParams.Empty(),
             fooBarBuilder = mock { on { build(any()) } doAnswer(withBuilder(fooBarNodeBuilder)) },
             helloWorldBuilder = mock { on { build(any()) } doAnswer(withBuilder(helloWorldNodeBuilder)) },
-            dialogExampleBuilder = mock { on { build(any()) } doAnswer(withBuilder(node1Builder)) },
-            blockerBuilder = mock { on { build(any()) } doAnswer(withBuilder(node2Builder)) },
-            menuBuilder = mock { on { build(any()) } doAnswer(withBuilder(node3Builder)) },
+            dialogExampleBuilder = mock { on { build(any()) } doAnswer(withBuilder(dialogExampleBuilder)) },
+            blockerBuilder = mock { on { build(any()) } doAnswer(withBuilder(blockerBuilder)) },
+            menuBuilder = mock { on { build(any()) } doAnswer(withBuilder(menuBuilder)) },
             dialogLauncher = mock(),
             dialogToTestOverlay = mock()
         )
