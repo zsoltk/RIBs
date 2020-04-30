@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import com.badoo.ribs.android.Text
-import com.badoo.ribs.core.view.RibView
+import com.badoo.ribs.core.view.ConceptView
 import com.badoo.ribs.core.view.ViewFactory
 import com.badoo.ribs.customisation.inflate
 import com.badoo.ribs.tutorials.tutorial4.R
@@ -15,7 +15,7 @@ import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 
-interface HelloWorldView : RibView,
+interface HelloWorldView : ConceptView,
     ObservableSource<Event>,
     Consumer<ViewModel> {
 

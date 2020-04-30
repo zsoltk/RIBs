@@ -67,7 +67,7 @@ class PortalRouter(
 
             // TODO don't build it again if already available as child.
             //  This probably means storing Node identifier in addition to (Parcelable) configuration.
-            val nodes = routingAction.buildNodes(
+            val nodes = routingAction.build(
                 listOf(
                     BuildContext(
                         ancestryInfo = AncestryInfo.Root, // we'll be discarding these Nodes, it doesn't matter
@@ -83,7 +83,7 @@ class PortalRouter(
             // TODO having 0 nodes is an impossible scenario, but having more than 1 can be valid.
             //  Solution is again to store Node identifiers & Bundles that help picking the correct one.
             val node = nodes.first()
-            targetRouter = node.resolver as ConfigurationResolver<Parcelable>
+            targetRouter = node.node.resolver as ConfigurationResolver<Parcelable>
             routingAction = targetRouter.resolveConfiguration(element)
         }
 

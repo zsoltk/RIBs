@@ -2,7 +2,7 @@ package com.badoo.ribs.template.node.foo_bar
 
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import com.badoo.ribs.core.view.RibView
+import com.badoo.ribs.core.view.ConceptView
 import com.badoo.ribs.core.view.ViewFactory
 import com.badoo.ribs.customisation.inflate
 import com.badoo.ribs.template.R
@@ -12,7 +12,7 @@ import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 
-interface FooBarView : RibView,
+interface FooBarView : ConceptView,
     ObservableSource<Event>,
     Consumer<ViewModel> {
 

@@ -1,10 +1,10 @@
 package com.badoo.ribs.example.rib.blocker
 
-import com.badoo.ribs.core.Rib
+import com.badoo.ribs.core.Concept
 import com.badoo.ribs.customisation.RibCustomisation
 import io.reactivex.functions.Consumer
 
-interface Blocker : Rib {
+interface Blocker : Concept<BlockerView> {
 
     interface Dependency {
         fun blockerOutput(): Consumer<Output>

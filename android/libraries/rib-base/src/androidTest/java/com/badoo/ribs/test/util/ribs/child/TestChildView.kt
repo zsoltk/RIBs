@@ -3,9 +3,9 @@ package com.badoo.ribs.test.util.ribs.child
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
-import com.badoo.ribs.core.view.RibView
+import com.badoo.ribs.core.view.ConceptView
 
-interface TestChildView : RibView
+interface TestChildView : ConceptView
 
 class TestChildViewImpl(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0

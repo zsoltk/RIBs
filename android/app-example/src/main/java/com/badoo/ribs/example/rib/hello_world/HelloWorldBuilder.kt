@@ -9,9 +9,9 @@ import com.badoo.ribs.example.rib.small.builder.SmallBuilder
 
 class HelloWorldBuilder(
     private val dependency: HelloWorld.Dependency
-) : SimpleBuilder<HelloWorldNode>() {
+) : SimpleBuilder<HelloWorld>() {
 
-    override fun build(buildParams: BuildParams<Nothing?>): HelloWorldNode {
+    override fun build(buildParams: BuildParams<Nothing?>): HelloWorld {
         val customisation = buildParams.getOrDefault(HelloWorld.Customisation())
         val router = HelloWorldRouter(buildParams, smallBuilder())
         val feature = HelloWorldFeature()

@@ -1,8 +1,8 @@
 package com.badoo.ribs.tutorials.tutorial3.rib.hello_world
 
-import com.badoo.ribs.core.Rib
+import com.badoo.ribs.core.Concept
 
-interface HelloWorld : Rib {
+interface HelloWorld : Concept {
 
     interface Dependency
 

@@ -74,7 +74,7 @@ class ConfigurationFeatureTest {
 
     data class ConfigurationTestHelper(
         val configuration: Configuration,
-        val nodes: List<Node<*>>,
+        val nodes: List<Concept<*>>,
         val bundles: List<Bundle>,
         val nodeFactories: List<() -> Node<*>>,
         val routingAction: RoutingAction
@@ -101,7 +101,7 @@ class ConfigurationFeatureTest {
                 )
             }
 
-            private fun List<Node<*>>.toFactory(): List<() -> Node<*>> =
+            private fun List<Concept<*>>.toFactory(): List<() -> Node<*>> =
                 map { node ->
                     mock<() -> Node<*>> {
                         on { invoke() } doReturn node
@@ -110,8 +110,8 @@ class ConfigurationFeatureTest {
 
             private fun List<() -> Node<*>>.toRoutingAction(nbNodes: Int): RoutingAction =
                 mock {
-                    on { nbNodesToBuild } doReturn nbNodes
-                    on { buildNodes(anyList()) } doAnswer {
+                    on { nbConcepts } doReturn nbNodes
+                    on { build(anyList()) } doAnswer {
                         this@toRoutingAction.map {
                             factory -> factory.invoke()
                         }

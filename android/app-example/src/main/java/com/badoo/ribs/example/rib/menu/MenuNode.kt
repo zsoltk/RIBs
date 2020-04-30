@@ -8,9 +8,11 @@ class MenuNode(
     buildParams: BuildParams<Nothing?>,
     viewFactory: (ViewGroup) -> MenuView,
     interactor: MenuInteractor
-): Node<MenuView>(
+) : Node<MenuView>(
     buildParams = buildParams,
     viewFactory = viewFactory,
     router = null,
     interactor = interactor
-)
+), Menu {
+    override val node: Node<MenuView> = this
+}

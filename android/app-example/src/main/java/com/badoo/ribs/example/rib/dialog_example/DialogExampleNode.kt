@@ -14,4 +14,6 @@ class DialogExampleNode(
     viewFactory = viewFactory,
     router = router,
     interactor = interactor
-)
+), DialogExample {
+    override val node: Node<DialogExampleView> = this
+}

@@ -1,8 +1,11 @@
 package com.badoo.ribs.core
 
+import com.badoo.ribs.core.view.ConceptView
 import java.util.UUID
 
-interface Rib {
+interface Concept<V : ConceptView> {
+
+    val node: Node<V>
 
     data class Identifier(
         val uuid: UUID
@@ -12,7 +15,7 @@ interface Rib {
             get() = uuid.toString()
 
         companion object {
-            internal const val KEY_UUID = "rib.uuid"
+            internal const val KEY_UUID = "concept.uuid"
         }
     }
 }

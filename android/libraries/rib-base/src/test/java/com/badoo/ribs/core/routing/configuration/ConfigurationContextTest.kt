@@ -27,12 +27,12 @@ class ConfigurationContextTest {
     }
 
     private val parentNode = createMockNode()
-    private val nodes = List<Node<*>>(NB_EXPECTED_NODES) { createMockNode() }
+    private val nodes = List<Concept<*>>(NB_EXPECTED_NODES) { createMockNode() }
 
     // Default
     private val defaultRoutingAction = mock<RoutingAction> {
-        on { nbNodesToBuild } doReturn NB_EXPECTED_NODES
-        on { buildNodes(any()) } doReturn nodes
+        on { nbConcepts } doReturn NB_EXPECTED_NODES
+        on { build(any()) } doReturn nodes
     }
     private val defaultResolver = mock<(Parcelable) -> RoutingAction> {
         on { invoke(any()) } doReturn defaultRoutingAction
@@ -41,8 +41,8 @@ class ConfigurationContextTest {
     // With Anchor
     private val mockAnchor: Node<*> = createMockNode()
     private val routingActionWithAnchor = mock<RoutingAction> {
-        on { nbNodesToBuild } doReturn NB_EXPECTED_NODES
-        on { buildNodes(any()) } doReturn nodes
+        on { nbConcepts } doReturn NB_EXPECTED_NODES
+        on { build(any()) } doReturn nodes
         on { anchor() } doReturn mockAnchor
     }
     private val resolverWithAnchor = mock<(Parcelable) -> RoutingAction> {
@@ -166,7 +166,7 @@ class ConfigurationContextTest {
         val expectedAncestryInfo = AncestryInfo.Child(expectedParent, resolved.configuration)
 
         argumentCaptor<List<BuildContext>>().apply {
-            verify(routingAction).buildNodes(capture())
+            verify(routingAction).build(capture())
             val list = firstValue
             assertEquals(nbExpectedNodes, list.size)
 

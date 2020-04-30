@@ -6,7 +6,7 @@ import com.badoo.common.rib.test.activity.R
 import com.badoo.ribs.android.CanProvideActivityStarter
 import com.badoo.ribs.android.CanProvidePermissionRequester
 import com.badoo.ribs.android.RibActivity
-import com.badoo.ribs.core.Node
+import com.badoo.ribs.core.Concept
 import com.badoo.ribs.dialog.CanProvideDialogLauncher
 
 class RibTestActivity : RibActivity(),
@@ -23,8 +23,8 @@ class RibTestActivity : RibActivity(),
     override val rootViewGroup: ViewGroup
         get() = findViewById(android.R.id.content)
 
-    override fun createRib(savedInstanceState: Bundle?): Node<*> =
-        ribFactory!!(this, savedInstanceState)
+    override fun createConcept(savedInstanceState: Bundle?): Concept<*> =
+        conceptFactory!!(this, savedInstanceState)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_root)
@@ -32,6 +32,6 @@ class RibTestActivity : RibActivity(),
     }
 
     companion object {
-        var ribFactory: ((RibTestActivity, Bundle?) -> Node<*>)? = null
+        var conceptFactory: ((RibTestActivity, Bundle?) -> Concept<*>)? = null
     }
 }

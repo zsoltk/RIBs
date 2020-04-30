@@ -7,9 +7,9 @@ import com.badoo.ribs.example.rib.menu.feature.MenuFeature
 
 class MenuBuilder(
     private val dependency: Menu.Dependency
-) : SimpleBuilder<MenuNode>() {
+) : SimpleBuilder<Menu>() {
 
-    override fun build(buildParams: BuildParams<Nothing?>): MenuNode {
+    override fun build(buildParams: BuildParams<Nothing?>): Menu {
         val customisation = buildParams.getOrDefault(Menu.Customisation())
         val feature = MenuFeature()
         val interactor = MenuInteractor(

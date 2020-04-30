@@ -109,21 +109,21 @@ internal sealed class ConfigurationContext<C : Parcelable> {
             this
 
         private fun buildNodes(routingAction: RoutingAction, parentNode: Node<*>): List<Node<*>> {
-            if (bundles.isNotEmpty() && bundles.size != routingAction.nbNodesToBuild) {
+            if (bundles.isNotEmpty() && bundles.size != routingAction.nbConcepts) {
                 RIBs.errorHandler.handleNonFatalError(
-                    "Bundles size ${bundles.size} don't match expected nodes count ${routingAction.nbNodesToBuild}"
+                    "Bundles size ${bundles.size} don't match expected nodes count ${routingAction.nbConcepts}"
                 )
             }
             val template = createBuildContext(routingAction, parentNode)
-            val buildContexts = List(routingAction.nbNodesToBuild) {
+            val buildContexts = List(routingAction.nbConcepts) {
                 template.copy(
                     savedInstanceState = bundles.getOrNull(it)
                 )
             }
 
-            return routingAction.buildNodes(
+            return routingAction.build(
                 buildContexts = buildContexts
-            )
+            ).map { it.node }
         }
 
         private fun createBuildContext(

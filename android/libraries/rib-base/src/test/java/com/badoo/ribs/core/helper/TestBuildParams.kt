@@ -5,12 +5,12 @@ import com.badoo.ribs.customisation.RibCustomisationDirectoryImpl
 import com.badoo.ribs.core.AttachMode
 import com.badoo.ribs.core.builder.BuildParams
 import com.badoo.ribs.core.builder.BuildContext
-import com.badoo.ribs.core.Rib
+import com.badoo.ribs.core.Concept
 import com.badoo.ribs.core.routing.portal.AncestryInfo
 import java.util.UUID
 
 fun testBuildParams(
-    rib: Rib = object : TestPublicRibInterface {},
+    concept: Concept = object : TestPublicConceptInterface {},
     savedInstanceState: Bundle? = null,
     ancestryInfo: AncestryInfo? = null
 ) = BuildParams<Nothing?>(
@@ -24,7 +24,7 @@ fun testBuildParams(
             savedInstanceState = savedInstanceState,
             customisations = RibCustomisationDirectoryImpl()
     )},
-    identifier = Rib.Identifier(
+    identifier = Concept.Identifier(
         uuid = UUID.randomUUID()
     )
 )

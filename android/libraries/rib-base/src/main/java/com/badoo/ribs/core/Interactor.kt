@@ -19,16 +19,16 @@ import android.os.Bundle
 import androidx.lifecycle.Lifecycle
 import androidx.annotation.CallSuper
 import com.badoo.ribs.core.builder.BuildParams
-import com.badoo.ribs.core.view.RibView
+import com.badoo.ribs.core.view.ConceptView
 import io.reactivex.disposables.Disposable
 
 /**
  * The base implementation for all [Interactor]s.
  *
  * @param <C> the type of Configuration this Interactor can expect to push to its [Router].
- * @param <V> the type of [RibView].
+ * @param <V> the type of [ConceptView].
  **/
-abstract class Interactor<V : RibView>(
+abstract class Interactor<V : ConceptView>(
     buildParams: BuildParams<*>,
     private val disposables: Disposable?
 ) : Identifiable by buildParams.identifier {

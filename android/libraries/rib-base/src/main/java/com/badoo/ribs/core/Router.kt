@@ -24,9 +24,9 @@ import com.badoo.ribs.core.routing.configuration.feature.operation.canPop
 import com.badoo.ribs.core.routing.configuration.feature.operation.canPopOverlay
 import com.badoo.ribs.core.routing.configuration.toCommands
 import com.badoo.ribs.core.routing.transition.handler.TransitionHandler
-import com.badoo.ribs.core.view.RibView
+import com.badoo.ribs.core.view.ConceptView
 
-abstract class Router<C : Parcelable, Permanent : C, Content : C, Overlay : C, V : RibView>(
+abstract class Router<C : Parcelable, Permanent : C, Content : C, Overlay : C, V : ConceptView>(
     buildParams: BuildParams<*>,
     private val initialConfiguration: Content,
     private val permanentParts: List<Permanent> = emptyList(),

@@ -13,6 +13,6 @@ class PortalOverlayTestNode(
     viewFactory = viewFactory,
     router = null,
     interactor = interactor
-) {
-
+), PortalOverlayTest {
+    override val node: Node<PortalOverlayTestView> = this
 }

@@ -14,6 +14,6 @@ class SmallNode(
     viewFactory = viewFactory,
     router = router,
     interactor = interactor
-), Small.Workflow {
-
+), Small {
+    override val node: Node<SmallView> = this
 }

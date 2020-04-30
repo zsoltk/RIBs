@@ -16,7 +16,7 @@
 package com.badoo.ribs.core.builder
 
 import com.badoo.ribs.core.Node
-import com.badoo.ribs.core.Rib
+import com.badoo.ribs.core.Concept
 import java.util.UUID
 
 /**
@@ -30,21 +30,21 @@ import java.util.UUID
  * @param <N> type of [Node] this Builder is expected to build
  *
  */
-abstract class Builder<P, N : Node<*>> {
+abstract class Builder<P, T : Concept<*>> {
 
-    fun build(buildContext: BuildContext, payload: P): N {
+    fun build(buildContext: BuildContext, payload: P): T {
         val buildParams = BuildParams(
             payload = payload,
             buildContext = buildContext,
-            identifier = Rib.Identifier(
-                uuid = buildContext.savedInstanceState?.getSerializable(Rib.Identifier.KEY_UUID) as? UUID
+            identifier = Concept.Identifier(
+                uuid = buildContext.savedInstanceState?.getSerializable(Concept.Identifier.KEY_UUID) as? UUID
                     ?: UUID.randomUUID()
             )
         )
         return build(buildParams)
     }
 
-    protected abstract fun build(buildParams: BuildParams<P>): N
+    protected abstract fun build(buildParams: BuildParams<P>): T
 }
 
 

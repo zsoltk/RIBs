@@ -2,9 +2,9 @@ package com.badoo.ribs.dialog
 
 import com.badoo.ribs.android.Text
 import com.badoo.ribs.core.AttachMode
+import com.badoo.ribs.core.Concept
 import com.badoo.ribs.core.builder.BuildContext
-import com.badoo.ribs.core.Node
-import com.badoo.ribs.core.builder.NodeFactory
+import com.badoo.ribs.core.builder.ConceptFactory
 import com.badoo.ribs.dialog.Dialog.CancellationPolicy.NonCancellable
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.ObservableSource
@@ -17,8 +17,8 @@ abstract class Dialog<T : Any> private constructor(
     var message: Text? = null
     var cancellationPolicy: CancellationPolicy<T> = NonCancellable()
     internal var buttons: ButtonsConfig<T>? = null
-    private var nodeFactory: NodeFactory? = null
-    internal var rib: Node<*>? = null
+    private var conceptFactory: ConceptFactory? = null
+    internal var concept: Concept<*>? = null
 
     constructor(factory: Dialog<T>.() -> Unit) : this(
         factory,
@@ -29,8 +29,8 @@ abstract class Dialog<T : Any> private constructor(
         factory()
     }
 
-    fun nodeFactory(nodeFactory: NodeFactory) {
-        this.nodeFactory = nodeFactory
+    fun nodeFactory(conceptFactory: ConceptFactory) {
+        this.conceptFactory = conceptFactory
     }
 
     fun buttons(factory: ButtonsConfig<T>.() -> Unit) {
@@ -71,8 +71,8 @@ abstract class Dialog<T : Any> private constructor(
         events.accept(event)
     }
 
-    fun buildNodes(buildContext: BuildContext): List<Node<*>> =
-        nodeFactory?.let { factory ->
+    fun buildConcepts(buildContext: BuildContext): List<Concept<*>> =
+        conceptFactory?.let { factory ->
             val clientParams = buildContext.copy(
                 /**
                  * RIBs inside dialogs behaved like Root nodes so far in that they were
@@ -87,7 +87,7 @@ abstract class Dialog<T : Any> private constructor(
 
             listOf(
                 factory.invoke(clientParams).also {
-                    rib = it
+                    concept = it
                 }
             )
         } ?: emptyList()

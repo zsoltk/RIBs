@@ -6,6 +6,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.view.ViewGroup
 import com.badoo.ribs.android.requestcode.RequestCodeRegistry
+import com.badoo.ribs.core.Concept
 import com.badoo.ribs.core.Node
 import com.badoo.ribs.dialog.Dialog
 import com.badoo.ribs.dialog.DialogLauncher
@@ -41,7 +42,7 @@ abstract class RibActivity : AppCompatActivity(), DialogLauncher {
         super.onCreate(savedInstanceState)
         requestCodeRegistry = RequestCodeRegistry(savedInstanceState)
 
-        rootNode = createRib(savedInstanceState).apply {
+        rootNode = createConcept(savedInstanceState).node.apply {
             onAttach()
             attachToView(rootViewGroup)
         }
@@ -65,7 +66,7 @@ abstract class RibActivity : AppCompatActivity(), DialogLauncher {
 
     abstract val rootViewGroup: ViewGroup
 
-    abstract fun createRib(savedInstanceState: Bundle?): Node<*>
+    abstract fun createConcept(savedInstanceState: Bundle?): Concept<*>
 
     override fun onStart() {
         super.onStart()

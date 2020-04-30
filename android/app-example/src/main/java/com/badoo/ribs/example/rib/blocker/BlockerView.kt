@@ -3,7 +3,7 @@ package com.badoo.ribs.example.rib.blocker
 import androidx.annotation.LayoutRes
 import android.view.ViewGroup
 import android.widget.Button
-import com.badoo.ribs.core.view.RibView
+import com.badoo.ribs.core.view.ConceptView
 import com.badoo.ribs.core.view.ViewFactory
 import com.badoo.ribs.customisation.inflate
 import com.badoo.ribs.example.R
@@ -13,7 +13,7 @@ import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 
-interface BlockerView : RibView,
+interface BlockerView : ConceptView,
     ObservableSource<Event>,
     Consumer<ViewModel> {
 

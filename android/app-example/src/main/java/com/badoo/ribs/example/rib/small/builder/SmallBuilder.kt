@@ -8,9 +8,9 @@ import com.badoo.ribs.example.rib.small.SmallNode
 
 class SmallBuilder(
     private val dependency: Small.Dependency
-) : SimpleBuilder<SmallNode>() {
+) : SimpleBuilder<Small>() {
 
-    override fun build(buildParams: BuildParams<Nothing?>): SmallNode =
+    override fun build(buildParams: BuildParams<Nothing?>): Small =
         DaggerSmallComponent
             .factory()
             .create(

@@ -3,8 +3,9 @@ package com.badoo.ribs.test.util.ribs.root
 import androidx.lifecycle.Lifecycle
 import android.os.Bundle
 import com.badoo.ribs.core.builder.BuildParams
-import com.badoo.ribs.core.Rib
+import com.badoo.ribs.core.Concept
 import com.badoo.ribs.core.builder.BuildContext
+import com.badoo.ribs.core.view.ConceptView
 import com.badoo.ribs.dialog.DialogLauncher
 import com.badoo.ribs.test.util.LifecycleObserver
 import com.badoo.ribs.test.util.ribs.TestNode
@@ -15,7 +16,7 @@ import com.badoo.ribs.test.util.ribs.root.builder.TestRootBuilder
 import io.reactivex.observers.TestObserver
 import java.util.UUID
 
-interface TestRoot : Rib {
+interface TestRoot : Concept<ConceptView> {
 
     interface Dependency {
         fun viewLifecycleObserver(): TestObserver<Lifecycle.Event>
@@ -55,7 +56,7 @@ interface TestRoot : Rib {
                 buildParams = BuildParams(
                     payload = null,
                     buildContext = BuildContext.root(savedInstanceState),
-                    identifier = Rib.Identifier(
+                    identifier = Concept.Identifier(
                         uuid = UUID.randomUUID()
                     )
                 ),

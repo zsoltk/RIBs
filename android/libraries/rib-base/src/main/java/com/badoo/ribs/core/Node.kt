@@ -25,13 +25,13 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import com.badoo.ribs.core.Rib.Identifier
+import com.badoo.ribs.core.Concept.Identifier
 import com.badoo.ribs.core.builder.BuildContext
 import com.badoo.ribs.core.builder.BuildParams
 import com.badoo.ribs.core.exception.RootNodeAttachedAsChildException
 import com.badoo.ribs.core.routing.configuration.ConfigurationResolver
 import com.badoo.ribs.core.routing.portal.AncestryInfo
-import com.badoo.ribs.core.view.RibView
+import com.badoo.ribs.core.view.ConceptView
 import com.badoo.ribs.core.view.ViewPlugin
 import com.badoo.ribs.util.RIBs
 import com.jakewharton.rxrelay2.BehaviorRelay
@@ -45,7 +45,7 @@ import java.util.concurrent.CopyOnWriteArrayList
  * Responsible for handling the addition and removal of child nodes.
  **/
 @SuppressWarnings("LargeClass")
-open class Node<V : RibView>(
+open class Node<V : ConceptView>(
     buildParams: BuildParams<*>,
     private val viewFactory: ((ViewGroup) -> V?)?,
     private val router: Router<*, *, *, *, V>?,
@@ -60,7 +60,7 @@ open class Node<V : RibView>(
         internal const val KEY_VIEW_STATE = "view.state"
     }
 
-    open val identifier: Rib.Identifier =
+    open val identifier: Concept.Identifier =
         buildParams.identifier
 
     internal val buildContext: BuildContext =

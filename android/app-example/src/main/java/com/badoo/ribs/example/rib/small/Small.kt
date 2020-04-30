@@ -1,10 +1,10 @@
 package com.badoo.ribs.example.rib.small
 
-import com.badoo.ribs.core.Rib
+import com.badoo.ribs.core.Concept
 import com.badoo.ribs.customisation.CanProvidePortal
 import com.badoo.ribs.customisation.RibCustomisation
 
-interface Small : Rib {
+interface Small : Concept<SmallView> {
 
     interface Dependency :
         CanProvidePortal

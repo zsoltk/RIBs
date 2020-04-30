@@ -16,6 +16,6 @@ class FooBarNode(
     router = null,
     interactor = interactor,
     viewPlugins = viewPlugins
-), FooBar.Workflow {
-
+), FooBar {
+    override val node: Node<FooBarView> = this
 }

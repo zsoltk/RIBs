@@ -36,16 +36,16 @@ private fun <Event : Any> AlertDialog.Builder.setCancelable(dialog: Dialog<Event
 }
 
 private fun AlertDialog.Builder.setRib(dialog: Dialog<*>, context: Context) {
-    dialog.rib?.let {
+    dialog.concept?.let {
         setView(object : FrameLayout(context) {
             override fun onAttachedToWindow() {
                 super.onAttachedToWindow()
-                it.attachToView(this)
+                it.node.attachToView(this)
             }
 
             override fun onDetachedFromWindow() {
                 super.onDetachedFromWindow()
-                it.detachFromView()
+                it.node.detachFromView()
             }
         })
     }

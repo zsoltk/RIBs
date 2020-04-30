@@ -1,5 +1,6 @@
 package com.badoo.ribs.core.routing.portal
 
+import com.badoo.ribs.core.Concept
 import com.badoo.ribs.core.builder.BuildParams
 import com.badoo.ribs.core.Node
 import com.badoo.ribs.core.routing.configuration.feature.operation.push
@@ -15,14 +16,16 @@ class PortalNode internal constructor(
     viewFactory = null,
     router = router,
     interactor = interactor
-), Portal.Workflow {
+), Portal {
 
-    override fun showDefault(): Single<Node<*>> =
+    override val node: Node<Nothing> = this
+
+    override fun showDefault(): Single<Concept<*>> =
         attachWorkflow {
             router.push(Content.Default)
         }
 
-    override fun showInPortal(ancestryInfo: AncestryInfo): Single<Node<*>> =
+    override fun showInPortal(ancestryInfo: AncestryInfo): Single<Concept<*>> =
         attachWorkflow {
             router.push(Content.Portal(ancestryInfo.configurationChain))
         }

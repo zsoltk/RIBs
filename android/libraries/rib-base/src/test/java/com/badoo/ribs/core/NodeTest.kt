@@ -35,10 +35,10 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class NodeTest {
 
-    interface RandomOtherNode1 : Rib
-    interface RandomOtherNode2 : Rib
-    interface RandomOtherNode3 : Rib
-    interface RandomRootNode : Rib
+    interface RandomOtherNode1 : Concept
+    interface RandomOtherNode2 : Concept
+    interface RandomOtherNode3 : Concept
+    interface RandomRootNode : Concept
 
     interface TestViewFactory : (ViewGroup) -> TestView
 
@@ -56,7 +56,7 @@ class NodeTest {
     private lateinit var child2: TestNode
     private lateinit var child3: TestNode
     private lateinit var root1: TestNode
-    private lateinit var allChildren: List<Node<*>>
+    private lateinit var allChildren: List<Concept<*>>
     private lateinit var viewPlugins: Set<ViewPlugin>
     private lateinit var childAncestry: AncestryInfo
 
@@ -102,21 +102,21 @@ class NodeTest {
     private fun addChildren() {
         child1 = TestNode(
             buildParams = testBuildParams(
-                rib = object : RandomOtherNode1 {},
+                concept = object : RandomOtherNode1 {},
                 ancestryInfo = childAncestry
             ),
             viewFactory = null
         )
         child2 = TestNode(
             buildParams = testBuildParams(
-                rib = object : RandomOtherNode2 {},
+                concept = object : RandomOtherNode2 {},
                 ancestryInfo = childAncestry
             ),
             viewFactory = null
         )
         child3 = TestNode(
             buildParams = testBuildParams(
-                rib = object : RandomOtherNode3 {},
+                concept = object : RandomOtherNode3 {},
                 ancestryInfo = childAncestry
             ),
             viewFactory = null
@@ -382,7 +382,7 @@ class NodeTest {
         }
     }
 
-    private fun createAndAttachChildMocks(n: Int, identifiers: MutableList<Rib.Identifier> = mutableListOf()): List<Node<*>> {
+    private fun createAndAttachChildMocks(n: Int, identifiers: MutableList<Concept.Identifier> = mutableListOf()): List<Concept<*>> {
         if (identifiers.isEmpty()) {
             for (i in 0 until n) {
                 identifiers.add(testBuildParams().identifier)
@@ -593,7 +593,7 @@ class NodeTest {
     fun `Tag is saved to bundle`() {
         val outState = Bundle()
         node.onSaveInstanceState(outState)
-        assertEquals(node.identifier.uuid, outState.getSerializable(Rib.Identifier.KEY_UUID))
+        assertEquals(node.identifier.uuid, outState.getSerializable(Concept.Identifier.KEY_UUID))
     }
 
     @Test

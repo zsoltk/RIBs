@@ -1,11 +1,11 @@
 package com.badoo.ribs.tutorials.tutorial5.rib.option_selector
 
-import com.badoo.ribs.core.Rib
+import com.badoo.ribs.core.Concept
 import com.badoo.ribs.customisation.RibCustomisation
 import com.badoo.ribs.android.Text
 import io.reactivex.functions.Consumer
 
-interface OptionSelector : Rib {
+interface OptionSelector : Concept {
 
     interface Dependency {
         fun moreOptionsOutput(): Consumer<Output>

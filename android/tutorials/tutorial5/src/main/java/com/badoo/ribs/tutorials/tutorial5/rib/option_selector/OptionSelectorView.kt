@@ -6,7 +6,7 @@ import android.widget.Button
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.annotation.LayoutRes
-import com.badoo.ribs.core.view.RibView
+import com.badoo.ribs.core.view.ConceptView
 import com.badoo.ribs.core.view.ViewFactory
 import com.badoo.ribs.customisation.inflate
 import com.badoo.ribs.tutorials.tutorial5.R
@@ -18,7 +18,7 @@ import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 
 
-interface OptionSelectorView : RibView,
+interface OptionSelectorView : ConceptView,
     ObservableSource<Event>,
     Consumer<ViewModel> {
 

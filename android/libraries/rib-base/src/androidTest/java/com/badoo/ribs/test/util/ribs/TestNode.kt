@@ -4,10 +4,10 @@ import com.badoo.ribs.core.builder.BuildParams
 import com.badoo.ribs.core.Interactor
 import com.badoo.ribs.core.Node
 import com.badoo.ribs.core.Router
-import com.badoo.ribs.core.view.RibView
+import com.badoo.ribs.core.view.ConceptView
 import com.badoo.ribs.core.view.ViewFactory
 
-class TestNode<V: RibView>(
+class TestNode<V: ConceptView>(
     buildParams: BuildParams<*>,
     viewFactory: ViewFactory<Nothing?, V>,
     private val router: Router<*, *, *, *, V>,

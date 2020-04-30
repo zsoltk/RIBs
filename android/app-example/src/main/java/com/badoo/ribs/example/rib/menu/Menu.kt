@@ -1,13 +1,13 @@
 package com.badoo.ribs.example.rib.menu
 
 import android.os.Parcelable
-import com.badoo.ribs.core.Rib
+import com.badoo.ribs.core.Concept
 import com.badoo.ribs.customisation.RibCustomisation
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 import kotlinx.android.parcel.Parcelize
 
-interface Menu : Rib {
+interface Menu : Concept<MenuView> {
 
     interface Dependency {
         fun menuInput(): ObservableSource<Input>

@@ -15,6 +15,7 @@
  */
 package com.badoo.ribs.core.builder
 
+import com.badoo.ribs.core.Concept
 import com.badoo.ribs.core.Node
 
 /**
@@ -27,9 +28,9 @@ import com.badoo.ribs.core.Node
  * @param <N> type of [Node] this Builder is expected to build
  *
 </D> */
-abstract class SimpleBuilder<N : Node<*>> : Builder<Nothing?, N>() {
+abstract class SimpleBuilder<T : Concept<*>> : Builder<Nothing?, T>() {
 
-    fun build(buildContext: BuildContext): N =
+    fun build(buildContext: BuildContext): T =
         build(buildContext, null)
 }
 

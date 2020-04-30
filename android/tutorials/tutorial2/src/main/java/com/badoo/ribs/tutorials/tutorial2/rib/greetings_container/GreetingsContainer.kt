@@ -1,9 +1,9 @@
 package com.badoo.ribs.tutorials.tutorial2.rib.greetings_container
 
-import com.badoo.ribs.core.Rib
+import com.badoo.ribs.core.Concept
 import io.reactivex.functions.Consumer
 
-interface GreetingsContainer : Rib {
+interface GreetingsContainer : Concept {
 
     interface Dependency {
         fun greetingsContainerOutput(): Consumer<Output>

@@ -16,9 +16,11 @@ class HelloWorldNode(
     viewFactory = viewFactory,
     router = router,
     interactor = interactor
-), HelloWorld.Workflow {
+), HelloWorld {
 
-    override fun somethingSomethingDarkSide(): Single<HelloWorld.Workflow> =
+    override val node: Node<HelloWorldView> = this
+
+    override fun somethingSomethingDarkSide(): Single<HelloWorld> =
         executeWorkflow {
             Log.d("WORKFLOW", "Hello world / somethingSomethingDarkSide")
         }

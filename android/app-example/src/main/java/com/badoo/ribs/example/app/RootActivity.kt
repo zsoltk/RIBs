@@ -40,9 +40,9 @@ class RootActivity : RibActivity() {
     override val rootViewGroup: ViewGroup
         get() = findViewById(R.id.root)
 
-    private lateinit var workflowRoot: Portal.Workflow
+    private lateinit var workflowRoot: Portal
 
-    override fun createRib(savedInstanceState: Bundle?): PortalNode =
+    override fun createConcept(savedInstanceState: Bundle?): Portal =
         PortalBuilder(
             object : Portal.Dependency {
                 override fun defaultRoutingAction(): (Portal.OtherSide) -> RoutingAction = { portal ->
@@ -104,7 +104,7 @@ class RootActivity : RibActivity() {
                 .flatMap { it.somethingSomethingDarkSide() }
                 .toObservable(),
 
-            BiFunction<Switcher.Workflow, HelloWorld.Workflow, Unit> { _, _ -> Unit }
+            BiFunction<Switcher, HelloWorld, Unit> { _, _ -> Unit }
         )
 
     private fun executeTestCrash(): Observable<*> =
@@ -116,5 +116,5 @@ class RootActivity : RibActivity() {
     private fun switcher() =
         Single
             .just(workflowRoot)
-            .flatMap { it.showDefault() as Single<Switcher.Workflow> }
+            .flatMap { it.showDefault() as Single<Switcher> }
 }

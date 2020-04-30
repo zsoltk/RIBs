@@ -14,4 +14,6 @@ class BigNode(
     viewFactory = viewFactory,
     router = router,
     interactor = interactor
-), Big.Workflow
+), Big {
+    override val node: Node<BigView> = this
+}

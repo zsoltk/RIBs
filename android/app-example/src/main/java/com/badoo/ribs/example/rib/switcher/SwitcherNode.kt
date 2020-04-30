@@ -20,28 +20,30 @@ class SwitcherNode(
     viewFactory = viewFactory,
     router = router,
     interactor = interactor
-), Switcher.Workflow {
-    
-    override fun attachHelloWorld(): Single<HelloWorld.Workflow> =
+), Switcher {
+
+    override val node: Node<SwitcherView> = this
+
+    override fun attachHelloWorld(): Single<HelloWorld> =
         attachWorkflow {
             Log.d("WORKFLOW", "Switcher / attachHelloWorld")
             router.push(Hello)
         }
 
-    override fun testCrash(): Single<HelloWorld.Workflow> =
+    override fun testCrash(): Single<HelloWorld> =
         attachWorkflow {
             // test case: attaching Foo, but expecting HelloWorld by mistake
             Log.d("WORKFLOW", "Switcher / testCrash")
             router.push(Foo)
         }
 
-    override fun waitForHelloWorld(): Single<HelloWorld.Workflow> =
-        waitForChildAttached<HelloWorld.Workflow>()
+    override fun waitForHelloWorld(): Single<HelloWorld> =
+        waitForChildAttached<HelloWorld>()
             .doOnSuccess {
                 Log.d("WORKFLOW", "Switcher / waitForHelloWorld")
             }
 
-    override fun doSomethingAndStayOnThisNode(): Single<Switcher.Workflow> =
+    override fun doSomethingAndStayOnThisNode(): Single<Switcher> =
         executeWorkflow {
             // push wish to feature
             Log.d("WORKFLOW", "Switcher / doSomethingAndStayOnThisNode")

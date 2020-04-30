@@ -1,12 +1,12 @@
 package com.badoo.ribs.template.leaf.foo_bar
 
-import com.badoo.ribs.core.Rib
+import com.badoo.ribs.core.Concept
 import com.badoo.ribs.customisation.RibCustomisation
 import io.reactivex.ObservableSource
 import io.reactivex.Single
 import io.reactivex.functions.Consumer
 
-interface FooBar : Rib {
+interface FooBar : Concept {
 
     interface Dependency {
         fun fooBarInput(): ObservableSource<Input>

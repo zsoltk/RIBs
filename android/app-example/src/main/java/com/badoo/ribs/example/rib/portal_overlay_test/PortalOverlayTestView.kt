@@ -2,7 +2,7 @@ package com.badoo.ribs.example.rib.portal_overlay_test
 
 import androidx.annotation.LayoutRes
 import android.view.ViewGroup
-import com.badoo.ribs.core.view.RibView
+import com.badoo.ribs.core.view.ConceptView
 import com.badoo.ribs.core.view.ViewFactory
 import com.badoo.ribs.customisation.inflate
 import com.badoo.ribs.example.R
@@ -12,7 +12,7 @@ import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 
-interface PortalOverlayTestView : RibView,
+interface PortalOverlayTestView : ConceptView,
     ObservableSource<Event>,
     Consumer<ViewModel> {
 

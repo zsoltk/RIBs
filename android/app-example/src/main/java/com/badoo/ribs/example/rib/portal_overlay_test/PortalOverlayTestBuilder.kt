@@ -5,9 +5,9 @@ import com.badoo.ribs.core.builder.SimpleBuilder
 
 class PortalOverlayTestBuilder(
     private val dependency: PortalOverlayTest.Dependency
-) : SimpleBuilder<PortalOverlayTestNode>() {
+) : SimpleBuilder<PortalOverlayTest>() {
 
-    override fun build(buildParams: BuildParams<Nothing?>): PortalOverlayTestNode {
+    override fun build(buildParams: BuildParams<Nothing?>): PortalOverlayTest {
         val customisation = buildParams.getOrDefault(PortalOverlayTest.Customisation())
         val interactor = PortalOverlayTestInteractor(buildParams)
 

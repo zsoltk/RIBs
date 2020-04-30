@@ -9,7 +9,7 @@ import com.badoo.ribs.core.Router
 import com.badoo.ribs.core.builder.BuildParams
 import com.badoo.ribs.core.routing.action.RoutingAction
 import com.badoo.ribs.core.routing.action.RoutingAction.Companion.noop
-import com.badoo.ribs.core.view.RibView
+import com.badoo.ribs.core.view.ConceptView
 import kotlinx.android.parcel.Parcelize
 import java.util.UUID
 
@@ -17,7 +17,7 @@ internal class RecyclerViewHostRouter<T : Parcelable>(
     buildParams: BuildParams<Nothing?>,
     private val feature: RecyclerViewHostFeature<T>,
     private val ribResolver: RecyclerViewRibResolver<T>
-): Router<Configuration, Nothing, Content, Nothing, RibView>(
+): Router<Configuration, Nothing, Content, Nothing, ConceptView>(
     buildParams = buildParams,
     initialConfiguration = Default,
     permanentParts = emptyList()

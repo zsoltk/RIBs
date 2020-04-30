@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import com.badoo.ribs.core.Interactor
 import com.badoo.ribs.core.Node
-import com.badoo.ribs.core.Rib
+import com.badoo.ribs.core.Concept
 import com.badoo.ribs.core.Router
 import com.badoo.ribs.core.builder.BuildParams
 import com.badoo.ribs.core.routing.action.RoutingAction
-import com.badoo.ribs.core.view.RibView
+import com.badoo.ribs.core.view.ConceptView
 import com.jakewharton.rxrelay2.Relay
 import io.reactivex.ObservableSource
 import io.reactivex.Observer
@@ -20,7 +20,7 @@ import org.mockito.Mockito.`when` as whenever
 
 private val buildParams = BuildParams.Empty()
 
-class InteractorTestHelper<View : RibView>(
+class InteractorTestHelper<View : ConceptView>(
     val interactor: Interactor<View>,
     val viewFactory: ((ViewGroup) -> View?)? = null,
     router: Router<*, *, *, *, View>? = null
@@ -77,14 +77,14 @@ class InteractorTestHelper<View : RibView>(
             interactor: Interactor<View>,
             viewEventRelay: Relay<ViewEvent>,
             router: Router<*, *, *, *, View>? = null
-        ): InteractorTestHelper<View> where View : RibView, View : ObservableSource<ViewEvent> {
+        ): InteractorTestHelper<View> where View : ConceptView, View : ObservableSource<ViewEvent> {
             val view: View = viewEventRelay.subscribedView()
             return InteractorTestHelper(interactor, { view }, router)
         }
     }
 }
 
-inline fun <reified RView, ViewEvent> Relay<ViewEvent>.subscribedView(): RView where RView : RibView, RView : ObservableSource<ViewEvent> =
+inline fun <reified RView, ViewEvent> Relay<ViewEvent>.subscribedView(): RView where RView : ConceptView, RView : ObservableSource<ViewEvent> =
     mock(RView::class.java).apply {
         whenever(this.androidView).thenReturn(mock(ViewGroup::class.java))
         whenever(this.subscribe(any())).thenAnswer {
@@ -93,9 +93,9 @@ inline fun <reified RView, ViewEvent> Relay<ViewEvent>.subscribedView(): RView w
         }
     }
 
-private object TestIdentifier : Rib
+private object TestIdentifier : Concept
 
-private class TestRouter<C : Parcelable, Permanent : C, Content : C, Overlay : C, V : RibView>(
+private class TestRouter<C : Parcelable, Permanent : C, Content : C, Overlay : C, V : ConceptView>(
     initialConfig: Content
 ) : Router<C, Permanent, Content, Overlay, V>(
     buildParams = buildParams,
@@ -109,7 +109,7 @@ private class TestRouter<C : Parcelable, Permanent : C, Content : C, Overlay : C
         resolveConfiguration.invoke(configuration)
 
     companion object {
-        fun <V : RibView> createTestRouter() =
+        fun <V : ConceptView> createTestRouter() =
             TestRouter<TestConfiguration, TestConfiguration, TestConfiguration, TestConfiguration, V>(TestConfiguration)
     }
 }

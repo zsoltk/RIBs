@@ -1,12 +1,12 @@
 package com.badoo.ribs.tutorials.tutorial5.rib.hello_world
 
-import com.badoo.ribs.core.Rib
+import com.badoo.ribs.core.Concept
 import com.badoo.ribs.android.Text
 import com.badoo.ribs.tutorials.tutorial5.util.User
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 
-interface HelloWorld : Rib {
+interface HelloWorld : Concept {
 
     interface Dependency {
         fun helloWorldInput(): ObservableSource<Input>

@@ -5,14 +5,15 @@ import android.os.Parcelable
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.badoo.ribs.android.recyclerview.client.RecyclerViewRibResolver
-import com.badoo.ribs.core.Rib
+import com.badoo.ribs.core.Concept
+import com.badoo.ribs.core.view.ConceptView
 import io.reactivex.ObservableSource
 import kotlinx.android.parcel.Parcelize
 
 /**
  * Considered experimental. Handle with care.
  */
-interface RecyclerViewHost : Rib {
+interface RecyclerViewHost : Concept<ConceptView> {
 
     interface Dependency<T : Parcelable> {
         fun hostingStrategy(): HostingStrategy
