@@ -11,15 +11,19 @@ import java.util.UUID
 
 fun testBuildParams(
     rib: Rib = object : TestPublicRibInterface {},
-    savedInstanceState: Bundle? = null
+    savedInstanceState: Bundle? = null,
+    ancestryInfo: AncestryInfo? = null
 ) = BuildParams<Nothing?>(
     payload = null,
-    buildContext = BuildContext(
-        ancestryInfo = AncestryInfo.Root,
-        attachMode = AttachMode.PARENT,
-        savedInstanceState = savedInstanceState,
-        customisations = RibCustomisationDirectoryImpl()
-    ),
+    buildContext = if (ancestryInfo == null) {
+        BuildContext.root(savedInstanceState)
+    } else {
+        BuildContext(
+            ancestryInfo = ancestryInfo,
+            attachMode = AttachMode.PARENT,
+            savedInstanceState = savedInstanceState,
+            customisations = RibCustomisationDirectoryImpl()
+    )},
     identifier = Rib.Identifier(
         uuid = UUID.randomUUID()
     )
