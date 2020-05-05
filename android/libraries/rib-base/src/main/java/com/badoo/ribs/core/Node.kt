@@ -77,6 +77,7 @@ open class Node<V : RibView>(
     internal open val attachMode: AttachMode =
         buildContext.attachMode
 
+    // TODO implement plugin.ofType<T> and move this to PortalRouter where it's used
     val resolver: ConfigurationResolver<*>? = plugins.filterIsInstance<ConfigurationResolver<*>>().firstOrNull()
 //    val resolver: ConfigurationResolver<out Parcelable>? = router
     private val savedInstanceState = buildParams.savedInstanceState?.getBundle(BUNDLE_KEY)
@@ -111,7 +112,7 @@ open class Node<V : RibView>(
         children.toList()
 
     init {
-        pluginFactories.forEach { it.init(this) }
+        plugins.forEach { it.init(this) }
     }
 
     @CallSuper

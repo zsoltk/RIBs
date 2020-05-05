@@ -94,15 +94,10 @@ internal object SwitcherModule {
         buildParams = buildParams,
         viewFactory = customisation.viewFactory(viewDependency),
         router = router,
-        plugins = plugins(interactor, router)
+        plugins = {
+            listOf(interactor, router)
+        }
     )
-
-    private fun plugins(
-        interactor: SwitcherInteractor,
-        router: SwitcherRouter
-    ): (Node<SwitcherView>) -> List<Plugin<SwitcherView>> = {
-        listOf(interactor, router)
-    }
 
     @SwitcherScope
     @Provides
