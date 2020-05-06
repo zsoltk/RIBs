@@ -15,6 +15,7 @@ import com.badoo.ribs.core.routing.portal.PortalRouter.Configuration.Overlay
 import com.badoo.ribs.core.routing.transition.handler.TransitionHandler
 import com.badoo.ribs.customisation.RibCustomisationDirectoryImpl
 import kotlinx.android.parcel.Parcelize
+import java.lang.IllegalStateException
 
 class PortalRouter(
     buildParams: BuildParams<*>,
@@ -67,7 +68,7 @@ class PortalRouter(
 
             // TODO don't build it again if already available as child.
             //  This probably means storing Node identifier in addition to (Parcelable) configuration.
-            val nodes = routingAction.buildNodes(
+            val ribs = routingAction.buildNodes(
                 listOf(
                     BuildContext(
                         ancestryInfo = AncestryInfo.Root, // we'll be discarding these Nodes, it doesn't matter
@@ -82,8 +83,12 @@ class PortalRouter(
 
             // TODO having 0 nodes is an impossible scenario, but having more than 1 can be valid.
             //  Solution is again to store Node identifiers & Bundles that help picking the correct one.
-            val node = nodes.first()
-            targetRouter = node.node.resolver as ConfigurationResolver<Parcelable>
+            val rib = ribs.first()
+
+            rib.node.plugin<ConfigurationResolver<Parcelable>>()?.let {
+                targetRouter = it
+            } ?: throw IllegalStateException("Invalid chain of parents. This should never happen. Chain: $this")
+
             routingAction = targetRouter.resolveConfiguration(element)
         }
 

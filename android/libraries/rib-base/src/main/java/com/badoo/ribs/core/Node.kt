@@ -60,7 +60,7 @@ open class Node<V : RibView>(
     final override val node: Node<V>
         get() = this
 
-    private val plugins: List<Plugin<V>> = pluginFactory.invoke(node)
+    val plugins: List<Plugin<V>> = pluginFactory.invoke(node)
 
     open val identifier: Rib.Identifier =
         buildParams.identifier
@@ -75,12 +75,15 @@ open class Node<V : RibView>(
     internal val ancestryInfo: AncestryInfo =
         buildContext.ancestryInfo
 
+    val parent: Node<*>? =
+        when (val ancestryInfo = ancestryInfo) {
+            is AncestryInfo.Root -> null
+            is AncestryInfo.Child -> ancestryInfo.anchor
+        }
+
     internal open val attachMode: AttachMode =
         buildContext.attachMode
-
-    // TODO implement plugin.ofType<T> and move this to PortalRouter where it's used
-    val resolver: ConfigurationResolver<*>? = plugins.filterIsInstance<ConfigurationResolver<*>>().firstOrNull()
-//    val resolver: ConfigurationResolver<out Parcelable>? = router
+    
     private val savedInstanceState = buildParams.savedInstanceState?.getBundle(BUNDLE_KEY)
     internal val externalLifecycleRegistry = LifecycleRegistry(this)
     internal val ribLifecycleRegistry = LifecycleRegistry(this)
@@ -353,6 +356,22 @@ open class Node<V : RibView>(
 
     override fun toString(): String =
         identifier.toString()
+
+    inline fun <reified P> plugin(): P? =
+        plugins.filterIsInstance<P>().firstOrNull()
+
+    inline fun <reified P> pluginUp(): P? {
+        var found: P?
+        var current: Node<*>? = this
+
+        while (current != null) {
+            found = current.plugin<P>()
+            if (found != null) return found
+            current = current.parent
+        }
+
+        return null
+    }
 
     /**
      * Executes an action and remains on the same hierarchical level
