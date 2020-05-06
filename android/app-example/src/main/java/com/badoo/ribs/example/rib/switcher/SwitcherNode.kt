@@ -3,8 +3,8 @@ package com.badoo.ribs.example.rib.switcher
 import android.util.Log
 import android.view.ViewGroup
 import com.badoo.ribs.core.Node
-import com.badoo.ribs.core.plugin.Plugin
 import com.badoo.ribs.core.builder.BuildParams
+import com.badoo.ribs.core.plugin.PluginFactory
 import com.badoo.ribs.core.routing.configuration.feature.operation.push
 import com.badoo.ribs.example.rib.hello_world.HelloWorld
 import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration.Content.Foo
@@ -14,12 +14,12 @@ import io.reactivex.Single
 class SwitcherNode(
     buildParams: BuildParams<*>,
     viewFactory: ((ViewGroup) -> SwitcherView?)?,
-    private val router: SwitcherRouter,
-    val plugins: (Node<SwitcherView>) -> List<Plugin<SwitcherView>>
+    pluginFactory: PluginFactory<SwitcherView>,
+    private val router: SwitcherRouter
 ) : Node<SwitcherView>(
     buildParams = buildParams,
     viewFactory = viewFactory,
-    pluginFactory = plugins
+    pluginFactory = pluginFactory
 ), Switcher {
     
     override fun attachHelloWorld(): Single<HelloWorld> =

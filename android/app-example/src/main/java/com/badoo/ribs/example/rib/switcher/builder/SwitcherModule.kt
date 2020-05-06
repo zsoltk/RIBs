@@ -88,10 +88,10 @@ internal object SwitcherModule {
         router: SwitcherRouter,
         interactor: SwitcherInteractor
     ): SwitcherNode = SwitcherNode(
+        router = router,
         buildParams = buildParams,
         viewFactory = customisation.viewFactory(viewDependency),
-        router = router,
-        plugins = {
+        pluginFactory = {
             listOf(interactor, router)
         }
     )
