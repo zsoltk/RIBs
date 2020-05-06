@@ -49,7 +49,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 open class Node<V : RibView>(
     buildParams: BuildParams<*>,
     private val viewFactory: ((ViewGroup) -> V?)?,
-    pluginFactory: PluginFactory<V> = { emptyList() }
+    pluginFactory: PluginFactory<Any, V> = { emptyList() }
 ) : Rib, LifecycleOwner {
     companion object {
 

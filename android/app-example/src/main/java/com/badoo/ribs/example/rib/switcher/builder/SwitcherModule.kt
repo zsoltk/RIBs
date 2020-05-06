@@ -2,6 +2,7 @@
 package com.badoo.ribs.example.rib.switcher.builder
 
 import com.badoo.ribs.core.builder.BuildParams
+import com.badoo.ribs.core.plugin.DebugView
 import com.badoo.ribs.dialog.DialogLauncher
 import com.badoo.ribs.example.rib.blocker.Blocker
 import com.badoo.ribs.example.rib.blocker.BlockerBuilder
@@ -17,6 +18,7 @@ import com.badoo.ribs.example.rib.switcher.SwitcherInteractor
 import com.badoo.ribs.example.rib.switcher.SwitcherNode
 import com.badoo.ribs.example.rib.switcher.SwitcherRouter
 import com.badoo.ribs.example.rib.switcher.SwitcherView
+import com.badoo.ribs.example.rib.switcher.debug.SwitcherDebugControls
 import com.badoo.ribs.example.rib.switcher.dialog.DialogToTestOverlay
 import com.badoo.ribs.example.util.CoffeeMachine
 import dagger.Provides
@@ -91,9 +93,11 @@ internal object SwitcherModule {
         router = router,
         buildParams = buildParams,
         viewFactory = customisation.viewFactory(viewDependency),
-        pluginFactory = {
-            listOf(interactor, router)
-        }
+        pluginFactory = { listOf(
+            interactor,
+            router,
+            SwitcherDebugControls(it as SwitcherNode)
+        )}
     )
 
     @SwitcherScope
