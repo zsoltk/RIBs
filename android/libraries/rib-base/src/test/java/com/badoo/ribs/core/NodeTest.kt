@@ -16,6 +16,7 @@ import com.badoo.ribs.core.helper.TestNode2
 import com.badoo.ribs.core.helper.TestRouter
 import com.badoo.ribs.core.helper.TestView
 import com.badoo.ribs.core.helper.testBuildParams
+import com.badoo.ribs.core.plugin.Plugin
 import com.badoo.ribs.core.routing.portal.AncestryInfo
 import com.badoo.ribs.core.view.ViewPlugin
 import com.badoo.ribs.util.RIBs

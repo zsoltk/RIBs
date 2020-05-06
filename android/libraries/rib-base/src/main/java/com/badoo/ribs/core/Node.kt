@@ -29,6 +29,8 @@ import com.badoo.ribs.core.Rib.Identifier
 import com.badoo.ribs.core.builder.BuildContext
 import com.badoo.ribs.core.builder.BuildParams
 import com.badoo.ribs.core.exception.RootNodeAttachedAsChildException
+import com.badoo.ribs.core.plugin.Plugin
+import com.badoo.ribs.core.plugin.PluginFactory
 import com.badoo.ribs.core.routing.configuration.ConfigurationResolver
 import com.badoo.ribs.core.routing.portal.AncestryInfo
 import com.badoo.ribs.core.view.RibView
@@ -49,15 +51,16 @@ open class Node<V : RibView>(
     private val viewFactory: ((ViewGroup) -> V?)?,
     pluginFactory: PluginFactory<V> = { emptyList() }
 ) : Rib, LifecycleOwner {
-    private val plugins: List<Plugin<V>> = pluginFactory.invoke(this)
-
     companion object {
+
         internal const val BUNDLE_KEY = "Node"
         internal const val KEY_VIEW_STATE = "view.state"
     }
 
-    override val node: Node<*>
+    final override val node: Node<V>
         get() = this
+
+    private val plugins: List<Plugin<V>> = pluginFactory.invoke(node)
 
     open val identifier: Rib.Identifier =
         buildParams.identifier

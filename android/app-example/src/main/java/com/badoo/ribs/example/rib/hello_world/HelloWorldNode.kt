@@ -3,7 +3,7 @@ package com.badoo.ribs.example.rib.hello_world
 import android.util.Log
 import android.view.ViewGroup
 import com.badoo.ribs.core.Node
-import com.badoo.ribs.core.PluginFactory
+import com.badoo.ribs.core.plugin.PluginFactory
 import com.badoo.ribs.core.builder.BuildParams
 import io.reactivex.Single
 

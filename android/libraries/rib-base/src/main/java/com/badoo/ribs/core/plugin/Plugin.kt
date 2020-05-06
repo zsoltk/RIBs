@@ -1,11 +1,10 @@
-package com.badoo.ribs.core
+package com.badoo.ribs.core.plugin
 
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
+import com.badoo.ribs.core.Node
 import com.badoo.ribs.core.view.RibView
-
-typealias PluginFactory<V> = (Node<V>) -> List<Plugin<V>>
 
 interface Plugin<V : RibView> {
 

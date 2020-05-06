@@ -3,7 +3,7 @@ package com.badoo.ribs.example.rib.foo_bar.viewplugin
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import com.badoo.ribs.core.Plugin
+import com.badoo.ribs.core.plugin.Plugin
 import com.badoo.ribs.example.rib.foo_bar.FooBarView
 
 class ParentLongClickListener : Plugin<FooBarView> {
