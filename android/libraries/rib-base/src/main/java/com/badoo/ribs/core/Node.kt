@@ -40,8 +40,6 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import java.util.concurrent.CopyOnWriteArrayList
 
-typealias PluginFactory<V> = (Node<V>) -> Plugin<V>
-
 /**
  * Responsible for handling the addition and removal of child nodes.
  **/
@@ -49,9 +47,9 @@ typealias PluginFactory<V> = (Node<V>) -> Plugin<V>
 open class Node<V : RibView>(
     buildParams: BuildParams<*>,
     private val viewFactory: ((ViewGroup) -> V?)?,
-    pluginFactories: (Node<V>) -> List<Plugin<V>> = { emptyList() }
+    pluginFactory: PluginFactory<V> = { emptyList() }
 ) : Rib, LifecycleOwner {
-    private val plugins: List<Plugin<V>> = pluginFactories.invoke(this)
+    private val plugins: List<Plugin<V>> = pluginFactory.invoke(this)
 
     companion object {
         internal const val BUNDLE_KEY = "Node"

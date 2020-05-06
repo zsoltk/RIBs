@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import com.badoo.ribs.core.view.RibView
 
+typealias PluginFactory<V> = (Node<V>) -> List<Plugin<V>>
+
 interface Plugin<V : RibView> {
 
     fun init(node: Node<V>) {}

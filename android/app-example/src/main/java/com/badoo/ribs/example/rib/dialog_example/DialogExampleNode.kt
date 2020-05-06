@@ -2,16 +2,15 @@ package com.badoo.ribs.example.rib.dialog_example
 
 import android.view.ViewGroup
 import com.badoo.ribs.core.Node
+import com.badoo.ribs.core.PluginFactory
 import com.badoo.ribs.core.builder.BuildParams
 
 class DialogExampleNode(
     buildParams: BuildParams<*>,
     viewFactory: ((ViewGroup) -> DialogExampleView?)?,
-    router: DialogExampleRouter,
-    interactor: DialogExampleInteractor
+    pluginFactory: PluginFactory<DialogExampleView>
 ) : Node<DialogExampleView>(
     buildParams = buildParams,
     viewFactory = viewFactory,
-    router = router,
-    interactor = interactor
+    pluginFactory = pluginFactory
 ), DialogExample

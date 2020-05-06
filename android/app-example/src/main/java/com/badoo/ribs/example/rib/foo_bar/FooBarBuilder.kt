@@ -14,13 +14,14 @@ class FooBarBuilder(
             buildParams = buildParams,
             permissionRequester = dependency.permissionRequester()
         )
-        val viewPlugins = listOf(ParentLongClickListener())
 
         return FooBarNode(
-            customisation.viewFactory(null),
-            interactor = interactor,
             buildParams = buildParams,
-            viewPlugins = viewPlugins
+            viewFactory = customisation.viewFactory(null),
+            pluginFactory = { listOf(
+                interactor,
+                ParentLongClickListener())
+            }
         )
     }
 }

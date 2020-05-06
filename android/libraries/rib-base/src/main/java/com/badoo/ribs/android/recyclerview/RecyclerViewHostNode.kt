@@ -17,7 +17,7 @@ class RecyclerViewHostNode<T : Parcelable> internal constructor(
 ) : Node<RibView>(
     buildParams = buildParams,
     viewFactory = { RecyclerViewHostViewImpl.Factory().invoke(viewDeps).invoke(it) },
-    pluginFactories = listOf(interactor, router)
+    pluginFactory = { listOf(interactor, router) }
 ), RecyclerViewHost<T> {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)

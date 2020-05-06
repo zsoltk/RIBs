@@ -53,7 +53,8 @@ internal object SmallModule {
     ) : SmallNode = SmallNode(
         buildParams = buildParams,
         viewFactory = customisation.viewFactory(null),
-        router = router,
-        interactor = interactor
+        pluginFactory = { listOf(
+            interactor, router
+        )}
     )
 }

@@ -21,7 +21,7 @@ class MenuBuilder(
         return MenuNode(
             buildParams = buildParams,
             viewFactory = customisation.viewFactory.invoke(null),
-            plugins = listOf(interactor)
+            interactor = interactor
         )
     }
 }

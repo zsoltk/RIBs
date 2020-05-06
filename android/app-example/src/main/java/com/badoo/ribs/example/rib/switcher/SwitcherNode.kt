@@ -12,14 +12,14 @@ import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration.Content.
 import io.reactivex.Single
 
 class SwitcherNode(
+    buildParams: BuildParams<*>,
     viewFactory: ((ViewGroup) -> SwitcherView?)?,
     private val router: SwitcherRouter,
-    buildParams: BuildParams<*>,
     val plugins: (Node<SwitcherView>) -> List<Plugin<SwitcherView>>
 ) : Node<SwitcherView>(
     buildParams = buildParams,
     viewFactory = viewFactory,
-    pluginFactories = plugins
+    pluginFactory = plugins
 ), Switcher {
     
     override fun attachHelloWorld(): Single<HelloWorld> =

@@ -90,7 +90,7 @@ internal object SwitcherModule {
         viewDependency: SwitcherView.Dependency,
         router: SwitcherRouter,
         interactor: SwitcherInteractor
-    ) : SwitcherNode = SwitcherNode(
+    ): SwitcherNode = SwitcherNode(
         buildParams = buildParams,
         viewFactory = customisation.viewFactory(viewDependency),
         router = router,
