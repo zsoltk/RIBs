@@ -7,14 +7,18 @@ import com.badoo.ribs.core.Node
 import com.badoo.ribs.core.view.RibView
 
 open class DebugControls<V : RibView>(
-    private val node: Node<*>,
     private val viewFactory: ((ViewGroup) -> View)? = null,
     private val debugParentViewGroup: ViewGroup? = null,
     private val isEnabled: Boolean // TODO consider this for all plugins
 ) : Plugin<V> {
 
+    private lateinit var node: Node<V>
     private var target: ViewGroup? = null
     var debugView: View? = null
+
+    override fun init(node: Node<V>) {
+        this.node = node
+    }
 
     final override fun onViewCreated(view: V, viewLifecycle: Lifecycle) {
         super.onViewCreated(view, viewLifecycle)

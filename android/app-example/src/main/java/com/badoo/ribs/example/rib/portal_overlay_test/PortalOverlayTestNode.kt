@@ -12,7 +12,7 @@ class PortalOverlayTestNode(
 ) : Node<PortalOverlayTestView>(
     buildParams = buildParams,
     viewFactory = viewFactory,
-    pluginFactory = pluginFactory
+    plugins = pluginFactory
 ), PortalOverlayTest {
 
 }

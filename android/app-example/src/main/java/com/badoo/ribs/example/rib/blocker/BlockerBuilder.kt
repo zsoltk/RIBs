@@ -19,7 +19,7 @@ class BlockerBuilder(
         return Node(
             buildParams = buildParams,
             viewFactory = customisation.viewFactory(null),
-            pluginFactory = { listOf(
+            plugins = { listOf(
                 interactor
             )}
         )

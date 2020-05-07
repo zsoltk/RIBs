@@ -2,6 +2,8 @@
 package com.badoo.ribs.example.rib.switcher.builder
 
 import com.badoo.ribs.core.builder.BuildParams
+import com.badoo.ribs.core.plugin.Subtree
+import com.badoo.ribs.core.routing.configuration.feature.BackStackFeature
 import com.badoo.ribs.dialog.DialogLauncher
 import com.badoo.ribs.example.rib.blocker.Blocker
 import com.badoo.ribs.example.rib.blocker.BlockerBuilder
@@ -13,14 +15,18 @@ import com.badoo.ribs.example.rib.hello_world.HelloWorldBuilder
 import com.badoo.ribs.example.rib.menu.Menu
 import com.badoo.ribs.example.rib.menu.MenuBuilder
 import com.badoo.ribs.example.rib.switcher.Switcher
+import com.badoo.ribs.example.rib.switcher.SwitcherBackStack
 import com.badoo.ribs.example.rib.switcher.SwitcherInteractor
 import com.badoo.ribs.example.rib.switcher.SwitcherNode
-import com.badoo.ribs.example.rib.switcher.SwitcherRouter
+import com.badoo.ribs.example.rib.switcher.SwitcherSubtree
 import com.badoo.ribs.example.rib.switcher.SwitcherView
 import com.badoo.ribs.example.rib.switcher.debug.SwitcherDebugControls
 import com.badoo.ribs.example.rib.switcher.dialog.DialogToTestOverlay
+import com.badoo.ribs.example.rib.switcher.subtree.Configuration.Content
+import com.badoo.ribs.example.rib.switcher.subtree.SwitcherRouter
 import com.badoo.ribs.example.util.CoffeeMachine
 import dagger.Provides
+import dagger.multibindings.IntoSet
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
@@ -38,35 +44,17 @@ internal object SwitcherModule {
     @Provides
     @JvmStatic
     internal fun router(
-        buildParams: BuildParams<Nothing?>,
         component: SwitcherComponent,
-        customisation: Switcher.Customisation,
         dialogLauncher: DialogLauncher,
         dialogToTestOverlay: DialogToTestOverlay
     ): SwitcherRouter =
         SwitcherRouter(
-            buildParams = buildParams,
-            transitionHandler = customisation.transitionHandler,
             fooBarBuilder = FooBarBuilder(component),
             helloWorldBuilder = HelloWorldBuilder(component),
             dialogExampleBuilder = DialogExampleBuilder(component),
             blockerBuilder = BlockerBuilder(component),
             menuBuilder = MenuBuilder(component),
             dialogLauncher = dialogLauncher,
-            dialogToTestOverlay = dialogToTestOverlay
-        )
-
-    @SwitcherScope
-    @Provides
-    @JvmStatic
-    internal fun interactor(
-        buildParams: BuildParams<Nothing?>,
-        router: SwitcherRouter,
-        dialogToTestOverlay: DialogToTestOverlay
-    ): SwitcherInteractor =
-        SwitcherInteractor(
-            buildParams = buildParams,
-            router = router,
             dialogToTestOverlay = dialogToTestOverlay
         )
 
@@ -82,21 +70,63 @@ internal object SwitcherModule {
     @SwitcherScope
     @Provides
     @JvmStatic
+    internal fun backStack(
+        buildParams: BuildParams<Nothing?>
+    ): SwitcherBackStack =
+        BackStackFeature(
+            initialConfiguration = Content.DialogsExample,
+            buildParams = buildParams
+        )
+
+    @SwitcherScope
+    @Provides
+    @JvmStatic
+    internal fun interactor(
+        buildParams: BuildParams<Nothing?>,
+        backStack: SwitcherBackStack,
+        dialogToTestOverlay: DialogToTestOverlay
+    ): SwitcherInteractor =
+        SwitcherInteractor(
+            buildParams = buildParams,
+            backStack = backStack,
+            dialogToTestOverlay = dialogToTestOverlay
+        )
+
+    @SwitcherScope
+    @Provides
+    @JvmStatic
+    @IntoSet
+    internal fun subtree(
+        customisation: Switcher.Customisation,
+        router: SwitcherRouter,
+        interactor: SwitcherInteractor
+    ): SwitcherSubtree =
+        Subtree(
+            router = router,
+            routingSource = interactor,
+            backPressHandler = interactor,
+            transitionHandler = customisation.transitionHandler
+        )
+
+    @SwitcherScope
+    @Provides
+    @JvmStatic
     internal fun node(
         buildParams: BuildParams<Nothing?>,
         customisation: Switcher.Customisation,
         viewDependency: SwitcherView.Dependency,
-        router: SwitcherRouter,
-        interactor: SwitcherInteractor
+        interactor: SwitcherInteractor,
+        backStack: SwitcherBackStack,
+        subtree: SwitcherSubtree
     ): SwitcherNode = SwitcherNode(
-        router = router,
+        backStack = backStack,
         buildParams = buildParams,
         viewFactory = customisation.viewFactory(viewDependency),
-        pluginFactory = { listOf(
+        plugins = listOf(
             interactor,
-            router,
-            SwitcherDebugControls(it as SwitcherNode)
-        )}
+            subtree,
+            SwitcherDebugControls()
+        )
     )
 
     @SwitcherScope

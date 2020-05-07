@@ -12,5 +12,5 @@ class BigNode(
 ) : Node<BigView>(
     buildParams = buildParams,
     viewFactory = viewFactory,
-    pluginFactory = pluginFactory
+    plugins = pluginFactory
 ), Big

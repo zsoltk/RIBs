@@ -2,8 +2,10 @@ package com.badoo.ribs.core.routing.configuration
 
 import android.os.Parcelable
 import com.badoo.ribs.core.routing.configuration.feature.BackStackFeature
+import com.badoo.ribs.core.routing.configuration.feature.BackStackFeatureState
 import com.badoo.ribs.core.routing.configuration.feature.TransitionDescriptor
 import io.reactivex.Observable
+import io.reactivex.ObservableSource
 
 /**
  * Takes the state emissions from [BackStackFeature], and translates them to a stream of
@@ -11,9 +13,9 @@ import io.reactivex.Observable
  *
  * @see [ConfigurationCommandCreator.diff]
  */
-internal fun <C : Parcelable> BackStackFeature<C>.toCommands(): Observable<Transaction<C>> =
+internal fun <C : Parcelable> ObservableSource<BackStackFeatureState<C>>.toCommands(): Observable<Transaction<C>> =
     Observable.wrap(this)
-        .startWith(initialState) // Bootstrapper can overwrite it by the time we receive the first state emission here
+        // .startWith(initialState) // TODO reconsider // Bootstrapper can overwrite it by the time we receive the first state emission here
         .buffer(2, 1)
         .flatMap { (previous, current) ->
             val commands =

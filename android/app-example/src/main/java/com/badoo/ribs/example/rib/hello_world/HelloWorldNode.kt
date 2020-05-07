@@ -14,7 +14,7 @@ class HelloWorldNode(
 ) : Node<HelloWorldView>(
     buildParams = buildParams,
     viewFactory = viewFactory,
-    pluginFactory = pluginFactory
+    plugins = pluginFactory
 ), HelloWorld {
 
     override fun somethingSomethingDarkSide(): Single<HelloWorld> =

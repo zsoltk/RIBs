@@ -4,13 +4,11 @@ import androidx.lifecycle.Lifecycle.State.CREATED
 import androidx.lifecycle.Lifecycle.State.STARTED
 import com.badoo.common.ribs.InteractorTestHelper
 import com.badoo.ribs.core.Router
-import com.badoo.ribs.core.routing.configuration.feature.operation.push
-import com.badoo.ribs.core.routing.configuration.feature.operation.pushOverlay
 import com.badoo.ribs.core.builder.BuildParams
-import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration
-import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration.Content
-import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration.Overlay
-import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration.Permanent
+import com.badoo.ribs.example.rib.switcher.subtree.Configuration
+import com.badoo.ribs.example.rib.switcher.subtree.Configuration.Content
+import com.badoo.ribs.example.rib.switcher.subtree.Configuration.Overlay
+import com.badoo.ribs.example.rib.switcher.subtree.Configuration.Permanent
 import com.badoo.ribs.example.rib.switcher.SwitcherView.Event
 import com.badoo.ribs.example.rib.switcher.dialog.DialogToTestOverlay
 import com.jakewharton.rxrelay2.PublishRelay

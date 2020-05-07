@@ -12,7 +12,7 @@ class SmallNode(
 ) : Node<SmallView>(
     buildParams = buildParams,
     viewFactory = viewFactory,
-    pluginFactory = pluginFactory
+    plugins = pluginFactory
 ), Small {
 
 }

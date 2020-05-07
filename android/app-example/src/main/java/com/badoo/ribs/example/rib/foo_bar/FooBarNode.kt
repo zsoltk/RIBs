@@ -12,7 +12,7 @@ class FooBarNode(
 ) : Node<FooBarView>(
     buildParams = buildParams,
     viewFactory = viewFactory,
-    pluginFactory = pluginFactory
+    plugins = pluginFactory
 ), FooBar {
 
 }

@@ -15,7 +15,7 @@ class PortalNode internal constructor(
 ) : Node<Nothing>(
     buildParams = buildParams,
     viewFactory = null,
-    pluginFactory = pluginFactory
+    plugins = pluginFactory
 ), Portal {
 
     override fun showDefault(): Single<Rib> =

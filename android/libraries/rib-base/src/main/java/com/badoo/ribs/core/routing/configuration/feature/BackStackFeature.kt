@@ -1,15 +1,23 @@
 package com.badoo.ribs.core.routing.configuration.feature
 
 import android.os.Parcelable
+import com.badoo.mvicore.android.AndroidTimeCapsule
 import com.badoo.mvicore.element.Actor
 import com.badoo.mvicore.element.Bootstrapper
 import com.badoo.mvicore.element.Reducer
 import com.badoo.mvicore.element.TimeCapsule
 import com.badoo.mvicore.feature.ActorReducerFeature
+import com.badoo.ribs.core.builder.BuildParams
+import com.badoo.ribs.core.plugin.Plugin
+import com.badoo.ribs.core.routing.RoutingSource
 import com.badoo.ribs.core.routing.configuration.feature.BackStackFeature.Effect
 import com.badoo.ribs.core.routing.configuration.feature.BackStackFeature.Operation
 import com.badoo.ribs.core.routing.configuration.feature.operation.BackStackOperation
 import com.badoo.ribs.core.routing.configuration.feature.operation.NewRoot
+import com.badoo.ribs.core.routing.configuration.feature.operation.canPop
+import com.badoo.ribs.core.routing.configuration.feature.operation.canPopOverlay
+import com.badoo.ribs.core.routing.configuration.feature.operation.pop
+import com.badoo.ribs.core.view.RibView
 import io.reactivex.Observable
 import io.reactivex.Observable.empty
 import io.reactivex.Observable.just
@@ -29,7 +37,7 @@ private fun <C : Parcelable> TimeCapsule<BackStackFeatureState<C>>.initialState(
  * @see BackStackFeature.ActorImpl for logic deciding whether an operation should be carried out
  * @see BackStackFeature.ReducerImpl for the implementation of applying state changes
  */
-internal class BackStackFeature<C : Parcelable>(
+class BackStackFeature<C : Parcelable, V : RibView>(
     initialConfiguration: C,
     timeCapsule: TimeCapsule<BackStackFeatureState<C>>
 ) : ActorReducerFeature<Operation<C>, Effect<C>, BackStackFeatureState<C>, Nothing>(
@@ -40,7 +48,16 @@ internal class BackStackFeature<C : Parcelable>(
     ),
     actor = ActorImpl<C>(),
     reducer = ReducerImpl<C>()
-) {
+), RoutingSource<C>, Plugin<V> {
+
+    constructor(
+        initialConfiguration: C,
+        buildParams: BuildParams<*>
+    ) : this(
+        initialConfiguration,
+        AndroidTimeCapsule(buildParams.savedInstanceState)
+    )
+
     val initialState =
         timeCapsule.initialState()
 
@@ -106,5 +123,31 @@ internal class BackStackFeature<C : Parcelable>(
                 backStack = effect.backStackOperation(backStack)
             )
         }
+    }
+
+    fun popBackStack(): Boolean =
+        if (state.backStack.canPop) {
+            pop()
+            true
+        } else {
+            false
+        }
+
+    fun popOverlay(): Boolean =
+        if (state.backStack.canPopOverlay) {
+            pop()
+            true
+        } else {
+            false
+        }
+
+    override fun handleBackPressBeforeDownstream(): Boolean =
+        popOverlay()
+
+    override fun handleBackPressAfterDownstream(): Boolean =
+        popBackStack()
+
+    override fun onDetach() {
+        dispose()
     }
 }

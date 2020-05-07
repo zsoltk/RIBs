@@ -10,7 +10,8 @@ import com.badoo.ribs.example.rib.foo_bar.FooBarNode
 import com.badoo.ribs.example.rib.hello_world.HelloWorld
 import com.badoo.ribs.example.rib.hello_world.HelloWorldNode
 import com.badoo.ribs.example.rib.menu.MenuNode
-import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration.Content
+import com.badoo.ribs.example.rib.switcher.subtree.SwitcherRouter
+import com.badoo.ribs.example.rib.switcher.subtree.Configuration.Content
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.mock
@@ -52,11 +53,19 @@ class SwitcherWorkflowTest {
         router = SwitcherRouter(
             transitionHandler = null,
             buildParams = BuildParams.Empty(),
-            fooBarBuilder = mock { on { build(any()) } doAnswer(withBuilder(fooBarNodeBuilder)) },
-            helloWorldBuilder = mock { on { build(any()) } doAnswer(withBuilder(helloWorldNodeBuilder)) },
-            dialogExampleBuilder = mock { on { build(any()) } doAnswer(withBuilder(dialogExampleBuilder)) },
-            blockerBuilder = mock { on { build(any()) } doAnswer(withBuilder(blockerBuilder)) },
-            menuBuilder = mock { on { build(any()) } doAnswer(withBuilder(menuBuilder)) },
+            fooBarBuilder = mock { on { build(any()) } doAnswer (withBuilder(fooBarNodeBuilder)) },
+            helloWorldBuilder = mock {
+                on { build(any()) } doAnswer (withBuilder(
+                    helloWorldNodeBuilder
+                ))
+            },
+            dialogExampleBuilder = mock {
+                on { build(any()) } doAnswer (withBuilder(
+                    dialogExampleBuilder
+                ))
+            },
+            blockerBuilder = mock { on { build(any()) } doAnswer (withBuilder(blockerBuilder)) },
+            menuBuilder = mock { on { build(any()) } doAnswer (withBuilder(menuBuilder)) },
             dialogLauncher = mock(),
             dialogToTestOverlay = mock()
         )

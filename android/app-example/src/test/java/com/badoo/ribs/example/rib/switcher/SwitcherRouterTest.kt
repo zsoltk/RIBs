@@ -16,10 +16,11 @@ import com.badoo.ribs.example.rib.menu.Menu
 import com.badoo.ribs.example.rib.menu.Menu.MenuItem
 import com.badoo.ribs.example.rib.menu.MenuBuilder
 import com.badoo.ribs.example.rib.menu.MenuNode
-import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration.Content
-import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration.Overlay
-import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration.Permanent
+import com.badoo.ribs.example.rib.switcher.subtree.Configuration.Content
+import com.badoo.ribs.example.rib.switcher.subtree.Configuration.Overlay
+import com.badoo.ribs.example.rib.switcher.subtree.Configuration.Permanent
 import com.badoo.ribs.example.rib.switcher.dialog.DialogToTestOverlay
+import com.badoo.ribs.example.rib.switcher.subtree.SwitcherRouter
 import com.badoo.ribs.example.rib.util.TestNode
 import com.badoo.ribs.example.rib.util.subscribeOnTestObserver
 import com.nhaarman.mockitokotlin2.any
@@ -58,17 +59,18 @@ class SwitcherRouterTest {
     private val dialogLauncher: DialogLauncher = mock()
     private val dialogToTestOverlay: DialogToTestOverlay = mock()
 
-    private val router = SwitcherRouter(
-        BuildParams.Empty(),
-        transitionHandler = null,
-        fooBarBuilder = fooBarBuilder,
-        helloWorldBuilder = helloWorldBuilder,
-        dialogExampleBuilder = dialogExampleBuilder,
-        blockerBuilder = blockerBuilder,
-        menuBuilder = menuBuilder,
-        dialogLauncher = dialogLauncher,
-        dialogToTestOverlay = dialogToTestOverlay
-    )
+    private val router =
+        SwitcherRouter(
+            BuildParams.Empty(),
+            transitionHandler = null,
+            fooBarBuilder = fooBarBuilder,
+            helloWorldBuilder = helloWorldBuilder,
+            dialogExampleBuilder = dialogExampleBuilder,
+            blockerBuilder = blockerBuilder,
+            menuBuilder = menuBuilder,
+            dialogLauncher = dialogLauncher,
+            dialogToTestOverlay = dialogToTestOverlay
+        )
 
     private val rootNode = TestNode(router = router)
 

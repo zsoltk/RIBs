@@ -1,6 +1,5 @@
-package com.badoo.ribs.example.rib.switcher
+package com.badoo.ribs.example.rib.switcher.subtree
 
-import android.os.Parcelable
 import com.badoo.ribs.core.Router
 import com.badoo.ribs.core.builder.BuildParams
 import com.badoo.ribs.core.routing.action.AttachRibRoutingAction.Companion.attach
@@ -18,17 +17,13 @@ import com.badoo.ribs.example.rib.menu.Menu
 import com.badoo.ribs.example.rib.menu.Menu.Input.SelectMenuItem
 import com.badoo.ribs.example.rib.menu.Menu.MenuItem
 import com.badoo.ribs.example.rib.menu.MenuBuilder
-import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration
-import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration.Content
-import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration.Overlay
-import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration.Permanent
 import com.badoo.ribs.example.rib.switcher.dialog.DialogToTestOverlay
+import com.badoo.ribs.example.rib.switcher.subtree.Configuration.Content
+import com.badoo.ribs.example.rib.switcher.subtree.Configuration.Overlay
+import com.badoo.ribs.example.rib.switcher.subtree.Configuration.Permanent
 import com.jakewharton.rxrelay2.PublishRelay
-import kotlinx.android.parcel.Parcelize
 
 class SwitcherRouter(
-    buildParams: BuildParams<Nothing?>,
-    transitionHandler: TransitionHandler<Configuration>? = null,
     private val fooBarBuilder: FooBarBuilder,
     private val helloWorldBuilder: HelloWorldBuilder,
     private val dialogExampleBuilder: DialogExampleBuilder,
@@ -36,30 +31,16 @@ class SwitcherRouter(
     private val menuBuilder: MenuBuilder,
     private val dialogLauncher: DialogLauncher,
     private val dialogToTestOverlay: DialogToTestOverlay
-): Router<Configuration, Permanent, Content, Overlay, SwitcherView>(
-    buildParams = buildParams,
-    transitionHandler = transitionHandler,
-    initialConfiguration = Content.DialogsExample,
-    permanentParts = listOf(
-        Permanent.Menu
-    )
-) {
-    internal val menuUpdater = PublishRelay.create<Menu.Input>()
+): Router<Configuration>() {
 
-    sealed class Configuration : Parcelable {
-        sealed class Permanent : Configuration() {
-            @Parcelize object Menu : Permanent()
-        }
-        sealed class Content : Configuration() {
-            @Parcelize object Hello : Content()
-            @Parcelize object Foo : Content()
-            @Parcelize object DialogsExample : Content()
-            @Parcelize object Blocker : Content()
-        }
-        sealed class Overlay : Configuration() {
-            @Parcelize object Dialog : Overlay()
-        }
-    }
+//    override val permanentParts: List<Permanent> = listOf(
+//        Permanent.Menu
+//    )
+//
+//    override val initialConfiguration: Content =
+//        Content.DialogsExample
+
+    internal val menuUpdater = PublishRelay.create<Menu.Input>()
 
     override fun resolveConfiguration(configuration: Configuration): RoutingAction =
         when (configuration) {

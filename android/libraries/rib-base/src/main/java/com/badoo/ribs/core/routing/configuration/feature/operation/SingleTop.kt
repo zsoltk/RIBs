@@ -3,6 +3,8 @@ package com.badoo.ribs.core.routing.configuration.feature.operation
 import android.os.Parcelable
 import com.badoo.ribs.core.Router
 import com.badoo.ribs.core.routing.configuration.feature.BackStackElement
+import com.badoo.ribs.core.routing.configuration.feature.BackStackFeature
+import com.badoo.ribs.core.routing.configuration.feature.BackStackFeature.Operation
 
 data class SingleTop<C : Parcelable>(
     private val configuration: C
@@ -48,6 +50,6 @@ data class SingleTop<C : Parcelable>(
     }
 }
 
-fun <C : Parcelable> Router<C, *, *, *, *>.singleTop(configuration: C) {
-    acceptOperation(SingleTop(configuration))
+fun <C : Parcelable> BackStackFeature<C, *>.singleTop(configuration: C) {
+    accept(Operation(SingleTop(configuration)))
 }

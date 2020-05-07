@@ -15,6 +15,7 @@
  */
 package com.badoo.ribs.core
 
+//import com.uber.rib.util.RibRefWatcher
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.SparseArray
@@ -30,14 +31,11 @@ import com.badoo.ribs.core.builder.BuildContext
 import com.badoo.ribs.core.builder.BuildParams
 import com.badoo.ribs.core.exception.RootNodeAttachedAsChildException
 import com.badoo.ribs.core.plugin.Plugin
-import com.badoo.ribs.core.plugin.PluginFactory
-import com.badoo.ribs.core.routing.configuration.ConfigurationResolver
 import com.badoo.ribs.core.routing.portal.AncestryInfo
 import com.badoo.ribs.core.view.RibView
 import com.badoo.ribs.util.RIBs
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.PublishRelay
-//import com.uber.rib.util.RibRefWatcher
 import io.reactivex.Observable
 import io.reactivex.Single
 import java.util.concurrent.CopyOnWriteArrayList
@@ -47,9 +45,9 @@ import java.util.concurrent.CopyOnWriteArrayList
  **/
 @SuppressWarnings("LargeClass")
 open class Node<V : RibView>(
-    buildParams: BuildParams<*>,
+    val buildParams: BuildParams<*>,
     private val viewFactory: ((ViewGroup) -> V?)?,
-    pluginFactory: PluginFactory<V> = { emptyList() }
+    val plugins: List<Plugin<V>> = emptyList()
 ) : Rib, LifecycleOwner {
     companion object {
 
@@ -59,8 +57,6 @@ open class Node<V : RibView>(
 
     final override val node: Node<V>
         get() = this
-
-    val plugins: List<Plugin<V>> = pluginFactory.invoke(node)
 
     open val identifier: Rib.Identifier =
         buildParams.identifier
@@ -115,8 +111,12 @@ open class Node<V : RibView>(
     fun getChildren(): List<Node<*>> =
         children.toList()
 
+    val allPlugins = plugins
+
     init {
-        plugins.forEach { it.init(this) }
+
+
+        this.plugins.forEach { it.init(this) }
     }
 
     @CallSuper
@@ -138,7 +138,9 @@ open class Node<V : RibView>(
 
         lifecycleManager.onCreateView()
         view?.let { view ->
-            plugins.forEach { it.onViewCreated(view, lifecycleManager.viewLifecycle!!.lifecycle) }
+            plugins.forEach {
+                it.onViewCreated(view, lifecycleManager.viewLifecycle!!.lifecycle)
+            }
         }
         plugins.forEach { it.onAttachToView(parentViewGroup) }
     }

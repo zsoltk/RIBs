@@ -10,7 +10,7 @@ import com.badoo.ribs.dialog.CanProvideDialogLauncher
 import com.badoo.ribs.example.rib.dialog_example.DialogExample
 import com.badoo.ribs.example.rib.foo_bar.FooBar
 import com.badoo.ribs.example.rib.hello_world.HelloWorld
-import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration
+import com.badoo.ribs.example.rib.switcher.subtree.Configuration
 import com.badoo.ribs.example.util.CoffeeMachine
 import io.reactivex.Single
 

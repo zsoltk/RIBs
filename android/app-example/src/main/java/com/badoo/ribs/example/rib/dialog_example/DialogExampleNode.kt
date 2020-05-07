@@ -12,5 +12,5 @@ class DialogExampleNode(
 ) : Node<DialogExampleView>(
     buildParams = buildParams,
     viewFactory = viewFactory,
-    pluginFactory = pluginFactory
+    plugins = pluginFactory
 ), DialogExample

@@ -16,11 +16,8 @@ import kotlinx.android.parcel.Parcelize
 class BigRouter(
     buildParams: BuildParams<Nothing?>,
     private val smallBuilder: SmallBuilder
-): Router<Configuration, Permanent, Content, Overlay, BigView>(
-    buildParams = buildParams,
-    initialConfiguration = Content.Default,
-    permanentParts = listOf(Permanent.Small)
-) {
+): Router<Configuration>() {
+
     sealed class Configuration : Parcelable {
         sealed class Permanent : Configuration() {
             @Parcelize object Small : Permanent()

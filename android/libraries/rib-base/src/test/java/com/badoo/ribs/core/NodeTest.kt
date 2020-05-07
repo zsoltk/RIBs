@@ -95,8 +95,8 @@ class NodeTest {
             savedInstanceState = null,
             identifier = object : TestPublicRibInterface {},
             viewFactory = viewFactory,
-            pluginFactory = listOf(interactor, router),
-            pluginFactory = plugins
+            plugins = listOf(interactor, router),
+            plugins = plugins
         )
     }
 
@@ -105,8 +105,8 @@ class NodeTest {
             savedInstanceState = null,
             identifier = object : TestPublicRibInterface {},
             viewFactory = null,
-            pluginFactory = listOf(interactor, router),
-            pluginFactory = plugins
+            plugins = listOf(interactor, router),
+            plugins = plugins
         )
     }
 
