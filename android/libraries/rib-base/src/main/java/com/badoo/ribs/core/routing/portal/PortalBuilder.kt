@@ -22,8 +22,13 @@ class PortalBuilder(
 
         return PortalNode(
             buildParams = buildParams,
-            router = router,
-            interactor = interactor
+            pluginFactory = {
+                listOf(
+                    interactor,
+                    router
+                ) + dependency.pluginFactory().invoke(it)
+            },
+            router = router
         )
     }
 }

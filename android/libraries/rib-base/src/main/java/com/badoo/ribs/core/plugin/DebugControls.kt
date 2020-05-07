@@ -6,31 +6,48 @@ import androidx.lifecycle.Lifecycle
 import com.badoo.ribs.core.Node
 import com.badoo.ribs.core.view.RibView
 
-abstract class DebugControls<V : RibView>(
+open class DebugControls<V : RibView>(
     private val node: Node<*>,
-    private val viewFactory: () -> View,
+    private val viewFactory: ((ViewGroup) -> View)? = null,
     private val debugParentViewGroup: ViewGroup? = null,
     private val isEnabled: Boolean // TODO consider this for all plugins
 ) : Plugin<V> {
 
+    private var target: ViewGroup? = null
+    var debugView: View? = null
+
     final override fun onViewCreated(view: V, viewLifecycle: Lifecycle) {
         super.onViewCreated(view, viewLifecycle)
         if (isEnabled) {
-
+            target = node.pluginUp<DebugControls<*>>()?.debugParentViewGroup ?: debugParentViewGroup
+            target?.let {
+                debugView = viewFactory?.invoke(it)
+            }
         }
-        // TODO create debug view
     }
 
     final override fun onAttachToView(parentViewGroup: ViewGroup) {
-        val target = node.pluginUp<DebugControls<*>>()?.debugParentViewGroup ?: debugParentViewGroup
-        // TODO target.addView(debugView)
+        if (isEnabled && target != null) {
+            debugView?.let {
+                target?.addView(it)
+                onDebugViewCreated(it)
+            }
+        }
     }
-
-    abstract fun onDebugViewCreated(debugView: View)
 
     final override fun onDetachFromView(parentViewGroup: ViewGroup) {
         super.onDetachFromView(parentViewGroup)
-        // TODO target.removeView(debugView)
-        // TODO destroy debugView
+        if (isEnabled && target != null) {
+            debugView?.let {
+                target?.removeView(it)
+                onDebugViewDestroyed(it)
+            }
+            debugView = null
+            target = null
+        }
     }
+
+    open fun onDebugViewCreated(debugView: View) {}
+
+    open fun onDebugViewDestroyed(debugView: View) {}
 }

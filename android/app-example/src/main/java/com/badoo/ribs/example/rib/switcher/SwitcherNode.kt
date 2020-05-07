@@ -6,9 +6,10 @@ import com.badoo.ribs.core.Node
 import com.badoo.ribs.core.builder.BuildParams
 import com.badoo.ribs.core.plugin.PluginFactory
 import com.badoo.ribs.core.routing.configuration.feature.operation.push
+import com.badoo.ribs.example.rib.dialog_example.DialogExample
+import com.badoo.ribs.example.rib.foo_bar.FooBar
 import com.badoo.ribs.example.rib.hello_world.HelloWorld
-import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration.Content.Foo
-import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration.Content.Hello
+import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration.Content
 import io.reactivex.Single
 
 class SwitcherNode(
@@ -25,14 +26,19 @@ class SwitcherNode(
     override fun attachHelloWorld(): Single<HelloWorld> =
         attachWorkflow {
             Log.d("WORKFLOW", "Switcher / attachHelloWorld")
-            router.push(Hello)
+            router.push(Content.Hello)
         }
 
-    override fun testCrash(): Single<HelloWorld> =
+    override fun attachDialogExample(): Single<DialogExample> =
         attachWorkflow {
-            // test case: attaching Foo, but expecting HelloWorld by mistake
-            Log.d("WORKFLOW", "Switcher / testCrash")
-            router.push(Foo)
+            Log.d("WORKFLOW", "Switcher / attachDialogExample")
+            router.push(Content.DialogsExample)
+        }
+
+    override fun attachFooBar(): Single<FooBar> =
+        attachWorkflow {
+            Log.d("WORKFLOW", "Switcher / attachFooBar")
+            router.push(Content.Foo)
         }
 
     override fun waitForHelloWorld(): Single<HelloWorld> =

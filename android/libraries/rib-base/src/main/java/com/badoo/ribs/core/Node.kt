@@ -49,7 +49,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 open class Node<V : RibView>(
     buildParams: BuildParams<*>,
     private val viewFactory: ((ViewGroup) -> V?)?,
-    pluginFactory: PluginFactory<Any, V> = { emptyList() }
+    pluginFactory: PluginFactory<V> = { emptyList() }
 ) : Rib, LifecycleOwner {
     companion object {
 
@@ -362,7 +362,7 @@ open class Node<V : RibView>(
 
     inline fun <reified P> pluginUp(): P? {
         var found: P?
-        var current: Node<*>? = this
+        var current: Node<*>? = parent
 
         while (current != null) {
             found = current.plugin<P>()

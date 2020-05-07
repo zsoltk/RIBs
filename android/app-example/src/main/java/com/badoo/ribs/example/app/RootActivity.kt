@@ -8,6 +8,8 @@ import com.badoo.ribs.android.PermissionRequester
 import com.badoo.ribs.android.RibActivity
 import com.badoo.ribs.core.builder.BuildContext
 import com.badoo.ribs.core.builder.BuildContext.Companion.root
+import com.badoo.ribs.core.plugin.DebugControls
+import com.badoo.ribs.core.plugin.PluginFactory
 import com.badoo.ribs.core.routing.action.AttachRibRoutingAction.Companion.attach
 import com.badoo.ribs.core.routing.action.RoutingAction
 import com.badoo.ribs.core.routing.portal.Portal
@@ -17,6 +19,7 @@ import com.badoo.ribs.core.routing.transition.handler.CrossFader
 import com.badoo.ribs.core.routing.transition.handler.Slider
 import com.badoo.ribs.core.routing.transition.handler.TransitionHandler
 import com.badoo.ribs.dialog.DialogLauncher
+import com.badoo.ribs.example.BuildConfig
 import com.badoo.ribs.example.R
 import com.badoo.ribs.example.rib.hello_world.HelloWorld
 import com.badoo.ribs.example.rib.switcher.Switcher
@@ -66,6 +69,16 @@ class RootActivity : RibActivity() {
                         }
                     ).build(buildContext)
                 }
+
+                override fun pluginFactory(): PluginFactory<Nothing> = {
+                    listOf(
+                        DebugControls(
+                            node = it,
+                            debugParentViewGroup = findViewById(R.id.debug_root),
+                            isEnabled = BuildConfig.DEBUG
+                        )
+                    )
+                }
             }
         ).build(root(savedInstanceState, AppRibCustomisations)).also {
             workflowRoot = it
@@ -79,8 +92,7 @@ class RootActivity : RibActivity() {
             // adb shell am start -a "android.intent.action.VIEW" -d "app-example://workflow2"
             (it.data?.host == "workflow2") -> executeWorkflow2()
 
-            // adb shell am start -a "android.intent.action.VIEW" -d "app-example://testcrash"
-            (it.data?.host == "testcrash") -> executeTestCrash()
+
             else -> null
         }
     }
@@ -104,11 +116,6 @@ class RootActivity : RibActivity() {
 
             BiFunction<Switcher, HelloWorld, Unit> { _, _ -> Unit }
         )
-
-    private fun executeTestCrash(): Observable<*> =
-        switcher()
-            .flatMap { it.testCrash() }
-            .toObservable()
 
     @Suppress("UNCHECKED_CAST")
     private fun switcher() =

@@ -3,6 +3,7 @@ package com.badoo.ribs.core.routing.portal
 import android.os.Parcelable
 import com.badoo.ribs.core.Rib
 import com.badoo.ribs.core.Router
+import com.badoo.ribs.core.plugin.PluginFactory
 import com.badoo.ribs.core.routing.action.RoutingAction
 import com.badoo.ribs.core.routing.transition.handler.TransitionHandler
 import io.reactivex.Single
@@ -17,6 +18,7 @@ interface Portal : Rib {
     interface Dependency {
         fun defaultRoutingAction(): (Portal.OtherSide) -> RoutingAction
         fun transitionHandler(): TransitionHandler<PortalRouter.Configuration>? = null
+        fun pluginFactory(): PluginFactory<Nothing> = { emptyList() }
     }
 
     // Workflow
