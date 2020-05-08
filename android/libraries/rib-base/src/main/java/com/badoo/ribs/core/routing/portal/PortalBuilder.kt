@@ -12,6 +12,7 @@ class PortalBuilder(
             buildParams = buildParams
         )
         val router = PortalRouter(
+            buildParams = buildParams,
             routingSource = interactor,
             defaultRoutingAction = dependency.defaultRoutingAction().invoke(interactor),
             transitionHandler = dependency.transitionHandler()

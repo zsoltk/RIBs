@@ -14,8 +14,12 @@ data class BackStackFeatureState<C : Parcelable>(
         get() = backStack.lastOrNull()
 }
 
+// TODO rename
 @Parcelize
 data class BackStackElement<C : Parcelable>(
+    val identifier: Any,
+    val metar: Any,
     val configuration: C,
+//    val overlays: List<BackStackElement<C>> = emptyList() // TODO
     val overlays: List<C> = emptyList()
 ) : Parcelable

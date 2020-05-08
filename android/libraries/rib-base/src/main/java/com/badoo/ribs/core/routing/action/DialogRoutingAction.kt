@@ -3,11 +3,15 @@ package com.badoo.ribs.core.routing.action
 import com.badoo.ribs.core.Rib
 import com.badoo.ribs.core.Router
 import com.badoo.ribs.core.builder.BuildContext
+import com.badoo.ribs.core.routing.RoutingSource
+import com.badoo.ribs.core.routing.configuration.feature.BackStackElement
+import com.badoo.ribs.core.routing.configuration.feature.BackStackFeature
 import com.badoo.ribs.dialog.Dialog
 import com.badoo.ribs.dialog.DialogLauncher
 
 class DialogRoutingAction<Event : Any>(
-    private val router: Router<*, *, *, *, *>,
+    private val routingSource: RoutingSource<*>,
+    private val backStackElement: BackStackElement<*>,
     private val dialogLauncher: DialogLauncher,
     private val dialog: Dialog<Event>
 ) : RoutingAction {
@@ -19,7 +23,7 @@ class DialogRoutingAction<Event : Any>(
 
     override fun execute() {
         dialogLauncher.show(dialog, onClose = {
-            router.popBackStack()
+            routingSource.remove(backStackElement)
         })
     }
 
@@ -29,10 +33,11 @@ class DialogRoutingAction<Event : Any>(
 
     companion object {
         fun showDialog(
-            router: Router<*, *, *, *, *>,
+            routingSource: RoutingSource<*>,
+            backStackElement: BackStackElement<*>,
             dialogLauncher: DialogLauncher,
             dialog: Dialog<*>
         ): RoutingAction =
-            DialogRoutingAction(router, dialogLauncher, dialog)
+            DialogRoutingAction(routingSource, backStackElement, dialogLauncher, dialog)
     }
 }

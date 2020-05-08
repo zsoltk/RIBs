@@ -23,7 +23,7 @@ class DialogExampleRouter(
     private val simpleDialog: SimpleDialog,
     private val lazyDialog: LazyDialog,
     private val ribDialog: RibDialog
-): Router<Configuration, Nothing>(
+): Router<Configuration>(
     routingSource = routingSource
 ) {
 
@@ -38,11 +38,12 @@ class DialogExampleRouter(
         }
     }
 
+    // TODO consider configuration id as second parameter
     override fun resolveConfiguration(configuration: Configuration): RoutingAction =
         when (configuration) {
             is Content.Default -> noop()
-            is Overlay.SimpleDialog -> showDialog(this, dialogLauncher, simpleDialog)
-            is Overlay.LazyDialog -> showDialog(this, dialogLauncher, lazyDialog)
-            is Overlay.RibDialog -> showDialog(this, dialogLauncher, ribDialog)
+            is Overlay.SimpleDialog -> showDialog(routingSource, configuration, dialogLauncher, simpleDialog)
+            is Overlay.LazyDialog -> showDialog(routingSource, configuration, dialogLauncher, lazyDialog)
+            is Overlay.RibDialog -> showDialog(routingSource, configuration, dialogLauncher, ribDialog)
         }
 }

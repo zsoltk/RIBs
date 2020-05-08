@@ -25,7 +25,7 @@ import io.reactivex.disposables.CompositeDisposable
 
 abstract class Router<C : Parcelable>(
     buildParams: BuildParams<Nothing?>,
-    private val routingSource: RoutingSource<C>,
+    protected val routingSource: RoutingSource<C>,
     private val permanentParts: List<C> = emptyList(),
     private val transitionHandler: TransitionHandler<C>? = null
 ) : NodeAware,

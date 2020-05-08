@@ -147,4 +147,8 @@ class BackStackFeature<C : Parcelable>(
 
     override fun handleBackPressAfterDownstream(): Boolean =
         popBackStack()
+
+    override fun remove(configuration: Any) {
+        TODO("not implemented")
+    }
 }
