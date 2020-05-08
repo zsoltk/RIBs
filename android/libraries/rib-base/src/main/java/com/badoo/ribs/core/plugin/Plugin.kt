@@ -8,22 +8,6 @@ import com.badoo.ribs.core.view.RibView
 
 interface Plugin
 
-interface SystemAware : Plugin {
-    fun onLowMemory() {}
-}
-
-interface LifecycleAware : Plugin {
-    fun onStart() {}
-
-    fun onStop() {}
-
-    fun onResume() {}
-
-    fun onPause() {}
-
-    fun onSaveInstanceState(outState: Bundle) {}
-}
-
 interface NodeAware : Plugin {
     fun init(node: Node<*>) {}
 }
@@ -32,8 +16,8 @@ interface ViewAware<V : RibView> {
     fun onViewCreated(view: V, viewLifecycle: Lifecycle) {}
 }
 
-interface AttachAware : Plugin {
-    fun onAttach(nodeLifecycle: Lifecycle) {}
+interface RibLifecycleAware : Plugin {
+    fun onAttach(ribLifecycle: Lifecycle) {}
 
     fun onAttachToView(parentViewGroup: ViewGroup) {}
 
@@ -52,8 +36,26 @@ interface SubtreeChangeAware : Plugin {
     fun onDetachChildNode(child: Node<*>) {}
 }
 
+interface AndroidLifecycleAware : Plugin {
+    fun onStart() {}
+
+    fun onStop() {}
+
+    fun onResume() {}
+
+    fun onPause() {}
+
+    fun onSaveInstanceState(outState: Bundle) {}
+}
+
+
+interface SystemAware : Plugin {
+    fun onLowMemory() {}
+}
 
 interface BackPressHandler : Plugin {
+    // TODO this makes sense when we have a subtree, but how to simplify it if we don't?
+
     fun handleBackPressBeforeDownstream(): Boolean =
         false
 

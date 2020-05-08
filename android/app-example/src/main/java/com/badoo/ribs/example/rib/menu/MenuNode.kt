@@ -11,5 +11,5 @@ class MenuNode(
 ): Node<MenuView>(
     buildParams = buildParams,
     viewFactory = viewFactory,
-    plugins = { listOf(interactor) }
+    plugins = listOf(interactor) }
 ), Menu

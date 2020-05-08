@@ -50,6 +50,6 @@ data class SingleTop<C : Parcelable>(
     }
 }
 
-fun <C : Parcelable> BackStackFeature<C, *>.singleTop(configuration: C) {
+fun <C : Parcelable> BackStackFeature<C>.singleTop(configuration: C) {
     accept(Operation(SingleTop(configuration)))
 }

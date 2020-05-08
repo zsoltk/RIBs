@@ -1,7 +1,6 @@
 package com.badoo.ribs.core.routing.configuration.feature.operation
 
 import android.os.Parcelable
-import com.badoo.ribs.core.Router
 import com.badoo.ribs.core.routing.configuration.feature.BackStackElement
 import com.badoo.ribs.core.routing.configuration.feature.BackStackFeature
 
@@ -18,6 +17,6 @@ data class Push<C : Parcelable>(
         get() = this.lastOrNull()
 }
 
-fun <C : Parcelable> BackStackFeature<C, *>.push(configuration: C) {
+fun <C : Parcelable> BackStackFeature<C>.push(configuration: C) {
     accept(BackStackFeature.Operation(Push(configuration)))
 }

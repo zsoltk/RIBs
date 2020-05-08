@@ -5,6 +5,7 @@ import android.os.Parcelable
 import com.badoo.mvicore.android.AndroidTimeCapsule
 import com.badoo.ribs.core.Node
 import com.badoo.ribs.core.builder.BuildParams
+import com.badoo.ribs.core.plugin.Router
 import com.badoo.ribs.core.view.RibView
 
 class RecyclerViewHostNode<T : Parcelable> internal constructor(
@@ -17,7 +18,10 @@ class RecyclerViewHostNode<T : Parcelable> internal constructor(
 ) : Node<RibView>(
     buildParams = buildParams,
     viewFactory = { RecyclerViewHostViewImpl.Factory().invoke(viewDeps).invoke(it) },
-    plugins = { listOf(interactor, router) }
+    plugins = listOf(
+        interactor,
+        router
+    )
 ), RecyclerViewHost<T> {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)

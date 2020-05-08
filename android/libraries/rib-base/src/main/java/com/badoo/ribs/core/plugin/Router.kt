@@ -7,26 +7,28 @@ import androidx.lifecycle.Lifecycle
 import com.badoo.mvicore.android.AndroidTimeCapsule
 import com.badoo.mvicore.binder.Binder
 import com.badoo.ribs.core.Node
-import com.badoo.ribs.core.Router
 import com.badoo.ribs.core.routing.RoutingSource
 import com.badoo.ribs.core.routing.configuration.ConfigurationContext
 import com.badoo.ribs.core.routing.configuration.ConfigurationKey
+import com.badoo.ribs.core.routing.configuration.ConfigurationResolver
 import com.badoo.ribs.core.routing.configuration.Transaction.MultiConfigurationCommand.SaveInstanceState
 import com.badoo.ribs.core.routing.configuration.Transaction.MultiConfigurationCommand.Sleep
 import com.badoo.ribs.core.routing.configuration.Transaction.MultiConfigurationCommand.WakeUp
 import com.badoo.ribs.core.routing.configuration.feature.ConfigurationFeature
 import com.badoo.ribs.core.routing.configuration.toCommands
 import com.badoo.ribs.core.routing.transition.handler.TransitionHandler
-import com.badoo.ribs.core.view.RibView
 import io.reactivex.disposables.CompositeDisposable
 
-class Subtree<C : Parcelable, Permanent : C, Content : C, V : RibView>(
-    private val router: Router<C>,
+abstract class Router<C : Parcelable, Permanent : C>(
     private val routingSource: RoutingSource<C>,
     private val permanentParts: List<Permanent> = emptyList(),
-    private val backPressHandler: BackPressHandler,
     private val transitionHandler: TransitionHandler<C>? = null
-) : Plugin<V> {
+) : NodeAware,
+    RibLifecycleAware,
+    AndroidLifecycleAware,
+    BackPressHandler,
+    ConfigurationResolver<C> {
+
     companion object {
         internal const val BUNDLE_KEY = "Subtree"
     }
@@ -41,7 +43,7 @@ class Subtree<C : Parcelable, Permanent : C, Content : C, V : RibView>(
     lateinit var node: Node<*>
         private set
 
-    override fun init(node: Node<V>) {
+    override fun init(node: Node<*>) {
         this.node = node
         initFeatures(node)
     }
@@ -50,7 +52,7 @@ class Subtree<C : Parcelable, Permanent : C, Content : C, V : RibView>(
         configurationFeature = ConfigurationFeature(
             initialConfigurations = permanentParts,
             timeCapsule = timeCapsule,
-            resolver = router::resolveConfiguration,
+            resolver = this::resolveConfiguration,
             parentNode = node,
             transitionHandler = transitionHandler
         )
@@ -83,14 +85,7 @@ class Subtree<C : Parcelable, Permanent : C, Content : C, V : RibView>(
         configurationFeature.dispose()
     }
 
-    override fun handleBackPressBeforeDownstream(): Boolean =
-        backPressHandler.handleBackPressBeforeDownstream()
-
-    override fun handleBackPressAfterDownstream(): Boolean =
-        backPressHandler.handleBackPressAfterDownstream()
-
+    // FIXME this shouldn't be here
     internal fun getNodes(configurationKey: ConfigurationKey<C>): List<Node<*>>? =
         (configurationFeature.state.pool[configurationKey] as? ConfigurationContext.Resolved<C>)?.nodes
-
-
 }

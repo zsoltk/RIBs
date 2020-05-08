@@ -3,18 +3,18 @@ package com.badoo.ribs.example.rib.hello_world
 import android.util.Log
 import android.view.ViewGroup
 import com.badoo.ribs.core.Node
-import com.badoo.ribs.core.plugin.PluginFactory
 import com.badoo.ribs.core.builder.BuildParams
+import com.badoo.ribs.core.plugin.Plugin
 import io.reactivex.Single
 
 class HelloWorldNode(
     viewFactory: ((ViewGroup) -> HelloWorldView?)?,
     buildParams: BuildParams<*>,
-    pluginFactory: PluginFactory<HelloWorldView>
+    plugins: List<Plugin>
 ) : Node<HelloWorldView>(
     buildParams = buildParams,
     viewFactory = viewFactory,
-    plugins = pluginFactory
+    plugins = plugins
 ), HelloWorld {
 
     override fun somethingSomethingDarkSide(): Single<HelloWorld> =

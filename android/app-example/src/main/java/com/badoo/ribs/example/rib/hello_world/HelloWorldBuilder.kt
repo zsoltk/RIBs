@@ -27,10 +27,10 @@ class HelloWorldBuilder(
         return HelloWorldNode(
             viewFactory = customisation.viewFactory(null),
             buildParams = buildParams,
-            pluginFactory = { listOf(
+            plugins =  listOf(
                 interactor,
                 router
-            )}
+            )
         )
     }
 

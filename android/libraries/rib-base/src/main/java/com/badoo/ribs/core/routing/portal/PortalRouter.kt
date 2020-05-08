@@ -5,30 +5,26 @@ import android.os.Parcelable
 import com.badoo.ribs.core.Router
 import com.badoo.ribs.core.builder.BuildContext
 import com.badoo.ribs.core.builder.BuildParams
+import com.badoo.ribs.core.routing.RoutingSource
 import com.badoo.ribs.core.routing.action.RoutingAction
 import com.badoo.ribs.core.routing.configuration.ConfigurationResolver
-import com.badoo.ribs.core.routing.configuration.feature.operation.push
-import com.badoo.ribs.core.routing.configuration.feature.operation.pushOverlay
 import com.badoo.ribs.core.routing.portal.PortalRouter.Configuration
 import com.badoo.ribs.core.routing.portal.PortalRouter.Configuration.Content
 import com.badoo.ribs.core.routing.portal.PortalRouter.Configuration.Overlay
 import com.badoo.ribs.core.routing.transition.handler.TransitionHandler
 import com.badoo.ribs.customisation.RibCustomisationDirectoryImpl
 import kotlinx.android.parcel.Parcelize
-import java.lang.IllegalStateException
 
 class PortalRouter(
-    buildParams: BuildParams<*>,
+    buildParams: BuildParams<Nothing?>,
+    routingSource: RoutingSource<Configuration>,
+    private val defaultRoutingAction: RoutingAction,
     transitionHandler: TransitionHandler<Configuration>? = null
-): Router<Configuration, Nothing, Content, Overlay, Nothing>(
+): Router<Configuration>(
     buildParams = buildParams,
-    transitionHandler = transitionHandler,
-    initialConfiguration = Content.Default,
-    permanentParts = emptyList()
-), Portal.OtherSide {
-
-    internal lateinit var defaultRoutingAction: RoutingAction
-
+    routingSource = routingSource,
+    transitionHandler = transitionHandler
+) {
     sealed class Configuration : Parcelable {
         sealed class Content : Configuration() {
             @Parcelize object Default : Content()
@@ -37,14 +33,6 @@ class PortalRouter(
         sealed class Overlay : Configuration() {
             @Parcelize data class Portal(val configurationChain: List<Parcelable>) : Overlay()
         }
-    }
-
-    override fun showContent(remoteRouter: Router<*, *, *, *, *>, remoteConfiguration: Parcelable) {
-        push(Content.Portal(remoteRouter.node.ancestryInfo.configurationChain + remoteConfiguration))
-    }
-
-    override fun showOverlay(remoteRouter: Router<*, *, *, *, *>, remoteConfiguration: Parcelable) {
-        pushOverlay(Overlay.Portal(remoteRouter.node.ancestryInfo.configurationChain + remoteConfiguration))
     }
 
     override fun resolveConfiguration(configuration: Configuration): RoutingAction =

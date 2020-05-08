@@ -48,8 +48,8 @@ internal object BigModule {
     ) : BigNode = BigNode(
         buildParams = buildParams,
         viewFactory = customisation.viewFactory(null),
-        pluginFactory = { listOf(
+        plugins =  listOf(
             interactor, router
-        )}
+        )
     )
 }

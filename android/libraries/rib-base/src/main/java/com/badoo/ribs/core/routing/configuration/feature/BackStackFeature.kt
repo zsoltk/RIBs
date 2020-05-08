@@ -8,6 +8,7 @@ import com.badoo.mvicore.element.Reducer
 import com.badoo.mvicore.element.TimeCapsule
 import com.badoo.mvicore.feature.ActorReducerFeature
 import com.badoo.ribs.core.builder.BuildParams
+import com.badoo.ribs.core.plugin.BackPressHandler
 import com.badoo.ribs.core.plugin.Plugin
 import com.badoo.ribs.core.routing.RoutingSource
 import com.badoo.ribs.core.routing.configuration.feature.BackStackFeature.Effect
@@ -37,7 +38,7 @@ private fun <C : Parcelable> TimeCapsule<BackStackFeatureState<C>>.initialState(
  * @see BackStackFeature.ActorImpl for logic deciding whether an operation should be carried out
  * @see BackStackFeature.ReducerImpl for the implementation of applying state changes
  */
-class BackStackFeature<C : Parcelable, V : RibView>(
+class BackStackFeature<C : Parcelable>(
     initialConfiguration: C,
     timeCapsule: TimeCapsule<BackStackFeatureState<C>>
 ) : ActorReducerFeature<Operation<C>, Effect<C>, BackStackFeatureState<C>, Nothing>(
@@ -48,7 +49,7 @@ class BackStackFeature<C : Parcelable, V : RibView>(
     ),
     actor = ActorImpl<C>(),
     reducer = ReducerImpl<C>()
-), RoutingSource<C>, Plugin<V> {
+), RoutingSource<C>, BackPressHandler {
 
     constructor(
         initialConfiguration: C,
@@ -146,8 +147,4 @@ class BackStackFeature<C : Parcelable, V : RibView>(
 
     override fun handleBackPressAfterDownstream(): Boolean =
         popBackStack()
-
-    override fun onDetach() {
-        dispose()
-    }
 }

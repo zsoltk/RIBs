@@ -27,6 +27,6 @@ data class PushOverlay<C : Parcelable>(
         toMutableList().apply { set(lastIndex, replacement) }
 }
 
-fun <C : Parcelable> BackStackFeature<C, *>.pushOverlay(configuration: C) {
+fun <C : Parcelable> BackStackFeature<C>.pushOverlay(configuration: C) {
     accept(BackStackFeature.Operation(PushOverlay(configuration)))
 }

@@ -17,11 +17,10 @@ internal class RecyclerViewHostRouter<T : Parcelable>(
     buildParams: BuildParams<Nothing?>,
     private val feature: RecyclerViewHostFeature<T>,
     private val ribResolver: RecyclerViewRibResolver<T>
-): Router<Configuration, Nothing, Content, Nothing, RibView>(
-    buildParams = buildParams,
-    initialConfiguration = Default,
-    permanentParts = emptyList()
+): Router<Configuration>(
+    // FIXME
 ) {
+
     sealed class Configuration : Parcelable {
         sealed class Content : Configuration() {
             @Parcelize object Default : Content()

@@ -38,6 +38,6 @@ internal val <C : Parcelable> BackStack<C>.canPop: Boolean
 internal val <C : Parcelable> BackStack<C>.canPopOverlay: Boolean
     get() = lastOrNull()?.overlays?.isNotEmpty() == true
 
-fun <C : Parcelable> BackStackFeature<C, *>.pop() {
+fun <C : Parcelable> BackStackFeature<C>.pop() {
     accept(BackStackFeature.Operation(Pop()))
 }

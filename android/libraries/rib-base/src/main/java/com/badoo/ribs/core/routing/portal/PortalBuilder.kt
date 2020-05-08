@@ -8,27 +8,23 @@ class PortalBuilder(
 ) : SimpleBuilder<Portal>() {
 
     override fun build(buildParams: BuildParams<Nothing?>): Portal {
-        val router = PortalRouter(
-            buildParams = buildParams,
-            transitionHandler = dependency.transitionHandler()
-        )
-
-        router.defaultRoutingAction = dependency.defaultRoutingAction().invoke(router)
-
         val interactor = PortalInteractor(
-            buildParams = buildParams,
-            router = router
+            buildParams = buildParams
+        )
+        val router = PortalRouter(
+            routingSource = interactor,
+            defaultRoutingAction = dependency.defaultRoutingAction().invoke(interactor),
+            transitionHandler = dependency.transitionHandler()
         )
 
         return PortalNode(
             buildParams = buildParams,
-            pluginFactory = {
+            plugins =
                 listOf(
                     interactor,
                     router
-                ) + dependency.pluginFactory().invoke(it)
-            },
-            router = router
+                ) + dependency.plugins(),
+            backStack = interactor.backStack
         )
     }
 }

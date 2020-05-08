@@ -38,13 +38,13 @@ class SwitcherRouterTest {
     private val fooBarNode = FooBarNode(null, mock(), BuildParams.Empty(), emptySet())
     private val fooBarBuilder = mock<FooBarBuilder> { on { build(any()) } doReturn fooBarNode }
 
-    private val helloWorldNode = HelloWorldNode(null, mock(), mock(), BuildParams.Empty()) { listOf(
+    private val helloWorldNode = HelloWorldNode(null, mock(), mock(), BuildParams.Empty()) listOf(
         mock(),
         mock()
     ) }
     private val helloWorldBuilder = mock<HelloWorldBuilder> { on { build(any()) } doReturn helloWorldNode }
 
-    private val dialogExampleNode = DialogExampleNode(BuildParams.Empty(), null) { listOf(
+    private val dialogExampleNode = DialogExampleNode(BuildParams.Empty(), null) listOf(
         mock(),
         mock()
     ) }

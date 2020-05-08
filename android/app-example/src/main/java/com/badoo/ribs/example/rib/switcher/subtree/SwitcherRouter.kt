@@ -17,6 +17,7 @@ import com.badoo.ribs.example.rib.menu.Menu
 import com.badoo.ribs.example.rib.menu.Menu.Input.SelectMenuItem
 import com.badoo.ribs.example.rib.menu.Menu.MenuItem
 import com.badoo.ribs.example.rib.menu.MenuBuilder
+import com.badoo.ribs.example.rib.switcher.SwitcherInteractor
 import com.badoo.ribs.example.rib.switcher.dialog.DialogToTestOverlay
 import com.badoo.ribs.example.rib.switcher.subtree.Configuration.Content
 import com.badoo.ribs.example.rib.switcher.subtree.Configuration.Overlay
@@ -24,6 +25,8 @@ import com.badoo.ribs.example.rib.switcher.subtree.Configuration.Permanent
 import com.jakewharton.rxrelay2.PublishRelay
 
 class SwitcherRouter(
+    interactor: SwitcherInteractor,
+    transitionHandler: TransitionHandler<Configuration>,
     private val fooBarBuilder: FooBarBuilder,
     private val helloWorldBuilder: HelloWorldBuilder,
     private val dialogExampleBuilder: DialogExampleBuilder,
@@ -31,14 +34,13 @@ class SwitcherRouter(
     private val menuBuilder: MenuBuilder,
     private val dialogLauncher: DialogLauncher,
     private val dialogToTestOverlay: DialogToTestOverlay
-): Router<Configuration>() {
-
-//    override val permanentParts: List<Permanent> = listOf(
-//        Permanent.Menu
-//    )
-//
-//    override val initialConfiguration: Content =
-//        Content.DialogsExample
+): Router<Configuration, Permanent>(
+    transitionHandler = transitionHandler,
+    routingSource = interactor,
+    permanentParts = listOf(
+        Permanent.Menu
+    )
+) {
 
     internal val menuUpdater = PublishRelay.create<Menu.Input>()
 

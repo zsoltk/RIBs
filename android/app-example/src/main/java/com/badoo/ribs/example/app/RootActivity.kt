@@ -9,7 +9,7 @@ import com.badoo.ribs.android.RibActivity
 import com.badoo.ribs.core.builder.BuildContext
 import com.badoo.ribs.core.builder.BuildContext.Companion.root
 import com.badoo.ribs.core.plugin.DebugControls
-import com.badoo.ribs.core.plugin.PluginFactory
+import com.badoo.ribs.core.plugin.Plugin
 import com.badoo.ribs.core.routing.action.AttachRibRoutingAction.Companion.attach
 import com.badoo.ribs.core.routing.action.RoutingAction
 import com.badoo.ribs.core.routing.portal.Portal
@@ -70,15 +70,13 @@ class RootActivity : RibActivity() {
                     ).build(buildContext)
                 }
 
-                override fun pluginFactory(): PluginFactory<Nothing> = {
+                override fun plugins(): List<Plugin> =
                     listOf(
                         DebugControls(
-                            node = it,
                             debugParentViewGroup = findViewById(R.id.debug_root),
                             isEnabled = BuildConfig.DEBUG
                         )
                     )
-                }
             }
         ).build(root(savedInstanceState, AppRibCustomisations)).also {
             workflowRoot = it

@@ -2,39 +2,32 @@ package com.badoo.ribs.core.plugin
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Lifecycle
 import com.badoo.ribs.core.Node
-import com.badoo.ribs.core.view.RibView
 
-open class DebugControls<V : RibView>(
+open class DebugControls(
     private val viewFactory: ((ViewGroup) -> View)? = null,
     private val debugParentViewGroup: ViewGroup? = null,
     private val isEnabled: Boolean // TODO consider this for all plugins
-) : Plugin<V> {
+) : NodeAware,
+    RibLifecycleAware {
 
-    private lateinit var node: Node<V>
+    private lateinit var node: Node<*>
     private var target: ViewGroup? = null
     var debugView: View? = null
 
-    override fun init(node: Node<V>) {
+    override fun init(node: Node<*>) {
         this.node = node
     }
 
-    final override fun onViewCreated(view: V, viewLifecycle: Lifecycle) {
-        super.onViewCreated(view, viewLifecycle)
+    final override fun onAttachToView(parentViewGroup: ViewGroup) {
         if (isEnabled) {
-            target = node.pluginUp<DebugControls<*>>()?.debugParentViewGroup ?: debugParentViewGroup
+            target = node.pluginUp<DebugControls>()?.debugParentViewGroup ?: debugParentViewGroup
             target?.let {
                 debugView = viewFactory?.invoke(it)
-            }
-        }
-    }
-
-    final override fun onAttachToView(parentViewGroup: ViewGroup) {
-        if (isEnabled && target != null) {
-            debugView?.let {
-                target?.addView(it)
-                onDebugViewCreated(it)
+                debugView?.let {
+                    target?.addView(it)
+                    onDebugViewCreated(it)
+                }
             }
         }
     }

@@ -15,35 +15,35 @@
  */
 package com.badoo.ribs.core
 
+import android.os.Parcelable
+import com.badoo.ribs.core.builder.BuildParams
 import com.badoo.ribs.core.plugin.BackPressHandler
-import com.badoo.ribs.core.plugin.NodeAware
+import com.badoo.ribs.core.plugin.Plugin
 import com.badoo.ribs.core.plugin.RibLifecycleAware
 import com.badoo.ribs.core.plugin.ViewAware
+import com.badoo.ribs.core.routing.RoutingSource
+import com.badoo.ribs.core.routing.configuration.feature.BackStackFeature
 import com.badoo.ribs.core.view.RibView
 
 /**
- * The base implementation for all [Interactor]s.
+ * The base implementation for all [BackStackInteractor]s.
  *
  * @param <C> the type of Configuration this Interactor can expect to push to its [Router].
  * @param <V> the type of [RibView].
  **/
-abstract class Interactor<V : RibView>(
-    private val backPressHandler: BackPressHandler? = null
-) : NodeAware,
-    BackPressHandler,
-    RibLifecycleAware,
-    ViewAware<V> {
+abstract class BackStackInteractor<C : Parcelable, V : RibView>(
+    val backStack: BackStackFeature<C>
+) : Interactor<V>(
+    backPressHandler = backStack
+), RoutingSource<C> by backStack {
 
-    protected lateinit var node: Node<*>
-        private set
-
-    override fun init(node: Node<*>) {
-        this.node = node
-    }
-
-    override fun handleBackPressBeforeDownstream(): Boolean =
-        backPressHandler?.handleBackPressBeforeDownstream() ?: false
-
-    override fun handleBackPressAfterDownstream(): Boolean =
-        backPressHandler?.handleBackPressAfterDownstream() ?: false
+    constructor(
+        buildParams: BuildParams<*>,
+        initialConfiguration: C
+    ) : this(
+        BackStackFeature(
+            initialConfiguration = initialConfiguration,
+            buildParams = buildParams
+        )
+    )
 }

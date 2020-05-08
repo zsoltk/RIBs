@@ -45,6 +45,7 @@ internal object DialogExampleModule {
     @JvmStatic
     internal fun router(
         buildParams: BuildParams<Nothing?>,
+        interactor: DialogExampleInteractor,
         dialogLauncher: DialogLauncher,
         simpleDialog: SimpleDialog,
         lazyDialog: LazyDialog,
@@ -52,6 +53,7 @@ internal object DialogExampleModule {
     ): DialogExampleRouter =
         DialogExampleRouter(
             buildParams = buildParams,
+            routingSource = interactor,
             dialogLauncher = dialogLauncher,
             simpleDialog = simpleDialog,
             lazyDialog = lazyDialog,
@@ -70,7 +72,6 @@ internal object DialogExampleModule {
     ): DialogExampleInteractor =
         DialogExampleInteractor(
             buildParams = buildParams,
-            router = router,
             simpleDialog = simpleDialog,
             lazyDialog = lazyDialog,
             ribDialog = ribDialog
@@ -87,10 +88,10 @@ internal object DialogExampleModule {
     ) : DialogExampleNode = DialogExampleNode(
         buildParams = buildParams,
         viewFactory = customisation.viewFactory(null),
-        pluginFactory = { listOf(
+        plugins =  listOf(
             interactor,
             router
-        )}
+        )
     )
 
     @DialogExampleScope

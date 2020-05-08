@@ -30,7 +30,14 @@ import com.badoo.ribs.core.Rib.Identifier
 import com.badoo.ribs.core.builder.BuildContext
 import com.badoo.ribs.core.builder.BuildParams
 import com.badoo.ribs.core.exception.RootNodeAttachedAsChildException
+import com.badoo.ribs.core.plugin.RibLifecycleAware
+import com.badoo.ribs.core.plugin.BackPressHandler
+import com.badoo.ribs.core.plugin.AndroidLifecycleAware
+import com.badoo.ribs.core.plugin.NodeAware
 import com.badoo.ribs.core.plugin.Plugin
+import com.badoo.ribs.core.plugin.SubtreeChangeAware
+import com.badoo.ribs.core.plugin.SystemAware
+import com.badoo.ribs.core.plugin.ViewAware
 import com.badoo.ribs.core.routing.portal.AncestryInfo
 import com.badoo.ribs.core.view.RibView
 import com.badoo.ribs.util.RIBs
@@ -47,7 +54,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 open class Node<V : RibView>(
     val buildParams: BuildParams<*>,
     private val viewFactory: ((ViewGroup) -> V?)?,
-    val plugins: List<Plugin<V>> = emptyList()
+    val plugins: List<Plugin> = emptyList()
 ) : Rib, LifecycleOwner {
     companion object {
 
@@ -111,18 +118,14 @@ open class Node<V : RibView>(
     fun getChildren(): List<Node<*>> =
         children.toList()
 
-    val allPlugins = plugins
-
     init {
-
-
-        this.plugins.forEach { it.init(this) }
+        plugins.filterIsInstance<NodeAware>().forEach { it.init(this) }
     }
 
     @CallSuper
     open fun onAttach() {
         lifecycleManager.onCreateRib()
-        plugins.forEach { it.onAttach(lifecycleManager.ribLifecycle.lifecycle) }
+        plugins.filterIsInstance<RibLifecycleAware>().forEach { it.onAttach(lifecycleManager.ribLifecycle.lifecycle) }
     }
 
     fun attachToView(parentViewGroup: ViewGroup) {
@@ -138,11 +141,11 @@ open class Node<V : RibView>(
 
         lifecycleManager.onCreateView()
         view?.let { view ->
-            plugins.forEach {
+            plugins.filterIsInstance<ViewAware<V>>().forEach {
                 it.onViewCreated(view, lifecycleManager.viewLifecycle!!.lifecycle)
             }
         }
-        plugins.forEach { it.onAttachToView(parentViewGroup) }
+        plugins.filterIsInstance<RibLifecycleAware>().forEach { it.onAttachToView(parentViewGroup) }
     }
 
     private fun createView(parentViewGroup: ViewGroup): V? {
@@ -169,7 +172,7 @@ open class Node<V : RibView>(
 
     fun detachFromView() {
         if (isAttachedToView) {
-            plugins.forEach { it.onDetachFromView(parentViewGroup!!) }
+            plugins.filterIsInstance<RibLifecycleAware>().forEach { it.onDetachFromView(parentViewGroup!!) }
             lifecycleManager.onDestroyView()
 
             if (!isViewless) {
@@ -193,7 +196,7 @@ open class Node<V : RibView>(
         }
 
         lifecycleManager.onDestroyRib()
-        plugins.forEach { it.onDetach() }
+        plugins.filterIsInstance<RibLifecycleAware>().forEach { it.onDetach() }
 
         for (child in children) {
             detachChildNode(child)
@@ -219,7 +222,7 @@ open class Node<V : RibView>(
         lifecycleManager.onAttachChild(child)
         child.onAttach()
         childrenAttachesRelay.accept(child)
-        plugins.forEach { it.onAttachChildNode(child) }
+        plugins.filterIsInstance<SubtreeChangeAware>().forEach { it.onAttachChildNode(child) }
     }
 
     private fun verifyNotRoot(child: Node<*>) {
@@ -237,7 +240,7 @@ open class Node<V : RibView>(
         if (isAttachedToView) {
             val target = targetViewGroupForChild(child)
             child.attachToView(target)
-            plugins.forEach { it.onAttachChildView(child) }
+            plugins.filterIsInstance<SubtreeChangeAware>().forEach { it.onAttachChildView(child) }
         }
     }
 
@@ -252,7 +255,7 @@ open class Node<V : RibView>(
     // FIXME internal + protected?
     fun detachChildView(child: Node<*>) {
         child.detachFromView()
-        plugins.forEach { it.onDetachChildView(child) }
+        plugins.filterIsInstance<SubtreeChangeAware>().forEach { it.onDetachChildView(child) }
     }
 
     /**
@@ -264,7 +267,7 @@ open class Node<V : RibView>(
      */
     @MainThread
     internal fun detachChildNode(child: Node<*>) {
-        plugins.forEach { it.onDetachChildNode(child) }
+        plugins.filterIsInstance<SubtreeChangeAware>().forEach { it.onDetachChildNode(child) }
         children.remove(child)
 
 //        ribRefWatcher.watchDeletedObject(child)
@@ -323,9 +326,9 @@ open class Node<V : RibView>(
     @CallSuper
     open fun handleBackPress(): Boolean {
 //        ribRefWatcher.logBreadcrumb("BACKPRESS", null, null)
-        return plugins.any { it.handleBackPressBeforeDownstream() }
+        return plugins.filterIsInstance<BackPressHandler>().any { it.handleBackPressBeforeDownstream() }
             || delegateHandleBackPressToActiveChildren()
-            || plugins.any { it.handleBackPressAfterDownstream() }
+            || plugins.filterIsInstance<BackPressHandler>().any { it.handleBackPressAfterDownstream() }
     }
 
     private fun delegateHandleBackPressToActiveChildren(): Boolean =
@@ -341,7 +344,7 @@ open class Node<V : RibView>(
 
     open fun onSaveInstanceState(outState: Bundle) {
         outState.putSerializable(Identifier.KEY_UUID, identifier.uuid)
-        plugins.forEach { it.onSaveInstanceState(outState) }
+        plugins.filterIsInstance<AndroidLifecycleAware>().forEach { it.onSaveInstanceState(outState) }
         saveViewState()
 
         val bundle = Bundle()
@@ -350,7 +353,7 @@ open class Node<V : RibView>(
     }
 
     fun onLowMemory() {
-        plugins.forEach { it.onLowMemory() }
+        plugins.filterIsInstance<SystemAware>().forEach { it.onLowMemory() }
     }
 
     override fun getLifecycle(): Lifecycle =

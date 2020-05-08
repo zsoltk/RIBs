@@ -19,9 +19,9 @@ class BlockerBuilder(
         return Node(
             buildParams = buildParams,
             viewFactory = customisation.viewFactory(null),
-            plugins = { listOf(
+            plugins = listOf(
                 interactor
-            )}
+            )
         )
     }
 }

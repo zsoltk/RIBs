@@ -16,7 +16,7 @@ data class NewRoot<C : Parcelable>(
         listOf(BackStackElement(configuration))
 }
 
-fun <C : Parcelable> BackStackFeature<C, *>.newRoot(configuration: C) {
+fun <C : Parcelable> BackStackFeature<C>.newRoot(configuration: C) {
     accept(BackStackFeature.Operation(NewRoot(configuration)))
 }
 

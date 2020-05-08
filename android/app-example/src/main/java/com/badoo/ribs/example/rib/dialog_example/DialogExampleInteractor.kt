@@ -6,6 +6,8 @@ import com.badoo.mvicore.android.lifecycle.startStop
 import com.badoo.ribs.android.Text
 import com.badoo.ribs.core.Interactor
 import com.badoo.ribs.core.Router
+import com.badoo.ribs.core.routing.RoutingSource
+import com.badoo.ribs.core.routing.configuration.feature.BackStackFeature
 import com.badoo.ribs.core.routing.configuration.feature.operation.pushOverlay
 import com.badoo.ribs.dialog.Dialog
 import com.badoo.ribs.dialog.Dialog.CancellationPolicy.Cancellable
@@ -25,14 +27,17 @@ import io.reactivex.functions.Consumer
 
 class DialogExampleInteractor(
     buildParams: BuildParams<Nothing?>,
-    private val router: Router<Configuration, Nothing, Content, Overlay, DialogExampleView>,
+    private val backStack: BackStackFeature<Configuration, DialogExampleView> = BackStackFeature(
+        initialConfiguration = Content.Default,
+        buildParams = buildParams
+    ),
     private val simpleDialog: SimpleDialog,
     private val lazyDialog: LazyDialog,
     private val ribDialog: RibDialog
 ) : Interactor<DialogExampleView>(
     buildParams = buildParams,
-    disposables = null
-) {
+    backPressHandler = backStack
+), RoutingSource<Configuration> by backStack {
 
     private val dummyViewInput = BehaviorRelay.createDefault(
         ViewModel("Dialog examples")
@@ -50,13 +55,13 @@ class DialogExampleInteractor(
 
     private val viewEventConsumer: Consumer<DialogExampleView.Event> = Consumer {
         when (it) {
-            ShowSimpleDialogClicked -> router.pushOverlay(Overlay.SimpleDialog)
+            ShowSimpleDialogClicked -> backStack.pushOverlay(Overlay.SimpleDialog)
             ShowLazyDialog -> {
                 initLazyDialog()
-                router.pushOverlay(Overlay.LazyDialog)
+                backStack.pushOverlay(Overlay.LazyDialog)
             }
 
-            ShowRibDialogClicked -> router.pushOverlay(Overlay.RibDialog)
+            ShowRibDialogClicked -> backStack.pushOverlay(Overlay.RibDialog)
         }
     }
 
@@ -93,6 +98,6 @@ class DialogExampleInteractor(
 
     internal val loremIpsumOutputConsumer : Consumer<LoremIpsum.Output> = Consumer {
         dummyViewInput.accept(ViewModel("Button in Lorem Ipsum RIB clicked"))
-        router.popBackStack()
+        backStack.popBackStack()
     }
 }

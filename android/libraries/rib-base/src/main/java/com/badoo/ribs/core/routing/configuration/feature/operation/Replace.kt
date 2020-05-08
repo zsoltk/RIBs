@@ -14,7 +14,7 @@ data class Replace<C : Parcelable>(
         backStack.dropLast(1) + BackStackElement(configuration)
 }
 
-fun <C : Parcelable> BackStackFeature<C, *>.replace(configuration: C) {
+fun <C : Parcelable> BackStackFeature<C>.replace(configuration: C) {
     accept(BackStackFeature.Operation(Replace(configuration)))
 }
 

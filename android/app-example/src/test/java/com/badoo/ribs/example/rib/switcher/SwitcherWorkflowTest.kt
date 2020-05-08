@@ -32,7 +32,7 @@ class SwitcherWorkflowTest {
     @Before
     fun setup() {
         val helloWorldNodeBuilder = { buildContext: BuildContext ->
-            HelloWorldNode(mock(), mock(), mock(), buildContext.toBuildParams()) { listOf(
+            HelloWorldNode(mock(), mock(), mock(), buildContext.toBuildParams()) listOf(
                 mock(),
                 mock()
             ) }
@@ -41,7 +41,7 @@ class SwitcherWorkflowTest {
             FooBarNode(mock(), mock(), buildContext.toBuildParams(), emptySet())
         }
         val dialogExampleBuilder = { buildContext: BuildContext ->
-            DialogExampleNode(buildContext.toBuildParams(), mock()) { listOf(mock(), mock()) }
+            DialogExampleNode(buildContext.toBuildParams(), mock()) listOf(mock(), mock()) }
         }
         val blockerBuilder = { buildContext: BuildContext ->
             Node<BlockerView>(buildContext.toBuildParams(), mock(), mock(), mock(), mock())

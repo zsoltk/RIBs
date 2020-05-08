@@ -2,7 +2,7 @@
 package com.badoo.ribs.example.rib.switcher.builder
 
 import com.badoo.ribs.core.builder.BuildParams
-import com.badoo.ribs.core.plugin.Subtree
+import com.badoo.ribs.core.plugin.Router
 import com.badoo.ribs.core.routing.configuration.feature.BackStackFeature
 import com.badoo.ribs.dialog.DialogLauncher
 import com.badoo.ribs.example.rib.blocker.Blocker
@@ -18,7 +18,6 @@ import com.badoo.ribs.example.rib.switcher.Switcher
 import com.badoo.ribs.example.rib.switcher.SwitcherBackStack
 import com.badoo.ribs.example.rib.switcher.SwitcherInteractor
 import com.badoo.ribs.example.rib.switcher.SwitcherNode
-import com.badoo.ribs.example.rib.switcher.SwitcherSubtree
 import com.badoo.ribs.example.rib.switcher.SwitcherView
 import com.badoo.ribs.example.rib.switcher.debug.SwitcherDebugControls
 import com.badoo.ribs.example.rib.switcher.dialog.DialogToTestOverlay
@@ -26,7 +25,6 @@ import com.badoo.ribs.example.rib.switcher.subtree.Configuration.Content
 import com.badoo.ribs.example.rib.switcher.subtree.SwitcherRouter
 import com.badoo.ribs.example.util.CoffeeMachine
 import dagger.Provides
-import dagger.multibindings.IntoSet
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
@@ -45,10 +43,14 @@ internal object SwitcherModule {
     @JvmStatic
     internal fun router(
         component: SwitcherComponent,
+        customisation: Switcher.Customisation,
+        interactor: SwitcherInteractor,
         dialogLauncher: DialogLauncher,
         dialogToTestOverlay: DialogToTestOverlay
     ): SwitcherRouter =
         SwitcherRouter(
+            interactor = interactor,
+            transitionHandler = customisation.transitionHandler,
             fooBarBuilder = FooBarBuilder(component),
             helloWorldBuilder = HelloWorldBuilder(component),
             dialogExampleBuilder = DialogExampleBuilder(component),
@@ -95,36 +97,20 @@ internal object SwitcherModule {
     @SwitcherScope
     @Provides
     @JvmStatic
-    @IntoSet
-    internal fun subtree(
-        customisation: Switcher.Customisation,
-        router: SwitcherRouter,
-        interactor: SwitcherInteractor
-    ): SwitcherSubtree =
-        Subtree(
-            router = router,
-            routingSource = interactor,
-            backPressHandler = interactor,
-            transitionHandler = customisation.transitionHandler
-        )
-
-    @SwitcherScope
-    @Provides
-    @JvmStatic
     internal fun node(
         buildParams: BuildParams<Nothing?>,
         customisation: Switcher.Customisation,
         viewDependency: SwitcherView.Dependency,
         interactor: SwitcherInteractor,
         backStack: SwitcherBackStack,
-        subtree: SwitcherSubtree
+        router: SwitcherRouter
     ): SwitcherNode = SwitcherNode(
         backStack = backStack,
         buildParams = buildParams,
         viewFactory = customisation.viewFactory(viewDependency),
         plugins = listOf(
             interactor,
-            subtree,
+            router,
             SwitcherDebugControls()
         )
     )
