@@ -76,7 +76,7 @@ class SwitcherRouterTest {
 
     @Test
     fun `Permanent_Menu configuration resolves to correct Node`() {
-        val routingAction = router.resolveConfiguration(Permanent.Menu).apply { execute() }
+        val routingAction = router.resolve(Permanent.Menu).apply { execute() }
         val nodes = routingAction.buildNodes(listOf(root(null)))
 
         assertThat(nodes).hasSize(1)
@@ -85,7 +85,7 @@ class SwitcherRouterTest {
 
     @Test
     fun `Content_Hello configuration resolves to correct Node`() {
-        val routingAction = router.resolveConfiguration(Content.Hello).apply { execute() }
+        val routingAction = router.resolve(Content.Hello).apply { execute() }
         val nodes = routingAction.buildNodes(listOf(root(null)))
 
         assertThat(nodes).hasSize(1)
@@ -95,7 +95,7 @@ class SwitcherRouterTest {
     @Test
     fun `Content_Hello configuration triggers menu update with correct MenuItem`() {
         val observer = router.menuUpdater.subscribeOnTestObserver()
-        val routingAction = router.resolveConfiguration(Content.Hello)
+        val routingAction = router.resolve(Content.Hello)
         routingAction.execute()
 
         observer.assertValue(Menu.Input.SelectMenuItem(MenuItem.HelloWorld))
@@ -103,7 +103,7 @@ class SwitcherRouterTest {
 
     @Test
     fun `Content_Foo configuration resolves to correct Node`() {
-        val routingAction = router.resolveConfiguration(Content.Foo).apply { execute() }
+        val routingAction = router.resolve(Content.Foo).apply { execute() }
         val nodes = routingAction.buildNodes(listOf(root(null)))
 
         assertThat(nodes).hasSize(1)
@@ -113,7 +113,7 @@ class SwitcherRouterTest {
     @Test
     fun `Content_Foo configuration triggers menu update with correct MenuItem`() {
         val observer = router.menuUpdater.subscribeOnTestObserver()
-        val routingAction = router.resolveConfiguration(Content.Foo)
+        val routingAction = router.resolve(Content.Foo)
         routingAction.execute()
 
         observer.assertValue(Menu.Input.SelectMenuItem(MenuItem.FooBar))
@@ -121,7 +121,7 @@ class SwitcherRouterTest {
 
     @Test
     fun `Content_DialogsExample configuration resolves to correct Node`() {
-        val routingAction = router.resolveConfiguration(Content.DialogsExample).apply { execute() }
+        val routingAction = router.resolve(Content.DialogsExample).apply { execute() }
         val nodes = routingAction.buildNodes(listOf(root(null)))
 
         assertThat(nodes).hasSize(1)
@@ -131,7 +131,7 @@ class SwitcherRouterTest {
     @Test
     fun `Content_DialogsExample configuration triggers menu update with correct MenuItem`() {
         val observer = router.menuUpdater.subscribeOnTestObserver()
-        val routingAction = router.resolveConfiguration(Content.DialogsExample)
+        val routingAction = router.resolve(Content.DialogsExample)
         routingAction.execute()
 
         observer.assertValue(Menu.Input.SelectMenuItem(MenuItem.Dialogs))
@@ -139,7 +139,7 @@ class SwitcherRouterTest {
 
     @Test
     fun `Content_Blocker configuration resolves to correct Node`() {
-        val routingAction = router.resolveConfiguration(Content.Blocker).apply { execute() }
+        val routingAction = router.resolve(Content.Blocker).apply { execute() }
         val nodes = routingAction.buildNodes(listOf(root(null)))
 
         assertThat(nodes).hasSize(1)
@@ -148,7 +148,7 @@ class SwitcherRouterTest {
 
     @Test
     fun `Overlay_Dialog configuration resolves to DialogRoutingAction`() {
-        val routingAction = router.resolveConfiguration(Overlay.Dialog).apply { execute() }
+        val routingAction = router.resolve(Overlay.Dialog).apply { execute() }
 
         assertThat(routingAction).isInstanceOf(DialogRoutingAction::class.java)
     }

@@ -10,6 +10,7 @@ import com.badoo.mvicore.android.lifecycle.startStop
 import com.badoo.mvicore.binder.using
 import com.badoo.ribs.android.ActivityStarter
 import com.badoo.ribs.android.ActivityStarter.ActivityResultEvent
+import com.badoo.ribs.core.BackStackInteractor
 import com.badoo.ribs.core.Interactor
 import com.badoo.ribs.core.Router
 import com.badoo.ribs.example.app.OtherActivity
@@ -28,24 +29,25 @@ import io.reactivex.functions.Consumer
 
 class HelloWorldInteractor(
     buildParams: BuildParams<Nothing?>,
-    private val router: Router<Configuration, Permanent, Content, Nothing, HelloWorldView>,
     private val input: ObservableSource<HelloWorld.Input>,
     private val output: Consumer<HelloWorld.Output>,
     private val feature: HelloWorldFeature,
     private val activityStarter: ActivityStarter
-) : Interactor<HelloWorldView>(
+) : BackStackInteractor<Configuration, HelloWorldView>(
     buildParams = buildParams,
-    disposables = feature
+    initialConfiguration = Content.Default
 ) {
+
     companion object {
         private const val REQUEST_CODE_OTHER_ACTIVITY = 1
     }
 
     private val dummyViewInput = BehaviorRelay.createDefault(
-        ViewModel("My id: " + id.replace("${HelloWorldInteractor::class.java.name}.", ""))
+        ViewModel("My id: " + buildParams.identifier.uuid.toString()
+            .replace("${HelloWorldInteractor::class.java.name}.", ""))
     )
 
-    override fun onAttach(ribLifecycle: Lifecycle, savedInstanceState: Bundle?) {
+    override fun onAttach(ribLifecycle: Lifecycle) {
         ribLifecycle.createDestroy {
             bind(feature.news to output using NewsToOutput)
             bind(input to feature using InputToWish)

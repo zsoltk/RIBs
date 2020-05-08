@@ -11,7 +11,9 @@ import io.reactivex.functions.Consumer
 class LoremIpsumInteractor(
     buildParams: BuildParams<Nothing?>,
     private val output: Consumer<LoremIpsum.Output>
-) : Interactor<LoremIpsumView>() {
+) : Interactor<LoremIpsumView>(
+    buildParams = buildParams
+) {
 
     override fun onViewCreated(view: LoremIpsumView, viewLifecycle: Lifecycle) {
         viewLifecycle.startStop {

@@ -1,15 +1,16 @@
 package com.badoo.ribs.example.rib.big
 
 import androidx.lifecycle.Lifecycle
+import com.badoo.ribs.core.BackStackInteractor
 import com.badoo.ribs.core.builder.BuildParams
 import com.badoo.ribs.core.Interactor
+import com.badoo.ribs.example.rib.big.BigRouter.Configuration
 
 class BigInteractor(
-    private val buildParams: BuildParams<Nothing?>,
-    private val router: BigRouter
-) : Interactor<BigView>(
+    private val buildParams: BuildParams<*>
+) : BackStackInteractor<Configuration, BigView>(
     buildParams = buildParams,
-    backPressHandler = null
+    initialConfiguration = Configuration.Content.Default
 ) {
 
     override fun onViewCreated(view: BigView, viewLifecycle: Lifecycle) {

@@ -32,8 +32,10 @@ import com.badoo.ribs.core.view.RibView
  * @param <V> the type of [RibView].
  **/
 abstract class BackStackInteractor<C : Parcelable, V : RibView>(
+    buildParams: BuildParams<*>,
     val backStack: BackStackFeature<C>
 ) : Interactor<V>(
+    buildParams = buildParams,
     backPressHandler = backStack
 ), RoutingSource<C> by backStack {
 
@@ -41,7 +43,8 @@ abstract class BackStackInteractor<C : Parcelable, V : RibView>(
         buildParams: BuildParams<*>,
         initialConfiguration: C
     ) : this(
-        BackStackFeature(
+        buildParams = buildParams,
+        backStack = BackStackFeature(
             initialConfiguration = initialConfiguration,
             buildParams = buildParams
         )

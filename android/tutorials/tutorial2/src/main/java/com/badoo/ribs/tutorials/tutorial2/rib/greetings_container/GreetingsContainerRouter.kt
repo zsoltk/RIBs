@@ -17,6 +17,6 @@ class GreetingsContainerRouter(
         @Parcelize object Default : Configuration()
     }
 
-    override fun resolveConfiguration(configuration: Configuration): RoutingAction =
+    override fun resolve(routing: RoutingElement<Configuration>): RoutingAction =
         RoutingAction.noop()
 }

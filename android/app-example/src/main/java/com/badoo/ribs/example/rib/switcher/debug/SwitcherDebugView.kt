@@ -13,7 +13,7 @@ import io.reactivex.disposables.CompositeDisposable
 class SwitcherDebugControls(
     private val disposables: CompositeDisposable = CompositeDisposable(),
     isEnabled: Boolean = true
-) : DebugControls<SwitcherView>(
+) : DebugControls(
     viewFactory = { inflate(it, R.layout.debug_switcher) },
     isEnabled = isEnabled
 //) : DisposablePlugin { // TODO
@@ -21,7 +21,7 @@ class SwitcherDebugControls(
 
     private lateinit var switcher: Switcher
 
-    override fun init(node: Node<SwitcherView>) {
+    override fun init(node: Node<*>) {
         super.init(node)
         switcher = node as Switcher
     }

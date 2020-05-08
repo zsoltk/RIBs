@@ -40,7 +40,7 @@ abstract class BaseNodesTest {
     }
 
     protected fun TestRootRouter.pushIt(configuration: TestRootRouter.Configuration) {
-        when (configuration) {
+        when (routing.configuration) {
             is TestRootRouter.Configuration.Content -> push(configuration)
             is TestRootRouter.Configuration.Overlay -> pushOverlay(configuration)
         }

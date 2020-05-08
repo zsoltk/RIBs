@@ -7,6 +7,7 @@ import com.badoo.ribs.core.routing.action.CompositeRoutingAction.Companion.compo
 import com.badoo.ribs.core.routing.action.DialogRoutingAction.Companion.showDialog
 import com.badoo.ribs.core.routing.action.InvokeOnExecute.Companion.execute
 import com.badoo.ribs.core.routing.action.RoutingAction
+import com.badoo.ribs.core.routing.configuration.feature.RoutingElement
 import com.badoo.ribs.core.routing.transition.handler.TransitionHandler
 import com.badoo.ribs.dialog.DialogLauncher
 import com.badoo.ribs.example.rib.blocker.BlockerBuilder
@@ -25,6 +26,7 @@ import com.badoo.ribs.example.rib.switcher.subtree.Configuration.Permanent
 import com.jakewharton.rxrelay2.PublishRelay
 
 class SwitcherRouter(
+    buildParams: BuildParams<*>,
     interactor: SwitcherInteractor,
     transitionHandler: TransitionHandler<Configuration>,
     private val fooBarBuilder: FooBarBuilder,
@@ -34,7 +36,8 @@ class SwitcherRouter(
     private val menuBuilder: MenuBuilder,
     private val dialogLauncher: DialogLauncher,
     private val dialogToTestOverlay: DialogToTestOverlay
-): Router<Configuration, Permanent>(
+): Router<Configuration>(
+    buildParams = buildParams,
     transitionHandler = transitionHandler,
     routingSource = interactor,
     permanentParts = listOf(
@@ -44,8 +47,8 @@ class SwitcherRouter(
 
     internal val menuUpdater = PublishRelay.create<Menu.Input>()
 
-    override fun resolveConfiguration(configuration: Configuration): RoutingAction =
-        when (configuration) {
+    override fun resolve(routingElement: RoutingElement<Configuration>): RoutingAction =
+        when (routingElement.configuration) {
             is Permanent.Menu -> attach { menuBuilder.build(it) }
             is Content.Hello -> composite(
                 attach { helloWorldBuilder.build(it) },
@@ -60,6 +63,6 @@ class SwitcherRouter(
                 execute { menuUpdater.accept(SelectMenuItem(MenuItem.Dialogs)) }
             )
             is Content.Blocker -> attach { blockerBuilder.build(it) }
-            is Overlay.Dialog -> showDialog(this, dialogLauncher, dialogToTestOverlay)
+            is Overlay.Dialog -> showDialog(routingSource, routingElement.identifier, dialogLauncher, dialogToTestOverlay)
         }
 }

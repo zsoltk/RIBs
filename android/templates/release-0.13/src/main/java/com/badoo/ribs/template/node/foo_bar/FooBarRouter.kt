@@ -28,6 +28,6 @@ class FooBarRouter(
         sealed class Overlay : Configuration()
     }
 
-    override fun resolveConfiguration(configuration: Configuration): RoutingAction<FooBarView> =
+    override fun resolve(routing: RoutingElement<Configuration>): RoutingAction<FooBarView> =
         RoutingAction.noop()
 }

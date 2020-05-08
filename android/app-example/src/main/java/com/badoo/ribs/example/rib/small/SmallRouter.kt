@@ -7,6 +7,7 @@ import com.badoo.ribs.core.routing.RoutingSource
 import com.badoo.ribs.core.routing.action.AnchoredAttachRoutingAction.Companion.anchor
 import com.badoo.ribs.core.routing.action.RoutingAction
 import com.badoo.ribs.core.routing.action.RoutingAction.Companion.noop
+import com.badoo.ribs.core.routing.configuration.feature.RoutingElement
 import com.badoo.ribs.example.rib.big.builder.BigBuilder
 import com.badoo.ribs.example.rib.portal_overlay_test.PortalOverlayTestBuilder
 import com.badoo.ribs.example.rib.small.SmallRouter.Configuration
@@ -34,8 +35,8 @@ class SmallRouter(
         }
     }
 
-    override fun resolveConfiguration(configuration: Configuration): RoutingAction =
-        when (configuration) {
+    override fun resolve(routing: RoutingElement<Configuration>): RoutingAction =
+        when (routing.configuration) {
             Content.Default -> noop()
             FullScreen.ShowBig -> anchor(node) { bigBuilder.build(it) }
             FullScreen.ShowOverlay -> anchor(node) { portalOverlayTestBuilder.build(it) }

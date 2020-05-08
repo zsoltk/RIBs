@@ -4,6 +4,7 @@ import com.badoo.ribs.core.builder.BuildParams
 import androidx.lifecycle.Lifecycle
 import com.badoo.mvicore.android.lifecycle.startStop
 import com.badoo.ribs.android.Text
+import com.badoo.ribs.core.BackStackInteractor
 import com.badoo.ribs.core.Interactor
 import com.badoo.ribs.core.Router
 import com.badoo.ribs.core.routing.RoutingSource
@@ -27,17 +28,13 @@ import io.reactivex.functions.Consumer
 
 class DialogExampleInteractor(
     buildParams: BuildParams<Nothing?>,
-    private val backStack: BackStackFeature<Configuration, DialogExampleView> = BackStackFeature(
-        initialConfiguration = Content.Default,
-        buildParams = buildParams
-    ),
     private val simpleDialog: SimpleDialog,
     private val lazyDialog: LazyDialog,
     private val ribDialog: RibDialog
-) : Interactor<DialogExampleView>(
+) : BackStackInteractor<Configuration, DialogExampleView>(
     buildParams = buildParams,
-    backPressHandler = backStack
-), RoutingSource<Configuration> by backStack {
+    initialConfiguration = Content.Default
+) {
 
     private val dummyViewInput = BehaviorRelay.createDefault(
         ViewModel("Dialog examples")

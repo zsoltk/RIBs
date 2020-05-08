@@ -24,7 +24,7 @@ import com.badoo.ribs.core.routing.transition.handler.TransitionHandler
 import io.reactivex.disposables.CompositeDisposable
 
 abstract class Router<C : Parcelable>(
-    buildParams: BuildParams<Nothing?>,
+    buildParams: BuildParams<*>,
     protected val routingSource: RoutingSource<C>,
     private val permanentParts: List<C> = emptyList(),
     private val transitionHandler: TransitionHandler<C>? = null
@@ -56,7 +56,7 @@ abstract class Router<C : Parcelable>(
         configurationFeature = ConfigurationFeature(
             initialConfigurations = permanentParts,
             timeCapsule = timeCapsule,
-            resolver = this::resolveConfiguration,
+            resolver = this,
             parentNode = node,
             transitionHandler = transitionHandler
         )
@@ -71,7 +71,7 @@ abstract class Router<C : Parcelable>(
         outState.putBundle(BUNDLE_KEY, bundle)
     }
 
-    override fun onAttach(lifecycle: Lifecycle) {
+    override fun onAttach(ribLifecycle: Lifecycle) {
         binder.bind(routingSource.toCommands() to configurationFeature)
     }
 

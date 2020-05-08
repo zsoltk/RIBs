@@ -148,7 +148,8 @@ class BackStackFeature<C : Parcelable>(
     override fun handleBackPressAfterDownstream(): Boolean =
         popBackStack()
 
-    override fun remove(configuration: Any) {
+    override fun remove(identifier: RoutingElement.Identifier) {
         TODO("not implemented")
+        // TODO trigger operation that finds element by identifier and removes it
     }
 }

@@ -54,8 +54,8 @@ class TestRootRouter(
         }
     }
 
-    override fun resolveConfiguration(configuration: Configuration): RoutingAction =
-        when (configuration) {
+    override fun resolve(routing: RoutingElement<Configuration>): RoutingAction =
+        when (routing.configuration) {
             Permanent.Permanent1 -> attach(builderPermanent1)
             Permanent.Permanent2 -> attach(builderPermanent2)
             Content.NoOp -> noop()

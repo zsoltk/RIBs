@@ -42,6 +42,7 @@ internal object SwitcherModule {
     @Provides
     @JvmStatic
     internal fun router(
+        buildParams: BuildParams<Nothing?>,
         component: SwitcherComponent,
         customisation: Switcher.Customisation,
         interactor: SwitcherInteractor,
@@ -49,6 +50,7 @@ internal object SwitcherModule {
         dialogToTestOverlay: DialogToTestOverlay
     ): SwitcherRouter =
         SwitcherRouter(
+            buildParams = buildParams,
             interactor = interactor,
             transitionHandler = customisation.transitionHandler,
             fooBarBuilder = FooBarBuilder(component),

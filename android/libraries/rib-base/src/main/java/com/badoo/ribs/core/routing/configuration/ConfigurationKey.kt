@@ -2,6 +2,7 @@ package com.badoo.ribs.core.routing.configuration
 
 import android.os.Parcelable
 import com.badoo.ribs.core.routing.configuration.feature.ConfigurationFeature
+import com.badoo.ribs.core.routing.configuration.feature.RoutingElement
 import com.badoo.ribs.core.routing.configuration.feature.WorkingState
 import kotlinx.android.parcel.Parcelize
 
@@ -33,22 +34,32 @@ import kotlinx.android.parcel.Parcelize
  */
 sealed class ConfigurationKey<C : Parcelable> : Parcelable {
 
-    abstract val configuration: C
+    abstract val configuration: RoutingElement<C>
 
     @Parcelize
-    data class Permanent<C : Parcelable>(val index: Int, override val configuration: C) : ConfigurationKey<C>()
+    data class Permanent<C : Parcelable>(
+        val index: Int,
+        override val configuration: RoutingElement<C>
+    ) : ConfigurationKey<C>()
 
     @Parcelize
-    data class Content<C : Parcelable>(val index: Int, override val configuration: C) : ConfigurationKey<C>()
+    data class Content<C : Parcelable>(
+        val index: Int,
+        override val configuration: RoutingElement<C>
+    ) : ConfigurationKey<C>()
 
     @Parcelize
     data class Overlay<C : Parcelable>(val key: Key<C>) : ConfigurationKey<C>() {
 
-        override val configuration: C
+        override val configuration: RoutingElement<C>
             get() = key.configuration
 
         @Parcelize
-        data class Key<C : Parcelable>(val contentKey: Content<C>, val index: Int, val configuration: C) : Parcelable
+        data class Key<C : Parcelable>(
+            val contentKey: Content<C>,
+            val index: Int,
+            val configuration: RoutingElement<C>
+        ) : Parcelable
     }
 
 

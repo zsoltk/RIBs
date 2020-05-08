@@ -12,8 +12,7 @@ class BlockerInteractor(
     buildParams: BuildParams<Nothing?>,
     private val output: Consumer<Blocker.Output>
 ) : Interactor<BlockerView>(
-    buildParams = buildParams,
-    disposables = null
+    buildParams = buildParams
 ) {
 
     override fun onViewCreated(view: BlockerView, viewLifecycle: Lifecycle) {

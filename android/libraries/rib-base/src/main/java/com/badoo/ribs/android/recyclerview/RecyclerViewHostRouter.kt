@@ -28,8 +28,8 @@
 //        }
 //    }
 //
-//    override fun resolveConfiguration(configuration: Configuration): RoutingAction =
-//        when (configuration) {
+//    override fun resolve(routing: RoutingElement<Configuration>): RoutingAction =
+//        when (routing.configuration) {
 //            is Default -> noop()
 //            is Content.Item -> resolve(configuration.uuid)
 //        }

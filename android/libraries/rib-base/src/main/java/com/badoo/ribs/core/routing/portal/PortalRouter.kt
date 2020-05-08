@@ -8,6 +8,7 @@ import com.badoo.ribs.core.builder.BuildParams
 import com.badoo.ribs.core.routing.RoutingSource
 import com.badoo.ribs.core.routing.action.RoutingAction
 import com.badoo.ribs.core.routing.configuration.ConfigurationResolver
+import com.badoo.ribs.core.routing.configuration.feature.RoutingElement
 import com.badoo.ribs.core.routing.portal.PortalRouter.Configuration
 import com.badoo.ribs.core.routing.portal.PortalRouter.Configuration.Content
 import com.badoo.ribs.core.routing.portal.PortalRouter.Configuration.Overlay
@@ -28,6 +29,7 @@ class PortalRouter(
     sealed class Configuration : Parcelable {
         sealed class Content : Configuration() {
             @Parcelize object Default : Content()
+            // TODO List<RoutingElement>
             @Parcelize data class Portal(val configurationChain: List<Parcelable>) : Content()
         }
         sealed class Overlay : Configuration() {
@@ -35,8 +37,8 @@ class PortalRouter(
         }
     }
 
-    override fun resolveConfiguration(configuration: Configuration): RoutingAction =
-        when (configuration) {
+    override fun resolve(routing: RoutingElement<Configuration>): RoutingAction =
+        when (val configuration = routing.configuration) {
             is Content.Default -> defaultRoutingAction
             is Content.Portal -> configuration.configurationChain.resolve()
             is Overlay.Portal -> configuration.configurationChain.resolve()
@@ -48,8 +50,7 @@ class PortalRouter(
         // TODO grab first from real root somehow -- currently works only if PortalRouter is in the root rib
         var targetRouter: ConfigurationResolver<Parcelable> =
             this@PortalRouter as ConfigurationResolver<Parcelable>
-        var routingAction: RoutingAction =
-            targetRouter.resolveConfiguration(first())
+        var routingAction: RoutingAction = targetRouter.resolve(RoutingElement(first()))
 
         drop(1).forEach { element ->
             val bundles = emptyList<Bundle?>()
@@ -77,7 +78,7 @@ class PortalRouter(
                 targetRouter = it
             } ?: throw IllegalStateException("Invalid chain of parents. This should never happen. Chain: $this")
 
-            routingAction = targetRouter.resolveConfiguration(element)
+            routingAction = targetRouter.resolve(RoutingElement(element))
         }
 
         return routingAction

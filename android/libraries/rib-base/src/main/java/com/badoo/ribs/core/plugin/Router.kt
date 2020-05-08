@@ -52,7 +52,7 @@ abstract class Router<C : Parcelable, Permanent : C>(
         configurationFeature = ConfigurationFeature(
             initialConfigurations = permanentParts,
             timeCapsule = timeCapsule,
-            resolver = this::resolveConfiguration,
+            resolver = this,
             parentNode = node,
             transitionHandler = transitionHandler
         )
@@ -67,7 +67,7 @@ abstract class Router<C : Parcelable, Permanent : C>(
         outState.putBundle(BUNDLE_KEY, bundle)
     }
 
-    override fun onAttach(lifecycle: Lifecycle) {
+    override fun onAttach(ribLifecycle: Lifecycle) {
         binder.bind(routingSource.toCommands() to configurationFeature)
     }
 

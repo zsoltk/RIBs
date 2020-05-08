@@ -41,8 +41,8 @@ class TestRouter(
         @Parcelize object O3 : Configuration() { override fun toString(): String = "O3" }
     }
 
-    override fun resolveConfiguration(configuration: Configuration): RoutingAction =
-        when (configuration) {
+    override fun resolve(routing: RoutingElement<Configuration>): RoutingAction =
+        when (routing.configuration) {
             is Configuration.C1 -> routingActionForC1
             is Configuration.C2 -> routingActionForC2
             is Configuration.C3 -> routingActionForC3

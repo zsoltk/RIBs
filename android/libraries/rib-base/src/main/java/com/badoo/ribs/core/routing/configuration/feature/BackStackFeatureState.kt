@@ -3,6 +3,7 @@ package com.badoo.ribs.core.routing.configuration.feature
 import android.os.Parcelable
 import com.badoo.ribs.core.routing.configuration.feature.operation.BackStack
 import kotlinx.android.parcel.Parcelize
+import java.io.Serializable
 
 // TODO rename
 @Parcelize
@@ -14,12 +15,19 @@ data class BackStackFeatureState<C : Parcelable>(
         get() = backStack.lastOrNull()
 }
 
-// TODO rename
+
 @Parcelize
 data class RoutingElement<C : Parcelable>(
-    val identifier: Parcelable,
-    val meta: Parcelable,
     val configuration: C,
-//    val overlays: List<BackStackElement<C>> = emptyList() // TODO
-    val overlays: List<C> = emptyList()
-) : Parcelable
+    val identifier: Identifier = Identifier(), // differ will use this to match elements between two "back stack" states, instead of list position
+    val isActive: Boolean = false,  // differ will not make an assumption that last one is always active, instead allows it to be controlled via this flag
+    val meta: Serializable = 0,     // unused for now, can be used with describing changes meaningful only to client code (e.g. configuration moved inside active window)
+    val overlays: List<RoutingElement<C>> = emptyList()
+) : Parcelable {
+
+    @Parcelize
+    data class Identifier(
+        val id: Int = 0
+    ) : Parcelable
+}
+

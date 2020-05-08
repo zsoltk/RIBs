@@ -7,5 +7,5 @@ import io.reactivex.ObservableSource
 
 interface RoutingSource<C : Parcelable> : ObservableSource<BackStackFeatureState<C>> {
 
-    fun remove(configuration: RoutingElement<*>)
+    fun remove(identifier: RoutingElement.Identifier)
 }

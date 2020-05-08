@@ -6,6 +6,6 @@ import com.badoo.ribs.example.rib.switcher.subtree.Configuration
 import com.badoo.ribs.example.rib.switcher.subtree.Configuration.Content
 import com.badoo.ribs.example.rib.switcher.subtree.Configuration.Permanent
 
-typealias SwitcherBackStack = BackStackFeature<Configuration, SwitcherView>
+typealias SwitcherBackStack = BackStackFeature<Configuration>
 
 //typealias SwitcherSubtree = Router<Configuration, Permanent, Content, SwitcherView>

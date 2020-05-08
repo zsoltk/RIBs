@@ -15,6 +15,7 @@
  */
 package com.badoo.ribs.core
 
+import com.badoo.ribs.core.builder.BuildParams
 import com.badoo.ribs.core.plugin.BackPressHandler
 import com.badoo.ribs.core.plugin.NodeAware
 import com.badoo.ribs.core.plugin.RibLifecycleAware
@@ -28,8 +29,10 @@ import com.badoo.ribs.core.view.RibView
  * @param <V> the type of [RibView].
  **/
 abstract class Interactor<V : RibView>(
+    buildParams: BuildParams<*>,
     private val backPressHandler: BackPressHandler? = null
-) : NodeAware,
+) : Identifiable by buildParams.identifier,
+    NodeAware,
     BackPressHandler,
     RibLifecycleAware,
     ViewAware<V> {
