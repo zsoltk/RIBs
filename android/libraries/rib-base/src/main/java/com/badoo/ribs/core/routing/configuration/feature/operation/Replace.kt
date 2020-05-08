@@ -1,7 +1,7 @@
 package com.badoo.ribs.core.routing.configuration.feature.operation
 
 import android.os.Parcelable
-import com.badoo.ribs.core.routing.configuration.feature.BackStackElement
+import com.badoo.ribs.core.routing.configuration.feature.RoutingElement
 import com.badoo.ribs.core.routing.configuration.feature.BackStackFeature
 
 data class Replace<C : Parcelable>(
@@ -11,7 +11,7 @@ data class Replace<C : Parcelable>(
         configuration != backStack.lastOrNull()?.configuration
 
     override fun invoke(backStack: BackStack<C>): BackStack<C> =
-        backStack.dropLast(1) + BackStackElement(configuration)
+        backStack.dropLast(1) + RoutingElement(configuration)
 }
 
 fun <C : Parcelable> BackStackFeature<C>.replace(configuration: C) {

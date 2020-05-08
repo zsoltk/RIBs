@@ -5,7 +5,7 @@ import com.badoo.ribs.core.helper.TestRouter.Configuration
 import com.badoo.ribs.core.helper.TestRouter.Configuration.C1
 import com.badoo.ribs.core.helper.TestRouter.Configuration.C2
 import com.badoo.ribs.core.helper.TestRouter.Configuration.C3
-import com.badoo.ribs.core.routing.configuration.feature.BackStackElement
+import com.badoo.ribs.core.routing.configuration.feature.RoutingElement
 import com.badoo.ribs.core.routing.configuration.feature.BackStackFeature
 import com.badoo.ribs.core.routing.configuration.feature.BackStackFeatureState
 import com.badoo.ribs.core.routing.configuration.feature.operation.BackStack
@@ -29,14 +29,14 @@ class BackStackFeatureTest {
 
     private lateinit var timeCapsuleEmpty: TimeCapsule<BackStackFeatureState<Configuration>>
     private lateinit var timeCapsuleWithContent: TimeCapsule<BackStackFeatureState<Configuration>>
-    private lateinit var backstackInTimeCapsule: List<BackStackElement<Configuration>>
+    private lateinit var backstackInTimeCapsule: List<RoutingElement<Configuration>>
     private lateinit var backStackFeature: BackStackFeature<Configuration>
 
     @Before
     fun setUp() {
-        backstackInTimeCapsule = listOf<BackStackElement<Configuration>>(
-            BackStackElement(C3),
-            BackStackElement(C2)
+        backstackInTimeCapsule = listOf<RoutingElement<Configuration>>(
+            RoutingElement(C3),
+            RoutingElement(C2)
         )
 
         timeCapsuleEmpty = mock()

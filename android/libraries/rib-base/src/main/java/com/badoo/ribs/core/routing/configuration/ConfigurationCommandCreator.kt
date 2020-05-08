@@ -8,7 +8,7 @@ import com.badoo.ribs.core.routing.configuration.ConfigurationCommand.Remove
 import com.badoo.ribs.core.routing.configuration.ConfigurationKey.Content
 import com.badoo.ribs.core.routing.configuration.ConfigurationKey.Overlay
 import com.badoo.ribs.core.routing.configuration.ConfigurationKey.Overlay.Key
-import com.badoo.ribs.core.routing.configuration.feature.BackStackElement
+import com.badoo.ribs.core.routing.configuration.feature.RoutingElement
 import com.badoo.ribs.core.routing.configuration.feature.BackStackFeature
 import com.badoo.ribs.core.routing.configuration.feature.operation.BackStack
 import java.lang.Math.min
@@ -40,8 +40,8 @@ internal object ConfigurationCommandCreator {
     }
 
     private fun findIndexOfLastCommonConfiguration(
-        oldStack: List<BackStackElement<*>>,
-        newStack: List<BackStackElement<*>>
+        oldStack: List<RoutingElement<*>>,
+        newStack: List<RoutingElement<*>>
     ): Int {
         var idx = -1
         val lastCommonIndex = min(oldStack.lastIndex, newStack.lastIndex)
@@ -123,24 +123,24 @@ internal object ConfigurationCommandCreator {
             else -> emptyList()
         }
 
-    private fun <C : Parcelable> BackStackElement<C>.addAllOverlays(content: Content<C>): List<ConfigurationCommand<C>> =
+    private fun <C : Parcelable> RoutingElement<C>.addAllOverlays(content: Content<C>): List<ConfigurationCommand<C>> =
         overlays.mapIndexed { overlayIndex, overlayConfiguration ->
             Add(Overlay(Key(content, overlayIndex, overlayConfiguration)))
         }
 
-    private fun <C : Parcelable> BackStackElement<C>.activateAllOverlays(contentKey: Content<C>): List<ConfigurationCommand<C>> =
+    private fun <C : Parcelable> RoutingElement<C>.activateAllOverlays(contentKey: Content<C>): List<ConfigurationCommand<C>> =
         overlays.mapIndexed { overlayIndex, overlayConfiguration ->
             Activate<C>(Overlay(Key(contentKey, overlayIndex, overlayConfiguration)))
         }
 
-    private fun <C : Parcelable> BackStackElement<C>.deactivateAllOverlays(contentKey: Content<C>): List<ConfigurationCommand<C>> =
+    private fun <C : Parcelable> RoutingElement<C>.deactivateAllOverlays(contentKey: Content<C>): List<ConfigurationCommand<C>> =
         overlays
             .mapIndexed { overlayIndex, overlayConfiguration ->
                 Deactivate<C>(Overlay(Key(contentKey, overlayIndex, overlayConfiguration)))
             }
             .reversed()
 
-    private fun <C : Parcelable> BackStackElement<C>.removeAllOverlays(contentKey: Content<C>): List<ConfigurationCommand<C>> =
+    private fun <C : Parcelable> RoutingElement<C>.removeAllOverlays(contentKey: Content<C>): List<ConfigurationCommand<C>> =
         overlays
             .mapIndexed { overlayIndex, overlayConfiguration ->
                 Remove<C>(Overlay(Key(contentKey, overlayIndex, overlayConfiguration)))
@@ -167,8 +167,8 @@ internal object ConfigurationCommandCreator {
      *
      * Difference will be removed from Old.
      */
-    private fun <C : Parcelable> BackStackElement<C>.removeNecessaryOverlays(
-        newElement: BackStackElement<C>,
+    private fun <C : Parcelable> RoutingElement<C>.removeNecessaryOverlays(
+        newElement: RoutingElement<C>,
         contentKey: Content<C>
     ): List<ConfigurationCommand<C>> =
         overlays
@@ -189,8 +189,8 @@ internal object ConfigurationCommandCreator {
      *
      * Difference will be added to New.
      */
-    private fun <C : Parcelable> BackStackElement<C>.addNecessaryOverlays(
-        oldElement: BackStackElement<C>?,
+    private fun <C : Parcelable> RoutingElement<C>.addNecessaryOverlays(
+        oldElement: RoutingElement<C>?,
         contentKey: Content<C>
     ): List<ConfigurationCommand<C>> =
         overlays
@@ -203,6 +203,6 @@ internal object ConfigurationCommandCreator {
             }
             .flatten()
 
-    private fun <C : Parcelable> BackStackElement<C>.overlayAt(index: Int): C? =
+    private fun <C : Parcelable> RoutingElement<C>.overlayAt(index: Int): C? =
         overlays.getOrNull(index)
 }

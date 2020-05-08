@@ -1,7 +1,7 @@
 package com.badoo.ribs.core.routing.configuration.feature.operation
 
 import android.os.Parcelable
-import com.badoo.ribs.core.routing.configuration.feature.BackStackElement
+import com.badoo.ribs.core.routing.configuration.feature.RoutingElement
 import com.badoo.ribs.core.routing.configuration.feature.BackStackFeature
 
 class Pop<C : Parcelable> : BackStackOperation<C> {
@@ -25,7 +25,7 @@ class Pop<C : Parcelable> : BackStackOperation<C> {
             else -> false
         }
 
-    private fun BackStack<C>.replaceLastWith(replacement: BackStackElement<C>): BackStack<C> =
+    private fun BackStack<C>.replaceLastWith(replacement: RoutingElement<C>): BackStack<C> =
         toMutableList().apply { set(lastIndex, replacement) }
 }
 
