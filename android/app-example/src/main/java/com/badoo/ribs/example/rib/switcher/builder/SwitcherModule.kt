@@ -74,25 +74,12 @@ internal object SwitcherModule {
     @SwitcherScope
     @Provides
     @JvmStatic
-    internal fun backStack(
-        buildParams: BuildParams<Nothing?>
-    ): SwitcherBackStack =
-        BackStackFeature(
-            initialConfiguration = Content.DialogsExample,
-            buildParams = buildParams
-        )
-
-    @SwitcherScope
-    @Provides
-    @JvmStatic
     internal fun interactor(
         buildParams: BuildParams<Nothing?>,
-        backStack: SwitcherBackStack,
         dialogToTestOverlay: DialogToTestOverlay
     ): SwitcherInteractor =
         SwitcherInteractor(
             buildParams = buildParams,
-            backStack = backStack,
             dialogToTestOverlay = dialogToTestOverlay
         )
 
@@ -104,10 +91,9 @@ internal object SwitcherModule {
         customisation: Switcher.Customisation,
         viewDependency: SwitcherView.Dependency,
         interactor: SwitcherInteractor,
-        backStack: SwitcherBackStack,
         router: SwitcherRouter
     ): SwitcherNode = SwitcherNode(
-        backStack = backStack,
+        backStack = interactor.backStack,
         buildParams = buildParams,
         viewFactory = customisation.viewFactory(viewDependency),
         plugins = listOf(

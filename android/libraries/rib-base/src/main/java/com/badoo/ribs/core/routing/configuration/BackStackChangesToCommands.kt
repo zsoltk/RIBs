@@ -13,9 +13,14 @@ import io.reactivex.ObservableSource
  *
  * @see [ConfigurationCommandCreator.diff]
  */
-internal fun <C : Parcelable> ObservableSource<BackStackFeatureState<C>>.toCommands(): Observable<Transaction<C>> =
-    Observable.wrap(this)
-        // .startWith(initialState) // TODO reconsider // Bootstrapper can overwrite it by the time we receive the first state emission here
+internal fun <C : Parcelable> ObservableSource<BackStackFeatureState<C>>.toCommands(): Observable<Transaction<C>> {
+    return Observable.wrap(this)
+        // FIXME this was the original and working one, but signature change means initialState is not accessible
+//        .startWith(initialState)
+
+        // FIXME temp solution, but this won't be good when restoring from bundle
+        .startWith(BackStackFeatureState()) // TODO reconsider // Bootstrapper can overwrite it by the time we receive the first state emission here
+
         .buffer(2, 1)
         .flatMap { (previous, current) ->
             val commands =
@@ -36,3 +41,4 @@ internal fun <C : Parcelable> ObservableSource<BackStackFeatureState<C>>.toComma
                 else -> Observable.empty()
             }
         }
+}

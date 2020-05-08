@@ -2,6 +2,7 @@ package com.badoo.ribs.example.rib.switcher
 
 import androidx.lifecycle.Lifecycle
 import com.badoo.mvicore.android.lifecycle.startStop
+import com.badoo.ribs.core.BackStackInteractor
 import com.badoo.ribs.core.Interactor
 import com.badoo.ribs.core.builder.BuildParams
 import com.badoo.ribs.core.routing.RoutingSource
@@ -20,12 +21,11 @@ import io.reactivex.functions.Consumer
 
 class SwitcherInteractor(
     buildParams: BuildParams<Nothing?>,
-    private val backStack: SwitcherBackStack,
     private val dialogToTestOverlay: DialogToTestOverlay
-) : Interactor<SwitcherView>(
+) : BackStackInteractor<Configuration, SwitcherView>(
     buildParams = buildParams,
-    backPressHandler = backStack
-), RoutingSource<Configuration> by backStack {
+    initialConfiguration = Content.DialogsExample
+) {
 
     override fun onViewCreated(view: SwitcherView, viewLifecycle: Lifecycle) {
         super.onViewCreated(view, viewLifecycle)

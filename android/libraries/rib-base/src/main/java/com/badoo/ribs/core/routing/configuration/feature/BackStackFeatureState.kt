@@ -29,5 +29,20 @@ data class RoutingElement<C : Parcelable>(
     data class Identifier(
         val id: Int = 0
     ) : Parcelable
+
+    // TODO use this in pool + resolver, but find better name
+    @Parcelize
+    data class PoolElement<C : Parcelable>(
+        val configuration: C,
+        val identifier: Identifier = Identifier(),
+        val meta: Serializable = 0
+    ) : Parcelable
+
+    fun toPoolElement(): PoolElement<C> =
+        PoolElement(
+            configuration = configuration,
+            identifier = identifier,
+            meta = meta
+        )
 }
 
