@@ -48,106 +48,84 @@ class RootActivity : RibActivity() {
     override val rootViewGroup: ViewGroup
         get() = findViewById(R.id.root)
 
-//    private lateinit var workflowRoot: Portal
+    private lateinit var workflowRoot: Portal
 
     override fun createRib(savedInstanceState: Bundle?) =
-//        FooBarBuilder(
-//            object : FooBar.Dependency {
-//                override fun foobarInput(): ObservableSource<FooBar.Input> = PublishRelay.create()
-//                override fun foobarOutput(): Consumer<FooBar.Output> = PublishRelay.create()
-//                override fun permissionRequester(): PermissionRequester = permissionRequester
-//            }
-//        ).build(
-//            root(null)
-//        )
+        PortalBuilder(
+            object : Portal.Dependency {
+                override fun defaultRoutingAction(): (Portal.OtherSide) -> RoutingAction = { portal ->
+                    attach { buildSwitcherNode(portal, it) }
+                }
 
-        SwitcherBuilder(
-            object : Switcher.Dependency {
-                override fun activityStarter(): ActivityStarter = activityStarter
-                override fun permissionRequester(): PermissionRequester = permissionRequester
-                override fun dialogLauncher(): DialogLauncher = this@RootActivity
-                override fun coffeeMachine(): CoffeeMachine = StupidCoffeeMachine()
-                override fun portal(): Portal.OtherSide = object : Portal.OtherSide {
-                    override fun showContent(remoteNode: Node<*>, remoteConfiguration: Parcelable) {}
-                    override fun showOverlay(remoteNode: Node<*>, remoteConfiguration: Parcelable) {}
+                override fun transitionHandler(): TransitionHandler<PortalRouter.Configuration>? =
+                    TransitionHandler.multiple(
+                        Slider { it.configuration is PortalRouter.Configuration.Content },
+                        CrossFader { it.configuration is PortalRouter.Configuration.Overlay }
+                    )
+
+                private fun buildSwitcherNode(portal: Portal.OtherSide, buildContext: BuildContext): Switcher {
+                    return SwitcherBuilder(
+                        object : Switcher.Dependency {
+                            override fun activityStarter(): ActivityStarter = activityStarter
+                            override fun permissionRequester(): PermissionRequester =
+                                permissionRequester
+
+                            override fun dialogLauncher(): DialogLauncher = this@RootActivity
+                            override fun coffeeMachine(): CoffeeMachine = StupidCoffeeMachine()
+                            override fun portal(): Portal.OtherSide = portal
+                        }
+                    ).build(buildContext)
                 }
             }
-        ).build(root(null))
+        ).build(root(
+            savedInstanceState = savedInstanceState,
+            customisations = AppRibCustomisations,
+            rootPlugins = listOf(
+                DebugControls(
+                    viewGroupForChildren = { findViewById(R.id.debug_root) },
+                    isEnabled = BuildConfig.DEBUG
+                )
+            )
+        )).also {
+            workflowRoot = it
+        }
 
-//        PortalBuilder(
-//            object : Portal.Dependency {
-//                override fun defaultRoutingAction(): (Portal.OtherSide) -> RoutingAction = { portal ->
-//                    attach { buildSwitcherNode(portal, it) }
-//                }
-//
-//                override fun transitionHandler(): TransitionHandler<PortalRouter.Configuration>? =
-//                    TransitionHandler.multiple(
-//                        Slider { it.configuration is PortalRouter.Configuration.Content },
-//                        CrossFader { it.configuration is PortalRouter.Configuration.Overlay }
-//                    )
-//
-//                private fun buildSwitcherNode(portal: Portal.OtherSide, buildContext: BuildContext): Switcher {
-//                    return SwitcherBuilder(
-//                        object : Switcher.Dependency {
-//                            override fun activityStarter(): ActivityStarter = activityStarter
-//                            override fun permissionRequester(): PermissionRequester =
-//                                permissionRequester
-//
-//                            override fun dialogLauncher(): DialogLauncher = this@RootActivity
-//                            override fun coffeeMachine(): CoffeeMachine = StupidCoffeeMachine()
-//                            override fun portal(): Portal.OtherSide = portal
-//                        }
-//                    ).build(buildContext)
-//                }
-//
-//                override fun plugins(): List<Plugin> =
-//                    listOf(
-//                        DebugControls(
-//                            debugParentViewGroup = findViewById(R.id.debug_root),
-//                            isEnabled = BuildConfig.DEBUG
-//                        )
-//                    )
-//            }
-//        ).build(root(savedInstanceState, AppRibCustomisations)).also {
-//            workflowRoot = it
-//        }
+    override val workflowFactory: (Intent) -> Observable<*>? = {
+        when {
+            // adb shell am start -a "android.intent.action.VIEW" -d "app-example://workflow1"
+            (it.data?.host == "workflow1") -> executeWorkflow1()
 
-//    override val workflowFactory: (Intent) -> Observable<*>? = {
-//        when {
-//            // adb shell am start -a "android.intent.action.VIEW" -d "app-example://workflow1"
-//            (it.data?.host == "workflow1") -> executeWorkflow1()
-//
-//            // adb shell am start -a "android.intent.action.VIEW" -d "app-example://workflow2"
-//            (it.data?.host == "workflow2") -> executeWorkflow2()
-//
-//
-//            else -> null
-//        }
-//    }
+            // adb shell am start -a "android.intent.action.VIEW" -d "app-example://workflow2"
+            (it.data?.host == "workflow2") -> executeWorkflow2()
 
-//    private fun executeWorkflow1(): Observable<*> =
-//        switcher()
-//            .flatMap { it.attachHelloWorld()}
-//            .toObservable()
-//
-//    @SuppressWarnings("OptionalUnit")
-//    private fun executeWorkflow2(): Observable<*> =
-//        Observable.combineLatest(
-//            switcher()
-//                .flatMap { it.doSomethingAndStayOnThisNode() }
-//                .toObservable(),
-//
-//            switcher()
-//                .flatMap { it.waitForHelloWorld() }
-//                .flatMap { it.somethingSomethingDarkSide() }
-//                .toObservable(),
-//
-//            BiFunction<Switcher, HelloWorld, Unit> { _, _ -> Unit }
-//        )
-//
-//    @Suppress("UNCHECKED_CAST")
-//    private fun switcher() =
-//        Single
-//            .just(workflowRoot)
-//            .flatMap { it.showDefault() as Single<Switcher> }
+
+            else -> null
+        }
+    }
+
+    private fun executeWorkflow1(): Observable<*> =
+        switcher()
+            .flatMap { it.attachHelloWorld()}
+            .toObservable()
+
+    @SuppressWarnings("OptionalUnit")
+    private fun executeWorkflow2(): Observable<*> =
+        Observable.combineLatest(
+            switcher()
+                .flatMap { it.doSomethingAndStayOnThisNode() }
+                .toObservable(),
+
+            switcher()
+                .flatMap { it.waitForHelloWorld() }
+                .flatMap { it.somethingSomethingDarkSide() }
+                .toObservable(),
+
+            BiFunction<Switcher, HelloWorld, Unit> { _, _ -> Unit }
+        )
+
+    @Suppress("UNCHECKED_CAST")
+    private fun switcher() =
+        Single
+            .just(workflowRoot)
+            .flatMap { it.showDefault() as Single<Switcher> }
 }

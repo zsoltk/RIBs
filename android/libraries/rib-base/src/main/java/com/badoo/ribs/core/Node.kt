@@ -54,13 +54,15 @@ import java.util.concurrent.CopyOnWriteArrayList
 open class Node<V : RibView>(
     val buildParams: BuildParams<*>,
     private val viewFactory: ((ViewGroup) -> V?)?,
-    val plugins: List<Plugin> = emptyList()
+    plugins: List<Plugin> = emptyList()
 ) : Rib, LifecycleOwner {
-    companion object {
 
+    companion object {
         internal const val BUNDLE_KEY = "Node"
         internal const val KEY_VIEW_STATE = "view.state"
     }
+
+    val plugins = plugins  + buildParams.buildContext.plugins
 
     final override val node: Node<V>
         get() = this
@@ -119,7 +121,7 @@ open class Node<V : RibView>(
         children.toList()
 
     init {
-        plugins.filterIsInstance<NodeAware>().forEach { it.init(this) }
+        this.plugins.filterIsInstance<NodeAware>().forEach { it.init(this) }
     }
 
     @CallSuper

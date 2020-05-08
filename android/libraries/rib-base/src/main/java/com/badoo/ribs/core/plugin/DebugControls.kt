@@ -6,7 +6,7 @@ import com.badoo.ribs.core.Node
 
 open class DebugControls(
     private val viewFactory: ((ViewGroup) -> View)? = null,
-    private val debugParentViewGroup: ViewGroup? = null,
+    private val viewGroupForChildren: (() -> ViewGroup)? = null,
     private val isEnabled: Boolean // TODO consider this for all plugins
 ) : NodeAware,
     RibLifecycleAware {
@@ -21,7 +21,8 @@ open class DebugControls(
 
     final override fun onAttachToView(parentViewGroup: ViewGroup) {
         if (isEnabled) {
-            target = node.pluginUp<DebugControls>()?.debugParentViewGroup ?: debugParentViewGroup
+            val lazy = node.pluginUp<DebugControls>()?.viewGroupForChildren ?: viewGroupForChildren
+            target = lazy?.invoke()
             target?.let {
                 debugView = viewFactory?.invoke(it)
                 debugView?.let {

@@ -20,11 +20,10 @@ class PortalBuilder(
 
         return PortalNode(
             buildParams = buildParams,
-            plugins =
-                listOf(
-                    interactor,
-                    router
-                ) + dependency.plugins(),
+            plugins = listOf(
+                interactor,
+                router
+            ),
             backStack = interactor.backStack
         )
     }

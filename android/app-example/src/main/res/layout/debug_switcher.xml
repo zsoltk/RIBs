@@ -3,7 +3,6 @@
     android:id="@+id/debug_switcher"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#999"
     android:padding="24dp"
     android:orientation="horizontal"
     android:layout_gravity="center"
