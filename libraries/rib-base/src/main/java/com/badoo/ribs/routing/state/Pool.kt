@@ -3,6 +3,7 @@ package com.badoo.ribs.routing.state
 import android.os.Parcelable
 import com.badoo.ribs.routing.Routing
 
+// Fixme map key needs to be Identifier, otherwise Meta change will mess it up
 internal typealias Pool<C> = Map<Routing<C>, RoutingContext<C>>
 
 internal typealias MutablePool<C> = MutableMap<Routing<C>, RoutingContext<C>>

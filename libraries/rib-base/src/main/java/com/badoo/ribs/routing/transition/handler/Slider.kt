@@ -2,8 +2,8 @@ package com.badoo.ribs.routing.transition.handler
 
 import android.view.animation.Interpolator
 import com.badoo.ribs.routing.transition.Transition
-import com.badoo.ribs.routing.transition.TransitionDirection.ENTER
-import com.badoo.ribs.routing.transition.TransitionDirection.EXIT
+import com.badoo.ribs.routing.transition.TransitionDirection.Enter
+import com.badoo.ribs.routing.transition.TransitionDirection.Exit
 import com.badoo.ribs.routing.transition.TransitionElement
 import com.badoo.ribs.routing.transition.TransitionPair
 import com.badoo.ribs.routing.transition.effect.Gravity
@@ -21,8 +21,8 @@ open class Slider<T>(
 ) : TransitionHandler<T> {
 
     override fun onTransition(elements: List<TransitionElement<out T>>): TransitionPair {
-        val exit = elements.filter { it.direction == EXIT && condition(it) }
-        val enter = elements.filter { it.direction == ENTER && condition(it)}
+        val exit = elements.filter { it.direction == Exit && condition(it) }
+        val enter = elements.filter { it.direction == Enter && condition(it)}
 
         return TransitionPair(
             exiting = Transition.multiple(

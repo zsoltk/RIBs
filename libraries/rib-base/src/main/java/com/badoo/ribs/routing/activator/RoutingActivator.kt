@@ -45,6 +45,8 @@ internal class RoutingActivator<C : Parcelable>(
         }
     }
 
+    // TODO add meta change?
+
     fun onTransitionAdd(routing: Routing<C>, nodes: List<Node<*>>) {
         nodes.forEach { child ->
             child.markPendingDetach(false)

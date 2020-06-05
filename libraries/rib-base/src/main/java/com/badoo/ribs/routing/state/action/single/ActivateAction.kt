@@ -75,7 +75,7 @@ internal class ActivateAction<C : Parcelable>(
             it.view?.let { ribView ->
                 TransitionElement(
                     configuration = item.routing.configuration, // TODO consider passing the whole RoutingElement
-                    direction = TransitionDirection.ENTER,
+                    direction = TransitionDirection.Enter,
                     addedOrRemoved = addedOrRemoved,
                     parentViewGroup = parentNode.targetViewGroupForChild(it),
                     identifier = it.identifier,

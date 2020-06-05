@@ -100,6 +100,11 @@ internal class RoutingStatePool<C : Parcelable>(
                 val updatedElement: Resolved<C>
             ) : Individual<C>()
 
+            class MetaUpdated<C : Parcelable>(
+                override val key: Routing<C>,
+                val updatedElement: Resolved<C>
+            ) : Individual<C>()
+
             class PendingDeactivateTrue<C : Parcelable>(
                 override val key: Routing<C>
             ) : Individual<C>()
@@ -186,6 +191,9 @@ internal class RoutingStatePool<C : Parcelable>(
                     pool = pool.minus(key).plus(key to effect.updatedElement)
                 )
                 is Effect.Individual.Deactivated -> copy(
+                    pool = pool.minus(key).plus(key to effect.updatedElement)
+                )
+                is Effect.Individual.MetaUpdated -> copy(
                     pool = pool.minus(key).plus(key to effect.updatedElement)
                 )
                 is Effect.Individual.PendingDeactivateTrue -> copy(

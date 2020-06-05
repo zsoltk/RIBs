@@ -115,7 +115,11 @@ internal object RoutingHistoryDiffer {
         val commands = mutableSetOf<RoutingCommand<C>>()
 
         if (t1.routing.meta != t0.routing.meta) {
-            // FIXME implement
+            commands += RoutingCommand.UpdateMeta(
+                routing = t0.routing,
+                oldMeta = t0.routing.meta,
+                newMeta = t1.routing.meta
+            )
         }
 
         return commands

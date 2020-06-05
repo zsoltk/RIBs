@@ -11,6 +11,7 @@ import com.badoo.ribs.routing.state.action.single.RemoveAction
 import com.badoo.ribs.routing.state.action.single.ReversibleActionFactory
 import com.badoo.ribs.routing.state.action.single.ReversibleActionPair
 import com.badoo.ribs.routing.Routing
+import com.badoo.ribs.routing.state.action.single.UpdateMetaAction
 
 /**
  * Represents a command to change one or more [RoutingContext] elements.
@@ -64,6 +65,19 @@ internal sealed class RoutingCommand<C : Parcelable> {
             ReversibleActionPair.Factory(
                 forwardActionFactory = DeactivateAction.Factory,
                 reverseActionFactory = ActivateAction.Factory
+            )
+    }
+
+    data class UpdateMeta<C : Parcelable>(
+        override val routing: Routing<C>,
+        private val oldMeta: Parcelable,
+        private val newMeta: Parcelable
+    ) : RoutingCommand<C>() {
+
+        override val actionFactory: ReversibleActionFactory =
+            ReversibleActionPair.Factory(
+                forwardActionFactory = UpdateMetaAction.Factory(oldMeta, newMeta),
+                reverseActionFactory = UpdateMetaAction.Factory(newMeta, oldMeta)
             )
     }
 }

@@ -122,7 +122,7 @@ internal class Actor<C : Parcelable>(
         actions: List<ReversibleAction<C>>
     ) {
         requireNotNull(transitionHandler)
-        val enteringElements = transitionElements.filter { it.direction == TransitionDirection.ENTER }
+        val enteringElements = transitionElements.filter { it.direction == TransitionDirection.Enter }
 
         /**
          * Entering views at this point are created but will be measured / laid out the next frame.
@@ -139,7 +139,7 @@ internal class Actor<C : Parcelable>(
             //  enter and exit can be controlled separately) is better
             OngoingTransition(
                 descriptor = descriptor,
-                direction = TransitionDirection.EXIT,
+                direction = TransitionDirection.Exit,
                 transitionPair = transitionPair,
                 actions = actions,
                 transitionElements = transitionElements,

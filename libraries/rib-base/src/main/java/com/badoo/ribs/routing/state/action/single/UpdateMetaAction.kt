@@ -12,6 +12,8 @@ import com.badoo.ribs.routing.state.feature.RoutingStatePool.Effect.Individual.D
 import com.badoo.ribs.routing.state.feature.RoutingStatePool.Effect.Individual.PendingDeactivateTrue
 import com.badoo.ribs.routing.state.feature.EffectEmitter
 import com.badoo.ribs.routing.Routing
+import com.badoo.ribs.routing.state.feature.RoutingStatePool
+import com.badoo.ribs.routing.state.feature.RoutingStatePool.Effect.Individual.MetaUpdated
 import com.badoo.ribs.routing.transition.TransitionDirection
 import com.badoo.ribs.routing.transition.TransitionElement
 
@@ -20,26 +22,30 @@ import com.badoo.ribs.routing.transition.TransitionElement
  *
  * Will not detach the [Node]s on the logical level, they are kept alive without their views.
  */
-internal class DeactivateAction<C : Parcelable>(
+internal class UpdateMetaAction<C : Parcelable>(
     private val emitter: EffectEmitter<C>,
     private val routing: Routing<C>,
     private var item: Resolved<C>,
     private val parentNode: Node<*>,
     private val activator: RoutingActivator<C>,
-    private val addedOrRemoved: Boolean,
-    private val targetActivationState: ActivationState = INACTIVE
+    private val oldMeta: Parcelable,
+    private val newMeta: Parcelable
 ) : RoutingTransitionAction<C> {
 
-    object Factory: ActionFactory {
+    class Factory(
+        private val oldMeta: Parcelable,
+        private val newMeta: Parcelable
+    ): ActionFactory {
         override fun <C : Parcelable> create(
             params: ActionExecutionParams<C>
-        ): RoutingTransitionAction<C> = DeactivateAction(
+        ): RoutingTransitionAction<C> = UpdateMetaAction(
             emitter = params.transactionExecutionParams.emitter,
             routing = params.routing,
             item = params.item,
             parentNode = params.transactionExecutionParams.parentNode,
             activator = params.transactionExecutionParams.activator,
-            addedOrRemoved = params.addedOrRemoved
+            oldMeta = oldMeta,
+            newMeta = newMeta
         )
     }
 
@@ -55,8 +61,8 @@ internal class DeactivateAction<C : Parcelable>(
             it.view?.let { ribView ->
                 TransitionElement(
                     configuration = item.routing.configuration, // TODO consider passing the whole RoutingElement
-                    direction = TransitionDirection.Exit,
-                    addedOrRemoved = addedOrRemoved,
+                    direction = TransitionDirection.Meta(oldMeta, newMeta),
+                    addedOrRemoved = false,
                     parentViewGroup = parentNode.targetViewGroupForChild(it),
                     identifier = it.identifier,
                     view = ribView.androidView
@@ -66,17 +72,17 @@ internal class DeactivateAction<C : Parcelable>(
     }
 
     override fun onTransition(forceExecute: Boolean) {
-        if (canExecute || forceExecute) {
-            item.routingAction.cleanup()
-            activator.onTransitionDeactivate(routing, item.nodes)
-            emitter.onNext(PendingDeactivateTrue(routing))
-        }
     }
 
     override fun onFinish(forceExecute: Boolean) {
-        if (canExecute || forceExecute) {
-            activator.deactivate(routing, item.nodes)
-            emitter.onNext(Deactivated(routing, item.copy(activationState = targetActivationState)))
-        }
+        emitter.onNext(
+            MetaUpdated(
+                routing, item.copy(
+                    routing = item.routing.copy(
+                        meta = newMeta
+                    )
+                )
+            )
+        )
     }
 }

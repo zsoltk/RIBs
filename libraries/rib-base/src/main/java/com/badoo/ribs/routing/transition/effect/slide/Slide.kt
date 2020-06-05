@@ -24,11 +24,11 @@ fun <T> TransitionElement<out T>.slide(
     reverseWhenAddedOrRemoved: Boolean = true
 ) : Transition {
     val evaluator = SingleProgressEvaluator().also { progressEvaluator.add(it) }
-    val actualGravity = if (reverseWhenAddedOrRemoved && (addedOrRemoved xor (direction == TransitionDirection.ENTER))) gravity.reverse() else gravity
+    val actualGravity = if (reverseWhenAddedOrRemoved && (addedOrRemoved xor (direction == TransitionDirection.Enter))) gravity.reverse() else gravity
     val endValues = slideEndValues(animationContainer, actualGravity).let {
         when (direction) {
-            TransitionDirection.EXIT -> it
-            TransitionDirection.ENTER -> it.reverse()
+            TransitionDirection.Exit -> it
+            TransitionDirection.Enter -> it.reverse()
         }
     }
     val reverseHolder =
