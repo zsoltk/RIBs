@@ -56,7 +56,7 @@ class MenuViewImpl private constructor(
 
     override fun accept(vm: ViewModel) {
         listOf(helloWorld, fooBar, dialogs).forEach {
-            it.setTextColor(ContextCompat.getColor(androidView.context, R.color.material_grey_600))
+            it.setTextColor(ContextCompat.getColor(androidView.context, R.color.material_grey_500))
         }
 
         vm.selected?.let {
