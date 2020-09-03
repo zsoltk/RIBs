@@ -13,6 +13,8 @@ import com.badoo.ribs.routing.source.backstack.BackStackFeature
 import com.badoo.ribs.routing.source.backstack.operation.pop
 import com.badoo.ribs.routing.source.backstack.operation.push
 import com.badoo.ribs.routing.source.backstack.operation.pushOverlay
+import com.badoo.ribs.routing.source.tabcontroller.TabController
+import com.badoo.ribs.routing.source.tabcontroller.operation.setActive
 import com.badoo.ribs.sandbox.rib.blocker.Blocker
 import com.badoo.ribs.sandbox.rib.menu.Menu
 import com.badoo.ribs.sandbox.rib.menu.Menu.Input.SelectMenuItem
@@ -24,21 +26,19 @@ import com.badoo.ribs.sandbox.rib.switcher.SwitcherView.Event
 import com.badoo.ribs.sandbox.rib.switcher.dialog.DialogToTestOverlay
 import com.badoo.ribs.sandbox.rib.switcher.routing.SwitcherRouter.Configuration
 import com.badoo.ribs.sandbox.rib.switcher.routing.SwitcherRouter.Configuration.Content
-import com.badoo.ribs.sandbox.rib.switcher.routing.SwitcherRouter.Configuration.Overlay
 import io.reactivex.functions.Consumer
 
 internal class SwitcherInteractor(
     buildParams: BuildParams<*>,
-    private val backStack: BackStackFeature<Configuration>,
+    private val tabController: TabController<Configuration>,
     private val dialogToTestOverlay: DialogToTestOverlay
 ) : Interactor<Switcher, SwitcherView>(
     buildParams = buildParams
 ) {
 
     private val menuListener = Consumer<Menu.Output> { output ->
-        when (output) {
-            is Menu.Output.MenuItemSelected ->
-                backStack.push(
+            when (output) {
+                is Menu.Output.MenuItemSelected -> tabController.setActive(
                     when (output.menuItem) {
                         FooBar -> Content.Foo
                         HelloWorld -> Content.Hello
@@ -46,25 +46,25 @@ internal class SwitcherInteractor(
                         Compose -> Content.Compose
                     }
                 )
-        }
+            }
     }
 
     private val blockerOutputConsumer = Consumer<Blocker.Output> {
         // Clear Blocker
         // FIXME with remove
-        backStack.popBackStack()
+//        tabController.remove(it)
     }
 
     private val viewEventConsumer: Consumer<Event> = Consumer {
         when (it) {
-            Event.ShowOverlayDialogClicked -> backStack.pushOverlay(Overlay.Dialog)
-            Event.ShowBlockerClicked -> backStack.push(Content.Blocker)
+//            Event.ShowOverlayDialogClicked -> tabController.pushOverlay(Overlay.Dialog) // FIXME
+//            Event.ShowBlockerClicked -> tabController.push(Content.Blocker) // FIXME
         }
     }
 
     internal val loremIpsumOutputConsumer: Consumer<Blocker.Output> = Consumer {
         // Clear Blocker
-        backStack.pop()
+        // tabController.pop() // FIXME
     }
 
     private val dialogEventConsumer : Consumer<Dialog.Event> = Consumer {
@@ -95,7 +95,7 @@ internal class SwitcherInteractor(
     override fun onChildAttached(child: Node<*>) {
         child.lifecycle.createDestroy {
             when (child) {
-                is Menu -> bind(backStack.activeConfiguration.rx2() to child.input using ConfigurationToMenuInput)
+                is Menu -> bind(tabController.activeConfiguration.rx2() to child.input using ConfigurationToMenuInput)
             }
         }
     }

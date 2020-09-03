@@ -41,6 +41,8 @@ interface RoutingSource<C : Parcelable> :
      */
     fun remove(identifier: Routing.Identifier)
 
+    fun onTransitionFinished() {}
+
     operator fun plus(other: RoutingSource<C>): RoutingSource<C> =
         Combined(this, other)
 

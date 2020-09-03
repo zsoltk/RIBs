@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.badoo.ribs.annotation.OutdatedDocumentation
 import com.badoo.ribs.core.Node
 import com.badoo.ribs.core.state.AsyncStore
+import com.badoo.ribs.core.state.Source
 import com.badoo.ribs.core.state.TimeCapsule
 import com.badoo.ribs.routing.Routing
 import com.badoo.ribs.routing.activator.RoutingActivator
@@ -20,6 +21,11 @@ import com.badoo.ribs.routing.state.feature.RoutingStatePool.Effect
 import com.badoo.ribs.routing.state.feature.state.SavedState
 import com.badoo.ribs.routing.state.feature.state.WorkingState
 import com.badoo.ribs.routing.transition.handler.TransitionHandler
+import com.badoo.ribs.routing.state.feature.RoutingStatePool.News
+import com.badoo.ribs.core.state.map
+import com.badoo.ribs.core.state.mapNotNull
+import com.badoo.ribs.core.state.startWith
+
 
 private val timeCapsuleKey = RoutingStatePool::class.java.name
 private fun <C : Parcelable> TimeCapsule.initialState(): WorkingState<C> =
@@ -65,6 +71,16 @@ internal class RoutingStatePool<C : Parcelable>(
         initialize()
         timeCapsule.register(timeCapsuleKey) { state.toSavedState() }
     }
+
+    enum class TransitionState {
+        STARTED, ONGOING, FINISHED
+    }
+
+    private val prevState: WorkingState<C> = timeCapsule.initialState()
+    val transitionState: Source<TransitionState> =
+        map { currentState ->
+            if (prevState.ongoingTransitions)
+        }
 
     sealed class Effect<C : Parcelable> {
         sealed class Global<C : Parcelable> : Effect<C>() {

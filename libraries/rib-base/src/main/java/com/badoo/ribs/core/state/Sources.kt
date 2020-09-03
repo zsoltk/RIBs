@@ -46,6 +46,12 @@ internal fun <T, R> Source<T>.map(transform: (T) -> R): Source<R> =
             this@map.observe { callback(transform(it)) }
     }
 
+internal fun <T, R> Source<T>.mapNotNull(transform: (T) -> R?): Source<R> =
+    object : Source<R> {
+        override fun observe(callback: (R) -> Unit): Cancellable =
+            this@mapNotNull.observe { transform(it)?.let(callback) }
+    }
+
 internal fun <T> Source<T>.filter(predicate: (T) -> Boolean): Source<T> =
     object : Source<T> {
         override fun observe(callback: (T) -> Unit): Cancellable =

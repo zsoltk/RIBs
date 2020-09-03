@@ -23,6 +23,7 @@ import com.badoo.ribs.routing.state.feature.Transaction.PoolCommand.SaveInstance
 import com.badoo.ribs.routing.state.feature.Transaction.PoolCommand.Sleep
 import com.badoo.ribs.routing.state.feature.Transaction.PoolCommand.WakeUp
 import com.badoo.ribs.routing.transition.handler.TransitionHandler
+import io.reactivex.disposables.CompositeDisposable
 
 abstract class Router<C : Parcelable>(
     buildParams: BuildParams<*>,
@@ -70,6 +71,13 @@ abstract class Router<C : Parcelable>(
 
     override fun onCreate(nodeLifecycle: Lifecycle) {
         cancellable += routingSource.changes(hasSavedState).observe(routingStatePool::accept)
+//    override fun onAttach(nodeLifecycle: Lifecycle) {
+//        binder.bind(routingSource.changes(hasSavedState) to routingStatePool)
+//        binder.bind(routingStatePool.news to Consumer {
+//            if (it is RoutingStatePool.News.TransitionFinished) {
+//                routingSource.onTransitionFinished()
+//            }
+//        })
     }
 
     override fun onAttachToView() {

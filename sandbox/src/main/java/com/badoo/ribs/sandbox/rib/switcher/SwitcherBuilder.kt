@@ -2,7 +2,8 @@ package com.badoo.ribs.sandbox.rib.switcher
 
 import com.badoo.ribs.builder.SimpleBuilder
 import com.badoo.ribs.core.modality.BuildParams
-import com.badoo.ribs.routing.source.backstack.BackStackFeature
+import com.badoo.ribs.routing.source.RoutingSource
+import com.badoo.ribs.routing.source.tabcontroller.TabController
 import com.badoo.ribs.sandbox.BuildConfig
 import com.badoo.ribs.sandbox.rib.switcher.dialog.DialogToTestOverlay
 import com.badoo.ribs.sandbox.rib.switcher.routing.SwitcherChildBuilders
@@ -25,14 +26,14 @@ class SwitcherBuilder(
 
     override fun build(buildParams: BuildParams<Nothing?>): SwitcherNode {
         val customisation = buildParams.getOrDefault(Switcher.Customisation())
-        val backStack  = backStack(buildParams)
-        val interactor = interactor(buildParams, backStack)
-        val router = router(buildParams, customisation, backStack)
+        val tabController  = tabController(buildParams)
+        val interactor = interactor(buildParams, tabController)
+        val router = router(buildParams, customisation, tabController)
 
         return SwitcherNode(
             buildParams = buildParams,
             viewFactory = customisation.viewFactory(viewDependency),
-            backStack = backStack,
+            tabController = tabController,
             plugins = listOfNotNull(
                 router,
                 interactor,
@@ -41,30 +42,31 @@ class SwitcherBuilder(
         )
     }
 
-    private fun backStack(buildParams: BuildParams<Nothing?>): BackStackFeature<Configuration> =
-        BackStackFeature(
+    private fun tabController(buildParams: BuildParams<Nothing?>): TabController<Configuration> =
+        TabController(
             buildParams = buildParams,
-            initialConfiguration = Content.Foo
+            configurations = listOf(Content.Hello, Content.Foo, Content.DialogsExample),
+            active = Content.Foo
         )
 
     private fun interactor(
         buildParams: BuildParams<Nothing?>,
-        backStack: BackStackFeature<Configuration>
+        tabController: TabController<Configuration>
     ): SwitcherInteractor =
         SwitcherInteractor(
             buildParams = buildParams,
-            backStack = backStack,
+            tabController = tabController,
             dialogToTestOverlay = dialogToTestOverlay
         )
 
     private fun router(
         buildParams: BuildParams<Nothing?>,
         customisation: Switcher.Customisation,
-        backStack: BackStackFeature<Configuration>
+        routingSource: RoutingSource<Configuration>
     ): SwitcherRouter =
         SwitcherRouter(
             buildParams = buildParams,
-            routingSource = backStack,
+            routingSource = routingSource,
             transitionHandler = customisation.transitionHandler,
             builders = builders,
             dialogLauncher = dependency.dialogLauncher(),

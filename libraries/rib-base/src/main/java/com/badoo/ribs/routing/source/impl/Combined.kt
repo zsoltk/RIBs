@@ -40,6 +40,11 @@ internal data class Combined<C : Parcelable>(
         second.remove(identifier)
     }
 
+    override fun onTransitionFinished() {
+        first.onTransitionFinished()
+        second.onTransitionFinished()
+    }
+
     override fun handleBackPressFirst(): Boolean =
         first.handleBackPressFirst() || second.handleBackPressFirst()
 
