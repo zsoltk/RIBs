@@ -73,13 +73,20 @@ internal class RoutingStatePool<C : Parcelable>(
     }
 
     enum class TransitionState {
-        STARTED, ONGOING, FINISHED
+        STARTED, ONGOING, FINISHED, IDLE
     }
 
     private val prevState: WorkingState<C> = timeCapsule.initialState()
     val transitionState: Source<TransitionState> =
         map { currentState ->
-            if (prevState.ongoingTransitions)
+            val hadTransitions = prevState.ongoingTransitions.isNotEmpty()
+            val hasNowTransitions = currentState.ongoingTransitions.isNotEmpty()
+
+            if (!hadTransitions) {
+                if (hasNowTransitions) TransitionState.STARTED else TransitionState.IDLE
+            } else {
+                if (hasNowTransitions) TransitionState.ONGOING else TransitionState.FINISHED
+            }
         }
 
     sealed class Effect<C : Parcelable> {
