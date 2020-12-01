@@ -13,23 +13,19 @@ import com.badoo.ribs.sandbox.migration_demo.leaf.mapper.NewsToOutput
 import com.badoo.ribs.sandbox.migration_demo.leaf.mapper.StateToViewModel
 import com.badoo.ribs.sandbox.migration_demo.leaf.mapper.ViewEventToAnalyticsEvent
 import com.badoo.ribs.sandbox.migration_demo.leaf.mapper.ViewEventToWish
-import io.reactivex.ObservableSource
-import io.reactivex.functions.Consumer
 
 internal class LeafInteractor(
     buildParams: BuildParams<*>,
-    private val input: ObservableSource<Leaf.Input>,
-    private val output: Consumer<Leaf.Output>,
     private val feature: LeafFeature
-) : Interactor<LeafView>(
+) : Interactor<Leaf, LeafView>(
     buildParams = buildParams,
     disposables = feature
 ) {
 
     override fun onAttach(nodeLifecycle: Lifecycle) {
         nodeLifecycle.createDestroy {
-            bind(feature.news to output using NewsToOutput)
-            bind(input to feature using InputToWish)
+            bind(feature.news to rib.output using NewsToOutput)
+            bind(rib.input to feature using InputToWish)
         }
     }
 

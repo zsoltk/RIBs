@@ -1,20 +1,25 @@
 package com.badoo.ribs.sandbox.migration_demo.leaf
 
 import android.view.ViewGroup
+import com.badoo.ribs.clienthelper.Connectable
+import com.badoo.ribs.clienthelper.NodeConnector
 import com.badoo.ribs.core.Node
 import com.badoo.ribs.core.builder.BuildParams
 import com.badoo.ribs.core.plugin.Plugin
+import com.badoo.ribs.sandbox.migration_demo.leaf.Leaf.Input
+import com.badoo.ribs.sandbox.migration_demo.leaf.Leaf.Output
 import io.reactivex.Single
 
 class LeafNode internal constructor(
     buildParams: BuildParams<*>,
     viewFactory: ((ViewGroup) -> LeafView?)?,
-    plugins: List<Plugin> = emptyList()
+    plugins: List<Plugin> = emptyList(),
+    connector: NodeConnector<Input, Output> = NodeConnector()
 ) : Node<LeafView>(
     buildParams = buildParams,
     viewFactory = viewFactory,
     plugins = plugins
-), Leaf {
+), Leaf, Connectable<Input, Output> by connector {
 
     /**
      * TODO:
@@ -32,10 +37,4 @@ class LeafNode internal constructor(
             // todo e.g. push wish to feature / trigger input / output
             // feature.accept()
         }
-
-    // todo: expose ALL possible children (even permanent parts), or remove if there's none
-    // override fun attachChild1(): Single<Child> =
-    //     attachWorkflow {
-    //         // router.push(ConfigurationForChild)
-    //     }
 }

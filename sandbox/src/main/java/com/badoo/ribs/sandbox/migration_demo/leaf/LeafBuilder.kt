@@ -11,7 +11,7 @@ class LeafBuilder(
     override fun build(buildParams: BuildParams<Nothing?>): Leaf {
         val customisation = buildParams.getOrDefault(Leaf.Customisation())
         val feature = feature()
-        val interactor = interactor(buildParams, dependency, feature)
+        val interactor = interactor(buildParams, feature)
 
         return node(buildParams, customisation, interactor)
     }
@@ -21,13 +21,10 @@ class LeafBuilder(
 
     private fun interactor(
         buildParams: BuildParams<*>,
-        dependency: Leaf.Dependency,
         feature: LeafFeature
     ) =
         LeafInteractor(
             buildParams = buildParams,
-            input = dependency.leafInput(),
-            output = dependency.leafOutput(),
             feature = feature
         )
 

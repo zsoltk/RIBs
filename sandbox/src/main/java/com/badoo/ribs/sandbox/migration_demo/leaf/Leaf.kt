@@ -1,17 +1,15 @@
 package com.badoo.ribs.sandbox.migration_demo.leaf
 
+import com.badoo.ribs.clienthelper.Connectable
 import com.badoo.ribs.core.Rib
 import com.badoo.ribs.customisation.RibCustomisation
-import io.reactivex.ObservableSource
+import com.badoo.ribs.sandbox.migration_demo.leaf.Leaf.Input
+import com.badoo.ribs.sandbox.migration_demo.leaf.Leaf.Output
 import io.reactivex.Single
-import io.reactivex.functions.Consumer
 
-interface Leaf : Rib {
+interface Leaf : Rib, Connectable<Input, Output> {
 
-    interface Dependency {
-        fun leafInput(): ObservableSource<Input>
-        fun leafOutput(): Consumer<Output>
-    }
+    interface Dependency
 
     sealed class Input
 

@@ -1,20 +1,25 @@
 package com.badoo.ribs.sandbox.migration_demo.container
 
 import android.view.ViewGroup
+import com.badoo.ribs.clienthelper.Connectable
+import com.badoo.ribs.clienthelper.NodeConnector
 import com.badoo.ribs.core.Node
 import com.badoo.ribs.core.builder.BuildParams
 import com.badoo.ribs.core.plugin.Plugin
+import com.badoo.ribs.sandbox.migration_demo.container.Container.Input
+import com.badoo.ribs.sandbox.migration_demo.container.Container.Output
 import io.reactivex.Single
 
 class ContainerNode internal constructor(
     buildParams: BuildParams<*>,
     viewFactory: ((ViewGroup) -> ContainerView?)?,
-    plugins: List<Plugin> = emptyList()
+    plugins: List<Plugin> = emptyList(),
+    connector: NodeConnector<Input, Output> = NodeConnector()
 ) : Node<ContainerView>(
     buildParams = buildParams,
     viewFactory = viewFactory,
     plugins = plugins
-), Container {
+), Container, Connectable<Input, Output> by connector {
 
     /**
      * TODO:
@@ -36,6 +41,6 @@ class ContainerNode internal constructor(
     // todo: expose ALL possible children (even permanent parts), or remove if there's none
     // override fun attachChild1(): Single<Child> =
     //     attachWorkflow {
-    //         // router.push(ConfigurationForChild)
+    //         // backStack.push(ConfigurationForChild)
     //     }
 }

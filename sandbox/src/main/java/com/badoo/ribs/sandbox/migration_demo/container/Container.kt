@@ -1,18 +1,17 @@
 package com.badoo.ribs.sandbox.migration_demo.container
 
+import com.badoo.ribs.clienthelper.Connectable
 import com.badoo.ribs.core.Rib
 import com.badoo.ribs.core.routing.transition.handler.TransitionHandler
 import com.badoo.ribs.customisation.RibCustomisation
-import io.reactivex.ObservableSource
+import com.badoo.ribs.sandbox.migration_demo.container.Container.Input
+import com.badoo.ribs.sandbox.migration_demo.container.Container.Output
+import com.badoo.ribs.sandbox.migration_demo.container.routing.ContainerRouter
 import io.reactivex.Single
-import io.reactivex.functions.Consumer
 
-interface Container : Rib {
+interface Container : Rib, Connectable<Input, Output> {
 
-    interface Dependency {
-        fun containerInput(): ObservableSource<Input>
-        fun containerOutput(): Consumer<Output>
-    }
+    interface Dependency
 
     sealed class Input
 
